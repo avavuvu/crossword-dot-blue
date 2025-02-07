@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme {
+    --max-width-main: 1280px;
+    --font-mono: 'Courier New', Courier, monospace;
+    --color-selected: #18de74;
+    --color-secondary-selected: #C7E0D4;
+    --color-linked: #e7e2f1;
+    --color-primary: #0000ff;
+    --color-secondary: #fff200;
+    --color-incorrect: #ff0000;
+    --color-correct: var(--color-primary);
+    --color-board: var(--color-white);
+    --color-block: var(--color-primary);
+    --color-board-chars: var(--color-black);
+}
+
+@variant classic (&:where([data-theme="classic"], [data-theme="classic"] *));
+@variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@variant grove (&:where([data-theme="grove"], [data-theme="grove"] *));
+@variant pink (&:where([data-theme="pink"], [data-theme="pink"] *));
+@variant midnight (&:where([data-theme="midnight"], [data-theme="midnight"] *));
+
+* {
+    @variant classic {
+        --color-primary: #000000;
+        --color-block: #000000;
+        --color-selected: #ffda00;
+        --color-secondary-selected: #a7d8ff;
+        --color-secondary: #0000ff;
+    }
+
+    @variant dark {
+        --color-primary: #7278b2;
+        --color-white: #000000;
+        --color-black: #ffffff;
+        --color-linked: #6aa88f;
+        --color-selected: #7278b2;
+        --color-secondary-selected: #6a9ba8;
+        --color-secondary: #0000ff;
+        --color-board: #397584;
+        --color-block: #000000;
+        --color-correct: #ccb9e8;
+    }
+
+    @variant midnight {
+        --color-primary: #2d4191;
+        --color-white: #1f253d;
+        --color-black: #606d89;
+        --color-linked: #6aa88f;
+        --color-selected: #7278b2;
+        --color-secondary-selected: #6a9ba8;
+        --color-secondary: #000;
+        --color-board: #397584;
+        --color-block: var(--color-white);
+        --color-correct: #2d4191;
+        --color-incorrect: #721b3b;
+        --color-board-chars: var(--color-white);
+    }
+
+    @variant grove {
+        --color-primary: #7278b2;
+        --color-block: var(--color-primary);
+        --color-white: #fcf6ed;
+        --color-board: #fcf6ed;
+        --color-secondary: var(--color-primary);
+        
+        --color-correct: var(--color-primary);
+        
+        --color-selected: #a1a1c6;
+        --color-secondary-selected: #bed1e2;
+    }   
+
+    @variant pink {
+        --color-primary: #ec809e;
+        --color-white: #f4eee8;
+        --color-black: #27272a;
+
+        --color-board: var(--color-white);
+        --color-block: #d2386c;
+        
+        --color-secondary: #eada4f;
+        
+        --color-correct: #64bfa4;
+        
+        --color-selected: #3CADD4;
+        --color-secondary-selected: #bed1e2;
+    }   
+}
+
+body {
+    background-color: var(--color-white);
+}
+
+button {
+    cursor: pointer;
+}
+
+
