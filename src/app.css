@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+@layer base {
+    .grid-stack {
+        grid-row-start: 1;
+        grid-column-start: 1;
+        grid-row-end: 2;
+        grid-column-end: 2;
+    }
+
+    .grid-1-1 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        grid-template-rows: repeat(1, minmax(0, 1fr));
+    }
+}
+
 @theme {
     --max-width-main: 1280px;
     --font-mono: 'Courier New', Courier, monospace;

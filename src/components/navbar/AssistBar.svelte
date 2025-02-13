@@ -44,7 +44,7 @@
 
 {#if rebus}
 <button class="" onclick={() => gameManager.state.isRebusMode = !gameManager.state.isRebusMode}>
-    <div class={["transition-transform h-full flex items-center justify-center rounded-xl min-w-8 px-4",
+    <div class={["transition-transform h-full flex items-center justify-center rounded-xl min-w-3 lg:min-w-8 px-1 lg:px-4",
                 "hover:bg-white hover:text-black hover:-translate-y-0.5",
                 "bg-selected",
                 gameManager.state.isRebusMode ? "bg-white text-black -translate-y-0.5" : ""]}>

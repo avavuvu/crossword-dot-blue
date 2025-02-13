@@ -1,11 +1,11 @@
 <script lang="ts">
     import { gameManager } from "$lib/gameManager.svelte";
     import { inputKey } from "$lib/input";
-    import type { CharacterSet } from "$lib/types";
+    import type { CharacterSet, Crossword } from "$lib/types";
     import { Delete, Globe, IterationCw } from "lucide-svelte";
     import type { Icon as IconType } from "lucide-svelte";
 
-    const { rebus, characterSet }: { rebus: boolean, characterSet: CharacterSet } = $props()
+    const { crossword }: { crossword: Crossword } = $props()
 
     const rebusRow = "Rebus Toggle"
 
@@ -25,12 +25,12 @@ Symbols . , ? ! ' \" # Backspace`
         return set.replace(/Symbols/g, "Toggle")
     }
 
-    if(rebus) {
+    if(crossword.rebus) {
         symbolsLayout += `\n${rebusRow}`
         defaultLayout += `\n${rebusRow}`
     }
 
-    if(characterSet === "default") {
+    if(crossword.characterSet === "default") {
         symbolsLayout = replaceSymbols(symbolsLayout)
         defaultLayout = replaceSymbols(defaultLayout)
     }

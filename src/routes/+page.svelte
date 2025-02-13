@@ -40,6 +40,8 @@
     }))
 </script>
 
+<title>Crossword Dot Blue</title>
+
 <Navbar>
     {#snippet optionsSnippet()}
         <NavbarButton props={{}}>

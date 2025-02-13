@@ -6,6 +6,9 @@
     import { Settings } from "lucide-svelte";
 
 </script>
+
+<title>Options - Crossword Dot Blue</title>
+
 <Navbar>
     {#snippet optionsSnippet()}
         <NavbarButton props={{}}>

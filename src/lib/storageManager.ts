@@ -1,6 +1,6 @@
 import { SvelteMap } from "svelte/reactivity"
 import type { GameStateToSave, SavedGameState } from "./gameState.svelte"
-import type { CrosswordCollection } from "./types"
+import type { CrosswordCollection, CrosswordDocument } from "./types"
 
 export interface StorageManagerInterface {
     get(): GameStateToSave | null
@@ -26,19 +26,46 @@ export class StorageManager implements StorageManagerInterface {
         return JSON.stringify(savedState)
     }
 
-    parse(data: string): GameStateToSave {
-        const parsed: SavedGameState = JSON.parse(data)
-        const checkedMap = new SvelteMap<number, boolean>(parsed.checked)
+    static parse(data: string): GameStateToSave {
+        //this is supporting the old way i did local storage
 
-        return {
-            ...parsed,
-            checked: checkedMap
+        try {
+            const parsed: SavedGameState = JSON.parse(data)
+
+            const checkedMap = new SvelteMap<number, boolean>(parsed.checked)
+
+            return {
+                ...parsed,
+                checked: checkedMap
+            }
+        }
+        catch (_) {
+            const grid = data
+                .split(",")
+                .map(char => {
+                    if(char === ".") {
+                        return ""
+                    }
+
+                    if(char === "_") {
+                        return ""
+                    }
+
+                    return char
+                })
+
+            return {
+                grid,
+                checked: new SvelteMap<number, boolean>([]),
+                completion: "incomplete",
+                elapsedTime: 0
+            }
         }
     }
     
     get(): GameStateToSave | null {
         const item = localStorage.getItem(this.id);
-        return item ? this.parse(item) : null;
+        return item ? StorageManager.parse(item) : null;
     }
 
     set(gameState: GameStateToSave) {

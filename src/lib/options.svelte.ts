@@ -27,6 +27,7 @@ type SettingTypes = "ArrowKeyChangeOrientation"
     | "RebusWarning"
     | "ForceKeyboard"
     | "ShowTimer"
+    | "ForceMobile"
 
 export const options: Record<SettingTypes, Setting> = $state({
     "ArrowKeyChangeOrientation": {
@@ -101,6 +102,12 @@ export const options: Record<SettingTypes, Setting> = $state({
         type: "bool",
         setting: false
     },
+    "ForceMobile": {
+        "category": "Appearance",
+        name: "Always Use Mobile Layout",
+        "type": "bool",
+        "setting": false
+    },
     "ShowTimer": {
         "category": "Appearance",
         name: "Show Timer",
@@ -111,8 +118,14 @@ export const options: Record<SettingTypes, Setting> = $state({
 })
 
 export const setOptionsFromStorage = (savedOptions: Record<SettingTypes, Setting>) => {
+    //check options are legit and well formed and not outdated
+
     Object.keys(options).forEach((key) => {
-        options[key as SettingTypes] = savedOptions[key as SettingTypes] 
+        const savedOption = savedOptions[key as SettingTypes]
+        if(savedOption) {
+            options[key as SettingTypes] = savedOption
+
+        }
     })
 }
 

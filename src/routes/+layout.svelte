@@ -24,11 +24,10 @@
 </script>
 
 <svelte:head >
-<link rel="icon" href="{data}"/>
-
+	<link rel="icon" href="{data}"/>
 </svelte:head>
 
-<div class="w-full h-full bg-white overflow-clip" data-theme="{options.Theme.setting}">
+<div class="w-full h-full bg-white overflow-clip" data-theme="{options.Theme.setting}" >
 	{@render children()}
 	<Footer/>
 </div>

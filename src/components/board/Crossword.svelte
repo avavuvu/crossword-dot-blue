@@ -85,7 +85,7 @@
             showKeyboard ? "" : " h-[100dvh]",
         ]}>
             <div class="mx-auto flex-1 min-w-[50%]" {...victoryDrawer.root} >
-                <div class="flex justify-between flex-col items-stretch h-full gap-1">
+                <div class="flex justify-between flex-col h-full gap-1">
                     {#if !isLargeScreen.current}
                         {@render TopBarSnippet(false)}
                     {/if}
@@ -141,8 +141,6 @@
                                 <Clues {crossword}/>
                             </div>
                         {/if}
-                        
-    
                     </div>
                 </div>  
             {/if}
@@ -151,7 +149,7 @@
         
         {#if showKeyboard}
             <MobileClues />
-            <MobileKeyboard rebus={crossword.rebus} characterSet={crossword.characterSet}/>
+            <MobileKeyboard {crossword}/>
         {/if}
     </div>
 

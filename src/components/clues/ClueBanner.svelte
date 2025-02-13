@@ -27,7 +27,7 @@
     
 </script>
 
-<div class="h-28 grid grid-rows-2">
+<div class="h-28 grid grid-rows-2 w-full">
     <div class="flex justify-between bg-primary rounded-md mt-2 p-1 h-8">
         <svg
             class=""

@@ -3,6 +3,33 @@
     import { gameManager } from "$lib/gameManager.svelte";
     import { ChevronRight, ChevronLeft } from "lucide-svelte";
 
+    const { size, lineHeight} = $derived.by(() => {
+        const length = (gameManager.state.clue?.hint.length ?? 0)
+
+        if(length > 45) {
+            return {
+                size: "13px",
+                lineHeight: "1em"
+            }
+        }
+
+        if(length > 20) {
+            return {
+                size: "16px",
+                lineHeight: "1.1"
+            }
+        }
+
+
+        return {
+                size: "24px",
+                lineHeight: "1.375"
+            }
+        
+    }
+        
+    )
+
 </script>
 
 
@@ -15,9 +42,11 @@
     </button>
     <button 
         class="min-h-[60px]
+            block
             active:bg-white"
+        style:font-size={size} style:line-height={lineHeight}
         onclick={() => gameManager.clueManager.toggleOrientation()}>
-        <span class="tracking-tight leading-snug ">
+        <span >
             {gameManager.state.clue?.hint}
         </span>
     </button>

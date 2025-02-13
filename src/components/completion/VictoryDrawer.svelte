@@ -16,7 +16,7 @@
     
 </script>
 
-<div class="mt-4 h-[80%] flex flex-col text-center border-2 border-primary rounded-4xl rounded-tl-none">
+<div class="flex flex-col text-center border-2 border-primary rounded-4xl rounded-tl-none overflow-hidden">
     <button class="w-8 aspect-square" onclick={() => drawerOpen = false}>
         <div class="hover:-translate-y-0.5 transition-transform h-full flex items-center justify-center 
                 bg-primary text-white 
@@ -37,7 +37,7 @@
         </div>
 
         <div>
-            <button class="h-full  min-w-8" onclick={async () => shareSuccessful = await shareTime()}>
+            <button class="h-full min-w-8" onclick={async () => shareSuccessful = await shareTime()}>
                 <div class="hover:-translate-y-0.5 transition-transform h-full flex items-center justify-center 
                     bg-primary text-white px-4 py-2
                     hover:bg-white hover:text-black rounded-xl ">
@@ -60,10 +60,10 @@
             </button>
         </div>
 
-        <img class="w-full h-full object-contain" src="/images/me.webp" alt=""/>
+        <img class="h-full w-full mx-auto" src="/images/me.webp" alt=""/>
 
     {:else}
-        <div>
+        <div class="">
             <h1 class="text-3xl font-bold">
                 Not quite!
             </h1>
@@ -73,7 +73,7 @@
             <p>At least one square is incorrect!</p>
         </div>
         
-        <div class="mt-8">
+        <div class="">
             <button class="h-full  min-w-8" onclick={() => {
                 gameManager.assistManager.checkPuzzle()
                 drawerOpen = false

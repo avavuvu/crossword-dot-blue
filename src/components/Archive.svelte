@@ -1,12 +1,24 @@
 <script lang="ts">
     import { formatCrosswordDocument } from "$lib/formatCrossword";
+    import type { GameStateToSave, SavedGameState } from "$lib/gameState.svelte";
     import { Navigation } from "$lib/navigation";
-    import type { Crossword, CrosswordCollection, CrosswordDocument } from "$lib/types";
+    import type { CompletionState, Crossword, CrosswordCollection, CrosswordDocument } from "$lib/types";
+    import { Badge, BadgeCheck, BadgeHelp, CornerDownRight } from "lucide-svelte";
     import Loading from "./completion/Loading.svelte";
+    import { StorageManager } from "$lib/storageManager";
 
     const { collection }: { collection: CrosswordCollection } = $props()
 
-    const fetchCrosswords = async () => {
+    type CrosswordAndCompletion = Crossword & {
+        completion: CompletionState | null
+    }
+
+    type CrosswordArchiveDisplay = [
+        string, 
+        CrosswordAndCompletion[]
+    ][]
+
+    const fetchCrosswords = async (): Promise<CrosswordArchiveDisplay> => {
         try {
             const response = await fetch(`/api/crosswords/${collection}/archive`)
             if(!response.ok) {
@@ -15,7 +27,7 @@
             }
             const crosswordDocuments: CrosswordDocument[] = await response.json()
 
-            const crosswordsByMonth: Map<string, Crossword[]> = new Map()
+            const crosswordsByMonth: Map<string, CrosswordAndCompletion[]> = new Map()
             crosswordDocuments.forEach((doc) => {
                 const crossword = formatCrosswordDocument(doc, collection)
                 const year = crossword.metadata.date.getFullYear()
@@ -26,8 +38,20 @@
                 if (!crosswordsByMonth.has(key)) {
                     crosswordsByMonth.set(key, []);
                 }
+
+                // storage checker
+                let completion: CompletionState | null = null
+                const storedCrosswordDocumentString = localStorage.getItem(`${collection}_${doc.documentId}`) as string | null
+
+                if(storedCrosswordDocumentString) {
+                    const storedCrosswordDocument: GameStateToSave = StorageManager.parse(storedCrosswordDocumentString)
+                    completion = storedCrosswordDocument.completion 
+                }
                 
-                crosswordsByMonth.get(key)?.push(crossword)
+                crosswordsByMonth.get(key)?.push({
+                    ...crossword,
+                    completion
+                })
             })
 
             return [...crosswordsByMonth]
@@ -37,6 +61,28 @@
         }
     }
 </script>
+
+<svlete:head>
+    <title>
+        {collection} Archive – Crossword Dot Blue
+    </title>
+</svlete:head>
+
+{#snippet completionSquare(completionState: CompletionState | null)}
+    {#if completionState === "won"}
+        <span class="text-primary classic:text-secondary grove:text-selected">
+            <BadgeCheck/>
+        </span>
+    {:else if completionState === null}
+        <span class="text-selected grove:text-primary">
+            <Badge/>
+        </span>
+    {:else}
+        <span class="text-selected grove:text-primary">
+            <BadgeHelp/>
+        </span>
+    {/if}
+{/snippet}
 
 <div class="mx-auto max-w-main min-h-[600px] midnight:text-black dark:text-black">
     <h1 class="font-bold text-4xl py-8 mx-4 lg:mx-12">{collection === "mini" ? "Mini" : "Big"} Crosswords Archive</h1>
@@ -54,10 +100,16 @@
                         <h1 class="capitalize mx-4 font-bold">{month}</h1>
 
                     </div>
-                    {#each crosswords as {metadata: {title, date, difficulty, collection, documentId}, width, height}}
+                    {#each crosswords as {completion, metadata: {title, date, difficulty, collection, documentId}, width, height}}
                         <a href={Navigation.construcrCrosswordUrl(collection, documentId)} class="flex flex-col mx-4">
-                            <span class="inline-flex justify-between">
-                                <span class='font-bold'>
+                            <span class={[
+                                "inline-flex justify-between",
+                                completion === "won" ? "text-black/50" : ""
+                                ]}>
+                                <span class='font-bold inline-flex gap-2'>
+                                    <span>
+                                        {@render completionSquare(completion)}
+                                    </span>
                                     {title || 
                                         date.toLocaleDateString('default', { 
                                             day: "2-digit", 
@@ -67,6 +119,7 @@
                                 </span>
                                 {width}x{height}
                             </span>
+
                         </a>
                     {/each}
                 </div>

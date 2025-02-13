@@ -65,9 +65,8 @@
 </script>
 
 {#snippet clueColumn(clues: Clue[], title: string)}
-<div class="relative w-full h-full">
-    <div id="{title}-column"  class="min-w-[15ch] absolute left-0 top-0 bottom-0 right-0 overflow-auto">
-        <h2 class="text-3xl font-bold capitalize">{title}</h2>
+    <div id="{title}-column" class="min-w-[15ch] overflow-y-scroll min-h-0">
+        <h2 class="text-3xl font-bold capitalize sticky top-0 bg-white">{title}</h2>
         <ul class="text-left ">
             {#each clues as clue}
                 <li 
@@ -97,15 +96,11 @@
         </ul>
     
     </div>
-
-</div>
 {/snippet}
 
-<div class="grid grid-cols-2 w-full h-[90%] mt-4">
-    {@render clueColumn(acrossClues, "across")}
-    {@render clueColumn(downClues, "down")}
+{@render clueColumn(acrossClues, "across")}
+{@render clueColumn(downClues, "down")}
 
-</div>
 
 <style>
     .linked {

@@ -24,7 +24,7 @@
             >
     
             <text
-                class="char"
+                class="char fill-black midnight:fill-white dark:fill-white"
                 x="0.08" y="0.2"
                 text-anchor="start"
                 font-weight="bold">
@@ -42,7 +42,6 @@
         user-select: none;
         line-height: 1;
         font-family: Arial, Helvetica, sans-serif;
-        fill: var(--color-black);
     }
 
     .char {
