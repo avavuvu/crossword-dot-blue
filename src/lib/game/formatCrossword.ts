@@ -1,6 +1,6 @@
 import type { isFileLoadingAllowed } from "vite"
 import { getOrientation, indexToCoords } from "./Coord"
-import type { Cell, CharacterSet, Clue, Crossword, CrosswordCollection, CrosswordDocument, CrosswordMetadata } from "./types"
+import type { Cell, CharacterSet, Clue, Crossword, CrosswordCollection, CrosswordDocument, CrosswordMetadata } from "../game/types"
 
 export const formatCrosswordDocument = (crosswordDocument: CrosswordDocument, collection: CrosswordCollection): Crossword => {
     const clues: Clue[] = crosswordDocument.clues.map(clue => ({

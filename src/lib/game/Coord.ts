@@ -1,4 +1,4 @@
-import type { Orientation } from "./types";
+import type { Orientation } from "../game/types"
 
 export type Coord = [number, number]
 

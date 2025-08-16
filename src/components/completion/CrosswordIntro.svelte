@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type { Crossword } from "$lib/types";
+    import type { Crossword } from "$lib/game/types";
     import type { Snippet } from "svelte";
     import Chillies from "./Chillies.svelte";
     import { options } from "$lib/options.svelte";
-    import { wordLogo } from "@/svg/wordLogo.svelte";
+    // import { wordLogo } from "@/svg/wordLogo.svelte";
 
 
     const { crossword, startCrossword }: { crossword: Crossword, startCrossword: () => void} = $props()

@@ -12,8 +12,8 @@
     import MobileClues from './clues/MobileClues.svelte';
     import VictoryDrawer from './completion/VictoryDrawer.svelte';
     import MobileKeyboard from './input/MobileKeyboard.svelte';
-    import type { Crossword } from '$lib/types';
-    import { gameManager } from '$lib/gameManager.svelte';
+    import type { Crossword } from '$lib/game/types';
+    import { gameManager } from '$lib/game/gameManager.svelte';
     import AssistBar from './navbar/AssistBar.svelte';
     import Timer from './completion/Timer.svelte';
     import CrosswordIntro from './completion/CrosswordIntro.svelte';

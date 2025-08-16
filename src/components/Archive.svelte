@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { formatCrosswordDocument } from "$lib/formatCrossword";
-    import type { GameStateToSave, SavedGameState } from "$lib/gameState.svelte";
-    import { Navigation } from "$lib/navigation";
-    import type { CompletionState, Crossword, CrosswordCollection, CrosswordDocument } from "$lib/types";
+    import { formatCrosswordDocument } from "$lib/game/formatCrossword";
+    import type { GameStateToSave } from "$lib/game/gameState.svelte";
+    import { Navigation } from "$lib/game/navigation";
+    import type { CompletionState, Crossword, CrosswordCollection, CrosswordDocument } from "$lib/game/types";
     import { Badge, BadgeCheck, BadgeHelp, CornerDownRight } from "lucide-svelte";
     import Loading from "./completion/Loading.svelte";
-    import { StorageManager } from "$lib/storageManager";
+    import { StorageManager } from "$lib/game/storageManager";
 
     const { collection }: { collection: CrosswordCollection } = $props()
 

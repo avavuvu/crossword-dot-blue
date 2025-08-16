@@ -5,7 +5,7 @@
     import NavbarButton from "./navbar/NavbarButton.svelte";
     import { Settings } from "lucide-svelte";
     import Loading from "./completion/Loading.svelte";
-    import type { CrosswordCollection } from "$lib/types";
+    import type { CrosswordCollection } from "$lib/game/types";
     import LandscapeCrosswordContainer from "./LandscapeCrosswordContainer.svelte";
     import PortraitCrosswordContainer from "./PortraitCrosswordContainer.svelte";
     import { MediaQuery } from "svelte/reactivity";

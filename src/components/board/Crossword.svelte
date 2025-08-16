@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Crossword } from "$lib/types";
+    import type { Crossword } from "$lib/game/types";
     import Cursor from "@/board/Cursor.svelte";
     import Chars from "@/board/Chars.svelte";
     import OrderNumbers from "@/board/OrderNumbers.svelte";
@@ -10,7 +10,7 @@
     import AssistBar from "@/navbar/AssistBar.svelte";
     import { Collapsible } from "melt/builders";
     import { fly } from "svelte/transition";
-    import { gameManager } from "$lib/gameManager.svelte";
+    import { gameManager } from "$lib/game/gameManager.svelte";
     import VictoryDrawer from "@/completion/VictoryDrawer.svelte";
     import { MediaQuery } from "svelte/reactivity";
     import Timer from "@/completion/Timer.svelte";

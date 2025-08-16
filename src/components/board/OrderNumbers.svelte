@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { indexToCoords } from "$lib/Coord";
-    import type { Crossword } from "$lib/types";
+    import { indexToCoords } from "$lib/game/Coord";
+    import type { Crossword } from "$lib/game/types";
 
     const { crossword }: { crossword: Crossword } = $props()
 

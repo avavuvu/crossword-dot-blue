@@ -1,7 +1,7 @@
 <script lang="ts">
 
     import { inputKey } from "$lib/input";
-    import type { Crossword } from "$lib/types";
+    import type { Crossword } from "$lib/game/types";
 
 
     const { crossword }: { crossword: Crossword} = $props()

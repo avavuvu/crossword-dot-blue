@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { gameManager } from "$lib/gameManager.svelte";
+    import { gameManager } from "$lib/game/gameManager.svelte";
     import { MediaQuery } from "svelte/reactivity";
     import Dropdown from "@/navbar/Dropdown.svelte"
     import type { Snippet } from "svelte";
     import NavbarButton from "./NavbarButton.svelte";
-    import type { CrosswordCollection } from "$lib/types";
-    import { logo } from "@/svg/logo.svelte";
+    import type { CrosswordCollection } from "$lib/game/types";
+    // import { logo } from "@/svg/logo.svelte";
 
     const { optionsSnippet, fullLogo = false, archive }: { 
         fullLogo?: boolean,
@@ -23,7 +23,7 @@
     
     <div class="flex flex-row w-full h-full">
         <a href="/" class="h-full p-2">
-            {@render logo()}
+            <!-- {@render logo()} -->
         </a>
         {#if archive}
             <NavbarButton props={{}}>

@@ -1,7 +1,7 @@
 <script lang="ts">
 
-    import { gameManager } from "$lib/gameManager.svelte";
-    import type { Clue, Crossword } from "$lib/types";
+    import { gameManager } from "$lib/game/gameManager.svelte";
+    import type { Clue, Crossword } from "$lib/game/types";
 
     const { crossword }: { crossword: Crossword } = $props()
 

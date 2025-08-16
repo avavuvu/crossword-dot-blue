@@ -1,5 +1,5 @@
 <script module>
-    export {logo}
+    // export {logo}
 </script>
 
 {#snippet logo()}

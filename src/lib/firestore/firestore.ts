@@ -1,9 +1,9 @@
 import { initializeApp, type FirebaseApp } from 'firebase/app'
 import { collection, doc, DocumentSnapshot, getDoc, getDocs, getFirestore, limit, orderBy, query, QueryDocumentSnapshot, QuerySnapshot, Timestamp, where, type DocumentData, type Firestore } from 'firebase/firestore/lite'
 import {config} from "./firestore.config"
-import type { CrosswordCollection, CrosswordDocument } from '$lib/types'
+import type { CrosswordCollection, CrosswordDocument } from '$lib/game/types'
 
-class FirestoreApp {
+export class FirestoreApp {
     firebase!: FirebaseApp
     db!: Firestore
 

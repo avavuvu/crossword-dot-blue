@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+
+const big = await getCollection("big")
+
+
+---
+
+<Layout>
+    Hello Astro!!
+
+    {big.map(crossword => 
+        (<div>
+            <h1>{crossword.collection}</h1>
+            {crossword.data.content.clues}
+        </div>)
+    )}
+</Layout>

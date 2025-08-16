@@ -1,5 +1,5 @@
 <script module>
-    export {wordLogo}
+    // export {wordLogo}
 </script>
 
 {#snippet wordLogo()}

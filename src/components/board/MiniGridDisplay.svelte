@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Cell } from "$lib/types";
+    import type { Cell } from "$lib/game/types";
 
     const { width, height, grid}: {
         width: number,
