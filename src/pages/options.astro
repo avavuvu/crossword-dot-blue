@@ -1,0 +1,19 @@
+---
+import {  Settings } from "lucide-svelte";
+import Layout from "src/layouts/Layout.astro";
+import Navbar from "@/navbar/Navbar.svelte"
+import NavbarButton from "@/navbar/NavbarButton.svelte"
+import SvelteOptions from "@/options/Options.svelte"
+---
+
+<Layout>
+    <Navbar client:only="svelte">
+        <NavbarButton client:load props={{}}>
+            <a href="/options" class="w-full h-full flex justify-center items-center">
+                <h1><Settings/></h1>
+            </a>
+        </NavbarButton>
+    </Navbar>
+
+    <SvelteOptions client:only="svelte" ></SvelteOptions>
+</Layout>

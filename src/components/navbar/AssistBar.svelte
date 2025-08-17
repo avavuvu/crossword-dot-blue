@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { gameManager } from "$lib/gameManager.svelte";
+    import { gameManager } from "$lib/game/gameManager.svelte";
     import Dropdown from "./Dropdown.svelte";
 
     const { rebus }: { rebus: boolean} = $props()

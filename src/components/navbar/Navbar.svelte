@@ -1,16 +1,14 @@
 <script lang="ts">
-    import { gameManager } from "$lib/gameManager.svelte";
     import { MediaQuery } from "svelte/reactivity";
-    import Dropdown from "@/navbar/Dropdown.svelte"
     import type { Snippet } from "svelte";
     import NavbarButton from "./NavbarButton.svelte";
-    import type { CrosswordCollection } from "$lib/types";
+    import type { CrosswordCollection } from "$lib/game/types";
     import { logo } from "@/svg/logo.svelte";
 
-    const { optionsSnippet, fullLogo = false, archive }: { 
+    const { children, fullLogo = false, archive }: { 
         fullLogo?: boolean,
         archive?: CrosswordCollection
-        optionsSnippet?: Snippet
+        children?: Snippet
     } = $props()
 
     const large = new MediaQuery('min-width: 768px');
@@ -34,8 +32,8 @@
         {/if}
     </div>
 
-    {#if optionsSnippet}
-        {@render optionsSnippet()}
+    {#if children}
+        {@render children()}
 
     {/if}
 </div>

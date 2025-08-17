@@ -1,9 +1,7 @@
 <script lang="ts">
-    import { gameManager } from "$lib/gameManager.svelte";
-    import type { Crossword } from "$lib/types";
+    import { gameManager } from "$lib/game/gameManager.svelte";
+    import type { Crossword } from "$lib/game/types";
     import { Info } from "lucide-svelte";
-
-
     import Board from "./board/Board.svelte";
     import Chars from "./board/Chars.svelte";
     import Cursor from "./board/Cursor.svelte";

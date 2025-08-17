@@ -129,7 +129,6 @@ export const setOptionsFromStorage = (savedOptions: Record<SettingTypes, Setting
     })
 }
 
-
 const savedOptions = localStorage.getItem("options")
 
 if(savedOptions) {

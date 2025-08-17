@@ -1,4 +1,4 @@
-import { gameManager } from "./gameManager.svelte";
+import { gameManager } from "$lib/game/gameManager.svelte";
 
 export const inputKey = (event: KeyboardEvent) => {
     switch(event.key) {

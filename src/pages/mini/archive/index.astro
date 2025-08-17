@@ -1,0 +1,12 @@
+---
+import Navbar from "@/navbar/Navbar.svelte";
+import Layout from "src/layouts/Layout.astro";
+import Archive from "@/archive/Archive.astro";
+---
+
+
+<Layout title=`Mini Archive`>
+    <Navbar client:only="svelte"/>
+    
+    <Archive collection="mini"></Archive>
+</Layout>

@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type { Crossword } from "$lib/types";
+    import type { Crossword } from "$lib/game/types";
 
     const { crossword }: { crossword: Crossword } = $props()
 
-    import { gameManager } from "$lib/gameManager.svelte";
-    import { indexToCoords } from "$lib/Coord";
+    import { gameManager } from "$lib/game/gameManager.svelte";
+    import { indexToCoords } from "$lib/game/Coord";
     import { fade, fly, type FadeParams, scale, type ScaleParams, slide, type SlideParams } from "svelte/transition";
     import { cubicInOut, elasticOut } from "svelte/easing";
 

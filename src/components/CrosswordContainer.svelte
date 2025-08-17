@@ -6,11 +6,11 @@
     import Options from "@/options/Options.svelte";
     import { Collapsible } from "melt/builders";
     import { fly } from "svelte/transition";
-    import { gameManager } from "$lib/gameManager.svelte";
+    import { gameManager } from "$lib/game/gameManager.svelte";
     import CrosswordIntro from "@/completion/CrosswordIntro.svelte";
     import { options } from "$lib/options.svelte";
     import { Settings } from "lucide-svelte";
-    import type { Crossword as CrosswordData } from "$lib/types";
+    import type { Crossword as CrosswordData } from "$lib/game/types";
 
     const { crossword, collapsible }: { 
         crossword: CrosswordData 

@@ -1,0 +1,55 @@
+---
+import { formatCrosswordDocument } from "$lib/game/formatCrossword";
+import type { CrosswordCollection } from "$lib/game/types";
+import type { GetStaticPaths } from "astro";
+import type { CollectionKey } from "astro:content";
+import { getEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import CrosswordPage from "@/CrosswordPage.svelte"
+import Layout from "src/layouts/Layout.astro";
+
+const { collection, id } = Astro.params
+
+if(!collection || !id) { 
+    return new Astro.redirect("404")
+}
+
+if(!["big", "mini", "secret"].includes(collection)) {
+    return new Astro.redirect("404")
+}
+
+const crosswordDocument = await getEntry(collection as CollectionKey, id)
+
+if(!crosswordDocument) {
+    return new Astro.redirect("404")
+}
+
+const crossword = formatCrosswordDocument(crosswordDocument.data, collection as CrosswordCollection)
+
+export const getStaticPaths = (async () => {
+    const collections = {
+        big: await getCollection("big"),
+        mini: await getCollection("mini")
+    }
+
+    return Object.entries(collections).flatMap(([collection, docs]) => 
+        docs.map(doc => {
+            return {
+                params: {
+                    collection: collection,
+                    id: doc.id
+                }
+            }
+        }))
+}) satisfies GetStaticPaths;
+
+---
+
+<Layout title={crossword.metadata.date.toLocaleDateString('default', { 
+            day: "2-digit", 
+            month: "long", 
+            weekday: "long"
+        })}>
+
+    <CrosswordPage client:only="svelte" collection={collection} crossword={crossword}/>
+</Layout>

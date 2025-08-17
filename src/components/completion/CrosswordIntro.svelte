@@ -1,31 +1,29 @@
 <script lang="ts">
-    import type { Crossword } from "$lib/types";
+    import type { Crossword } from "$lib/game/types";
     import type { Snippet } from "svelte";
     import Chillies from "./Chillies.svelte";
     import { options } from "$lib/options.svelte";
     import { wordLogo } from "@/svg/wordLogo.svelte";
+  import { logo } from "@/svg/logo.svelte";
 
 
     const { crossword, startCrossword }: { crossword: Crossword, startCrossword: () => void} = $props()
     const {metadata} = crossword
 
-    const title = metadata.title ?? "Crossword"
+    const title = metadata.name ?? "Crossword"
 
 </script>
 
 <div class="flex justify-center flex-col mt-20 gap-4 text-center">
     <div class="max-h-12 mx-auto">
-        {@render wordLogo()}
+        {@render logo()}
     </div>
 
-    <h1 class="text-6xl">{title}</h1>
+    <h1 class="text-6xl ">{title}</h1>
 
-    <span class="text-xl">
-        <Chillies amount={metadata.difficulty}/>
-    </span>
 
     {#if options.RebusWarning.setting}
-        {#if crossword.rebus}
+        {#if crossword.metadata.isRebus}
             <div class="max-w-[45ch] mx-auto border-2 border-primary rounded-xl">
                 <h1 class="w-full bg-primary text-white rounded-t-lg">WARNING</h1>
                 <div class="p-4">
@@ -49,9 +47,13 @@
         </div>
     </button>
 
-    <hr>
+    <hr class="p-12">
 
     <p class="text-xl">
         <span class="font-bold">{metadata.date.toDateString()}</span> — by {metadata.author}
     </p>
+
+    <span class="text-xl">
+        <Chillies amount={metadata.difficulty}/>
+    </span>
 </div>

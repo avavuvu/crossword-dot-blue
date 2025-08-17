@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { gameManager } from "$lib/gameManager.svelte";
+    import { gameManager } from "$lib/game/gameManager.svelte";
     import { inputKey } from "$lib/input";
-    import type { CharacterSet, Crossword } from "$lib/types";
+    import type { CharacterSet, Crossword } from "$lib/game/types";
     import { Delete, Globe, IterationCw } from "lucide-svelte";
     import type { Icon as IconType } from "lucide-svelte";
 

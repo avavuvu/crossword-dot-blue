@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { indexToCoords } from "$lib/Coord";
+    import { indexToCoords } from "$lib/game/Coord";
     import { options } from "$lib/options.svelte";
-    import type { Crossword } from "$lib/types";
+    import type { Crossword } from "$lib/game/types";
 
     const { crossword }: { crossword: Crossword } = $props()
 

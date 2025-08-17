@@ -1,0 +1,21 @@
+---
+import "../app.css"
+
+import Head from "@/Head.svelte"
+
+const { title } = Astro.props
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title} – Crossword Dot Blue</title>
+    
+</head>
+<body>
+    <slot></slot>
+    <Head client:only="svelte"></Head>
+</body>
+</html>
