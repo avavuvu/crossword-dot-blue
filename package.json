@@ -16,6 +16,7 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
+		"@astrojs/netlify": "^6.5.7",
 		"@astrojs/svelte": "^7.1.0",
 		"@tailwindcss/vite": "^4.1.12",
 		"@types/ua-parser-js": "^0.7.39",
@@ -24,7 +25,7 @@
 		"firestore": "^1.1.6",
 		"lucide-svelte": "^0.474.0",
 		"melt": "^0.8.0",
-		"svelte": "5.7.0",
+		"svelte": "^5.38.1",
 		"tailwind": "^4.0.0",
 		"ua-parser-js": "^2.0.0"
 	}

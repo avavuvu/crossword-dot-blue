@@ -4,11 +4,9 @@
     import type { Cell, Crossword, CrosswordCollection } from "$lib/game/types";
     import MiniGridDisplay from "@/board/MiniGridDisplay.svelte";
     import Chillies from "@/completion/Chillies.svelte";
-    import CrosswordPage from "@/CrosswordPage.svelte";
-    import Footer from "@/Footer.svelte";
     import Navbar from "@/navbar/Navbar.svelte";
     import NavbarButton from "@/navbar/NavbarButton.svelte";
-    // import { wordLogo } from "@/svg/wordLogo.svelte";
+    import { wordLogo } from "@/svg/wordLogo.svelte";
     import { Settings } from "lucide-svelte";
     import { fade } from "svelte/transition";
 
@@ -57,7 +55,7 @@
 
     <div class="max-w-main mx-auto ">
         <div class="max-w-[700px] mx-auto p-8">
-            <!-- {@render wordLogo()} -->
+            {@render wordLogo()}
         </div>
         <p class="text-center text-xl italic">
             The free weekly* crossword

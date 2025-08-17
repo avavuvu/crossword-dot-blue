@@ -1,9 +1,9 @@
-import type { isFileLoadingAllowed } from "vite"
 import { getOrientation, indexToCoords } from "./Coord"
-import type { Cell, CharacterSet, Clue, Crossword, CrosswordCollection, CrosswordDocument, CrosswordMetadata } from "../game/types"
+import type { Cell, Clue, Crossword, CrosswordCollection} from "../game/types"
+import type { CrosswordDocument } from "src/content.config"
 
 export const formatCrosswordDocument = (crosswordDocument: CrosswordDocument, collection: CrosswordCollection): Crossword => {
-    const clues: Clue[] = crosswordDocument.clues.map(clue => ({
+    const clues: Clue[] = crosswordDocument.content.clues.map(clue => ({
         indexes: clue.coords,
         word: clue.word,
         hint: clue.clue,
@@ -11,49 +11,37 @@ export const formatCrosswordDocument = (crosswordDocument: CrosswordDocument, co
         id: clue.id,
     }))
 
-    let characterSet: CharacterSet = "default"
-    const numberPattern = /\d+/g
-    const specialPattern = /[^A-Za-z0-9]+/g
-
-    let rebusEnabled = false
-
-    const grid: Cell[] = crosswordDocument.grid.map(char => {
-        
-        if(char !== ".") {
-            if(numberPattern.test(char)) {
-                characterSet = "numbers"
-            }
-    
-            if(specialPattern.test(char)) {
-                characterSet = "special"
-            }
-            
-            if(char.length > 1) {
-                rebusEnabled = true
-            }
-
-        }
-
+    const grid: Cell[] = crosswordDocument.content.grid.map(char => {
         return {
             solid: char === ".",
             circled: char.toLowerCase() === char && char !== ".",
-            gray: false,
+            gray: false, // i dont think i ever implemneted gray
             clues: {},
             wordBoundary: {}
 
         }
     })
 
+    for (const clue of crosswordDocument.content.clues) {
+        if(!clue.wordBoundaries) {
+            continue
+        }
+
+        for(const boundary of clue.wordBoundaries) {
+            const incrementor = clue.coords[0] + (clue.isHorizontal
+                ? boundary - 1
+                : (boundary - 1) * crosswordDocument.content.width);
+            
+            grid[incrementor].wordBoundary[
+                getOrientation(clue.isHorizontal)
+            ] = true
+        }
+    }
+
     clues.forEach((clue) => {
         clue.indexes.forEach(positionIndex => {
             grid[positionIndex].clues[clue.isHorizontal ? 'across' : 'down'] = clue
 
-            if(calculateWordBoundaries(clue, positionIndex, crosswordDocument.width )) {
-                grid[positionIndex].wordBoundary[
-                    getOrientation(clue.isHorizontal)
-                ] = true
-            }
-            
         })
     })
 
@@ -61,7 +49,7 @@ export const formatCrosswordDocument = (crosswordDocument: CrosswordDocument, co
         if(cell.solid) { return }
 
         if(!cell.clues.across && !cell.clues.down) {
-            // add a "dummy" clue for any island cells that dont have clues. this is rare but it does exist
+            // add a "dummy" clue for any island cells that doesn't have clues. this is rare but it does exist
             cell.clues.across = {
                 indexes: [index],
                 word: "",
@@ -72,42 +60,29 @@ export const formatCrosswordDocument = (crosswordDocument: CrosswordDocument, co
         }
     })
 
-    const completedGrid = crosswordDocument.grid.map(char => char !== "." ? char.toLowerCase() : "")
+    const solution = crosswordDocument.content.grid.map(char => char !== "." ? char.toLowerCase() : "")
 
-    let links: Clue[][] = []
-    if(crosswordDocument.links && crosswordDocument.links?.length > 0) {
-        links = crosswordDocument.links.map(({ids}) => {
-            const linkGroup = (ids as string[]).map((id) => {
-                const clue = clues.find((clue) => id === clue.id)
-    
-                if(!clue) {
-                    console.error("Unable to find ID in link group!")
-                }
-    
-                return clue!
-            })
-    
-            return linkGroup
+    const links = crosswordDocument.content.links?.map(linkGroup => 
+        linkGroup.map(id => {
+            const clue = clues.find(clue => id === clue.id)
+
+            if(!clue) {
+                console.error(`Unable to find ID: ${id} in link group!`)
+            }
+
+            return clue!
         })
-    }
-
-    const date = new Date(0)
-    date.setUTCSeconds(crosswordDocument.date.seconds)
-
-    const metadata: CrosswordMetadata = {
-        documentId: crosswordDocument.documentId,
-        collection: collection,
-        author: crosswordDocument.author,
-        title: crosswordDocument.name,
-        difficulty: crosswordDocument.difficulty,
-        date
-    }
+    ) ?? []
 
     return { 
-        grid, clues, completedGrid, links, metadata, characterSet, 
-        rebus: rebusEnabled,
-        width: crosswordDocument.width,
-        height: crosswordDocument.height,
+        metadata: {
+            ...crosswordDocument.metadata,
+            collection
+        },
+        ...crosswordDocument.content,
+        grid, clues, solution, links,
+        width: crosswordDocument.content.width,
+        height: crosswordDocument.content.height,
     }
 }
 
@@ -125,21 +100,7 @@ const calculateWordBoundaries = (clue: Clue, cellIndex: number, width: number) =
             seperatorIndices.push(index)
         }
 
-        for(const seperatorIndex of seperatorIndices) {
-            if(!clue.isHorizontal === clue.isHorizontal) {
-                continue
-            }
-
-            if(clue.isHorizontal) {
-                if(clue.indexes[0] + seperatorIndex - 1 === cellIndex) {
-                    hasWordBoundary = true
-                } 
-            } else {
-                if(clue.indexes[0] + ((seperatorIndex - 1) * width) === cellIndex) {
-                    hasWordBoundary = true
-                } 
-            }
-        }
+        
     }
 
     return hasWordBoundary

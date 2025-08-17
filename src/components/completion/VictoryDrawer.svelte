@@ -1,7 +1,6 @@
 <script lang="ts">
-    import { gameManager } from "$lib/gameManager.svelte";
+    import { gameManager } from "$lib/game/gameManager.svelte";
     import { share } from "$lib/share";
-    import { page } from "$app/state";
     import { X as XOutIcon } from "lucide-svelte";
     
 
@@ -9,7 +8,8 @@
 
     const shareTime = async () => await share(navigator, { 
         time: gameManager.timeManager.formattedTime,
-        url: page.url.toString()
+        url: "TODO: IMPLEMENT URL"
+        // url: page.url.toString()
     })
 
     let shareSuccessful: boolean | null = $state(null)

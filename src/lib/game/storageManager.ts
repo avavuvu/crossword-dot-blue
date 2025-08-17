@@ -1,6 +1,6 @@
 import { SvelteMap } from "svelte/reactivity"
 import type { GameStateToSave, SavedGameState } from "./gameState.svelte"
-import type { CrosswordCollection, CrosswordDocument } from "./types"
+import type { CrosswordCollection } from "./types"
 
 export interface StorageManagerInterface {
     get(): GameStateToSave | null
@@ -64,11 +64,15 @@ export class StorageManager implements StorageManagerInterface {
     }
     
     get(): GameStateToSave | null {
+
+
         const item = localStorage.getItem(this.id);
         return item ? StorageManager.parse(item) : null;
     }
 
     set(gameState: GameStateToSave) {
+
+
         const stringified = this.stringify(gameState)
         localStorage.setItem(this.id, stringified)
     }

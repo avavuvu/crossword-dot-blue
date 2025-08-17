@@ -1,6 +1,6 @@
 import { FormatDate } from "./date";
 import { formatCrosswordDocument } from "$lib/game/formatCrossword";
-import type { Crossword, CrosswordCollection, CrosswordDocument } from "./game/types";
+import type { Crossword, CrosswordCollection } from "./game/types";
 
 export class CrosswordAPI {
     

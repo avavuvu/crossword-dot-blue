@@ -1,6 +1,6 @@
 <script>
 
-    import { gameManager } from "$lib/gameManager.svelte";
+    import { gameManager } from "$lib/game/gameManager.svelte";
     import { ChevronRight, ChevronLeft } from "lucide-svelte";
 
     const { size, lineHeight} = $derived.by(() => {

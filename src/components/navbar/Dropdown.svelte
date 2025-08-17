@@ -1,6 +1,5 @@
 <script lang="ts">
     import { Popover } from "melt/builders";
-    import type { Snippet } from "svelte";
     import NavbarButton from "./NavbarButton.svelte";
     import NavbarMenuButton from "./NavbarMenuButton.svelte";
 

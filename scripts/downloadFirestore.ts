@@ -7,7 +7,7 @@ import { initializeApp, type FirebaseApp } from 'firebase/app'
 import { collection, getDocs, getFirestore, orderBy, query, QueryDocumentSnapshot, QuerySnapshot, Timestamp, where, type Firestore } from 'firebase/firestore/lite'
 import { mkdir, writeFile } from 'node:fs/promises'
 
-const crosswordCollection = "big"
+const crosswordCollection = "crosswords"
 
 const firestore = await FirestoreApp.create()
 const searchQuery = query(

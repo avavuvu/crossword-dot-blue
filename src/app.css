@@ -17,11 +17,11 @@
 @theme {
     --max-width-main: 1280px;
     --font-mono: 'Courier New', Courier, monospace;
-    --color-selected: #18de74;
-    --color-secondary-selected: #C7E0D4;
+    --color-selected: #03B5FC;
+    --color-secondary-selected: #D6DBE5;
     --color-linked: #e7e2f1;
     --color-primary: #0000ff;
-    --color-secondary: #fff200;
+    --color-secondary: #91EBFF;
     --color-incorrect: #ff0000;
     --color-correct: var(--color-primary);
     --color-board: var(--color-white);

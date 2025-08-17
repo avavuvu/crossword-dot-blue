@@ -1,12 +1,5 @@
-export interface CrosswordMetadata {
-    author: string,
-    title: string,
-    difficulty: number,
-    date: Date,
-    documentId: string,
-    collection: CrosswordCollection
-}
-
+import type { CollectionEntry } from "astro:content"
+import type { CrosswordMetadata } from "src/content.config"
 export interface Clue {
     indexes: number[]
     word: string
@@ -36,10 +29,8 @@ export interface Crossword {
     height: number
     grid: Cell[]
     clues: Clue[]
-    completedGrid: string[]
+    solution: string[]
     links: Clue[][],
-    characterSet: CharacterSet
-    rebus: boolean
 }
 
 export type ClueDocument = {
@@ -51,17 +42,3 @@ export type ClueDocument = {
 }
 
 export type CrosswordCollection = "big" | "mini" | "secret"
-
-export type CrosswordDocument = {
-    documentId: string
-    width: number
-    height: number
-    grid: string[]
-    clues: ClueDocument[]
-    name: string
-    author: string
-    difficulty: number
-    date: { seconds: number }
-    links?: {ids: string[]}[],
-    collection: CrosswordCollection
-}

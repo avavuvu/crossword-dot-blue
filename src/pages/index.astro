@@ -1,19 +1,32 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
+import Lander from "@/Lander.svelte"
+import NavbarButton from "@/navbar/NavbarButton.svelte"
+import Navbar from "@/navbar/Navbar.svelte"
+import { Settings } from "lucide-svelte";
+import { date } from "astro:schema";
 
 const big = await getCollection("big")
+const latestBig = big.sort((docA, docB) => {
+    return docB.data.metadata.date.getTime() - docA.data.metadata.date.getTime()
+})[0].data
 
+const mini = await getCollection("mini")
+const latestMini = mini.sort((docA, docB) => {
+    return docB.data.metadata.date.getTime() - docA.data.metadata.date.getTime()
+})[0].data
 
 ---
 
-<Layout>
-    Hello Astro!!
+<Layout title="Crosswords">
 
-    {big.map(crossword => 
-        (<div>
-            <h1>{crossword.collection}</h1>
-            {crossword.data.content.clues}
-        </div>)
-    )}
+    <main class="pt-12 pb-24">
+        <Lander 
+            latestMini={latestMini} 
+            latestBig={latestBig}>
+            
+        </Lander>
+
+    </main>
 </Layout>

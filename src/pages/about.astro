@@ -1,0 +1,36 @@
+---
+import Layout from "src/layouts/Layout.astro";
+import Navbar from "@/navbar/Navbar.svelte"
+---
+
+<Layout title="About">
+    <Navbar/>
+
+    <main class="mx-auto max-w-[70ch] py-12 grid grid-cols-1 lg:grid-cols-2">
+        <div class="px-2 ">
+            <h1 class="text-4xl font-bold">About </h1>
+            <p>Hi! My name is Ava and this is Crossword Dot Blue!</p>
+            <p>I've working on this project since 2023. This project taught me how to code. The first version was made in vanilla JavaScript and HTML. I then moved to Svelte 4, before settling on Svelte 5 and Typescript. What you're looking at is version 4 of the project, made with Astro and Netlify.</p>
+            <p>If you like games and you're from Melbourne like me, you might like my other game <a href="https://suburble.melbourne">Suburble</a></p>
+            <p>If you want to see more of my work, you can find my instagram at <a href="https://instagram.com/avavu.au">@avavu.au</a>, or on my website <a href="https://avavu.au">avavu.au</a>. </p>
+        </div>
+        <div>
+            <img src="images/about.jpg">
+            <p class="px-2">Thanks for enjoying my games. Here's a picture of me about to indulge in an Amaretto Sour, for your trouble</p>
+        </div>
+    </main>
+</Layout>
+
+<style>
+    p {
+        padding: .5rem;
+    }
+    a {
+        color: var(--color-primary);
+    }
+
+    a:where([data-theme="classic"], [data-theme="classic"] *) {
+        color: var(--color-secondary);
+    }
+    
+</style>

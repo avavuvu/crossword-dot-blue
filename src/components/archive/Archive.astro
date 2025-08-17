@@ -1,0 +1,37 @@
+---
+import { getCollection, type CollectionKey } from "astro:content"
+import type { CrosswordDocument } from "src/content.config"
+import SvelteArchive from "@/Archive.svelte";
+
+interface Props {
+    collection: string
+}
+
+const { collection } = Astro.props
+
+const crosswordEntries = await getCollection(collection as CollectionKey)
+const crosswordDocuments = crosswordEntries.map(entry => entry.data as CrosswordDocument)
+
+const crosswordsByMonth: Map<string, CrosswordDocument[]> = new Map()
+crosswordDocuments.forEach((doc) => {
+    const year = doc.metadata.date.getFullYear()
+    const month = doc.metadata.date.toLocaleString('default', { month: 'long' })
+
+    const key = `${month} ${year}`
+
+    if (!crosswordsByMonth.has(key)) {
+        crosswordsByMonth.set(key, []);
+    }
+
+    crosswordsByMonth.get(key)?.push(doc)
+})
+
+// TODO: improve load times by moving part of this to the server
+// use data attributes and css for completion states?
+
+---
+
+<SvelteArchive
+    crosswordsByMonth={crosswordsByMonth}
+    collection={collection}
+    client:only="svelte"/> 

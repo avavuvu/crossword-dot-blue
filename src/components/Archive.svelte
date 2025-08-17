@@ -2,71 +2,38 @@
     import { formatCrosswordDocument } from "$lib/game/formatCrossword";
     import type { GameStateToSave } from "$lib/game/gameState.svelte";
     import { Navigation } from "$lib/game/navigation";
-    import type { CompletionState, Crossword, CrosswordCollection, CrosswordDocument } from "$lib/game/types";
-    import { Badge, BadgeCheck, BadgeHelp, CornerDownRight } from "lucide-svelte";
+    import type { CompletionState, Crossword, CrosswordCollection } from "$lib/game/types";
+    import { Badge, BadgeCheck, BadgeHelp } from "lucide-svelte";
     import Loading from "./completion/Loading.svelte";
     import { StorageManager } from "$lib/game/storageManager";
+    import type { CrosswordDocument } from "src/content.config";
 
-    const { collection }: { collection: CrosswordCollection } = $props()
+    const { collection, crosswordsByMonth }: { 
+        collection: CrosswordCollection,
+        crosswordsByMonth: Map<string, CrosswordDocument[]>
+    } = $props()
 
-    type CrosswordAndCompletion = Crossword & {
-        completion: CompletionState | null
-    }
-
-    type CrosswordArchiveDisplay = [
-        string, 
-        CrosswordAndCompletion[]
-    ][]
-
-    const fetchCrosswords = async (): Promise<CrosswordArchiveDisplay> => {
-        try {
-            const response = await fetch(`/api/crosswords/${collection}/archive`)
-            if(!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message);
-            }
-            const crosswordDocuments: CrosswordDocument[] = await response.json()
-
-            const crosswordsByMonth: Map<string, CrosswordAndCompletion[]> = new Map()
-            crosswordDocuments.forEach((doc) => {
-                const crossword = formatCrosswordDocument(doc, collection)
-                const year = crossword.metadata.date.getFullYear()
-                const month = crossword.metadata.date.toLocaleString('default', { month: 'long' })
-
-                const key = `${month} ${year}`
-
-                if (!crosswordsByMonth.has(key)) {
-                    crosswordsByMonth.set(key, []);
-                }
-
+    const crosswordsArray: [string, (CrosswordDocument & { completion: CompletionState | null})[]][] = [...crosswordsByMonth]
+        .reverse()
+        .map(([month, crosswords]) => 
+            [month, crosswords.map(doc => {
                 // storage checker
                 let completion: CompletionState | null = null
-                const storedCrosswordDocumentString = localStorage.getItem(`${collection}_${doc.documentId}`) as string | null
-
+                const storedCrosswordDocumentString = localStorage.getItem(`${collection}_${doc.metadata.id}`) as string | null
+            
                 if(storedCrosswordDocumentString) {
                     const storedCrosswordDocument: GameStateToSave = StorageManager.parse(storedCrosswordDocumentString)
                     completion = storedCrosswordDocument.completion 
                 }
-                
-                crosswordsByMonth.get(key)?.push({
-                    ...crossword,
-                    completion
-                })
-            })
 
-            return [...crosswordsByMonth]
-        }
-        catch(e) {
-            throw e
-        }
-    }
+                return {
+                    completion,
+                    ...doc
+                }
+            })])
+        
+    
 </script>
-
-<svlete:head>
-    <title>
-        {collection} Archive – Crossword Dot Blue
-    </title>
-</svlete:head>
 
 {#snippet completionSquare(completionState: CompletionState | null)}
     {#if completionState === "won"}
@@ -88,43 +55,35 @@
     <h1 class="font-bold text-4xl py-8 mx-4 lg:mx-12">{collection === "mini" ? "Mini" : "Big"} Crosswords Archive</h1>
 
     <div class="flex flex-wrap gap-y-8 justify-center">
-        {#await fetchCrosswords()}
-            <div class="w-[300px] mx-auto">
-                <Loading/>
+        {#each crosswordsArray as [month, crosswords]}
+            <div class="my-2 mx-4 flex flex-col w-[200px] md:lg:w-[300px] lg:w-[400px] border-2 border-primary rounded-xl overflow-clip max-w-96">
+                <div class="bg-primary text-white">
+                    <h1 class="capitalize mx-4 font-bold">{month}</h1>
 
-            </div>
-        {:then months} 
-            {#each months as [month, crosswords]}
-                <div class="my-2 mx-4 flex flex-col w-[200px] md:lg:w-[300px] lg:w-[400px] border-2 border-primary rounded-xl overflow-clip max-w-96">
-                    <div class="bg-primary text-white">
-                        <h1 class="capitalize mx-4 font-bold">{month}</h1>
-
-                    </div>
-                    {#each crosswords as {completion, metadata: {title, date, difficulty, collection, documentId}, width, height}}
-                        <a href={Navigation.construcrCrosswordUrl(collection, documentId)} class="flex flex-col mx-4">
-                            <span class={[
-                                "inline-flex justify-between",
-                                completion === "won" ? "text-black/50" : ""
-                                ]}>
-                                <span class='font-bold inline-flex gap-2'>
-                                    <span>
-                                        {@render completionSquare(completion)}
-                                    </span>
-                                    {title || 
-                                        date.toLocaleDateString('default', { 
-                                            day: "2-digit", 
-                                            month: "short", 
-                                            weekday: "long"
-                                        })}
-                                </span>
-                                {width}x{height}
-                            </span>
-
-                        </a>
-                    {/each}
                 </div>
-            {/each}
+                {#each crosswords as {metadata: {name, date, id}, content: {width, height}, completion}}
+                    <a href={Navigation.construcrCrosswordUrl(collection, id)} class="flex flex-col mx-4">
+                        <span class={[
+                            "inline-flex justify-between",
+                            completion === "won" ? "text-black/50" : ""
+                            ]}>
+                            <span class='font-bold inline-flex gap-2' style:font-style={name ? "italic" : ""}>
+                                <span>
+                                    {@render completionSquare(completion)}
+                                </span>
+                                {name || 
+                                    date.toLocaleDateString('default', { 
+                                        day: "2-digit", 
+                                        month: "short", 
+                                        weekday: "long"
+                                    })}
+                            </span>
+                            {width}x{height}
+                        </span>
 
-        {/await}
+                    </a>
+                {/each}
+            </div>
+        {/each}
     </div>
 </div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { gameManager } from "$lib/gameManager.svelte";
+    import { gameManager } from "$lib/game/gameManager.svelte";
 
     let elapsedTimeInSeconds = $state(0)
     let formattedTime = $state("00")

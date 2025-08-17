@@ -34,23 +34,29 @@
               "exclusiveMinimum": 0,
               "maximum": 5
             },
-            "rebus": {
-              "type": "boolean"
+            "isRebus": {
+              "type": "boolean",
+              "default": false
             },
             "characterSet": {
               "type": "string",
               "enum": [
-                "default",
+                "a-to-z",
                 "numbers",
                 "special"
-              ]
+              ],
+              "default": "a-to-z"
+            },
+            "id": {
+              "type": "string"
             }
           },
           "required": [
             "author",
             "date",
             "name",
-            "difficulty"
+            "difficulty",
+            "id"
           ],
           "additionalProperties": false
         },

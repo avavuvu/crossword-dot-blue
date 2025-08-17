@@ -1,7 +1,7 @@
 import { coordsToIndex, getOrientation, indexToCoords, type Coord } from "./Coord"
 import type { GameStateStore } from "./gameState.svelte"
 import type { ClueManagerInterface, GridManagerInterface } from "./interfaces"
-import { options } from "./options.svelte"
+import { options } from "$lib/options.svelte"
 import type { StorageManagerInterface } from "./storageManager"
 import type { Crossword } from "./types"
 
@@ -16,7 +16,7 @@ export class GridManager implements GridManagerInterface {
         this.state = state
         this.crossword = crossword
         this.clueManager = clueManager
-        this.completedGrid = crossword.completedGrid
+        this.completedGrid = crossword.solution
         this.storageManager = storageManager
     }
     

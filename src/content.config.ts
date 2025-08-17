@@ -1,3 +1,4 @@
+import type { CrosswordCollection } from '$lib/game/types';
 import { glob } from 'astro/loaders';
 import { defineCollection, z } from 'astro:content';
 
@@ -7,12 +8,13 @@ const crosswordSchema = z.object({
         date: z.coerce.date(),
         name: z.string(),
         difficulty: z.number().gt(0).lte(5),
-        rebus: z.boolean().optional(),
+        isRebus: z.boolean().default(false),
         characterSet: z.union([
-            z.literal("default"),
+            z.literal("a-to-z"),
             z.literal("numbers"),
             z.literal("special"),
-        ]).optional()
+        ]).default("a-to-z"),
+        id: z.string()
     }),
     content: z.object({
         height: z.number().gte(4),
@@ -35,6 +37,10 @@ const crosswordSchema = z.object({
         )
     })
 })
+
+export interface CrosswordDocument extends z.infer<(typeof crosswordSchema)> {}
+export type CrosswordMetadata = CrosswordDocument["metadata"] & { collection: CrosswordCollection }
+export type CrosswordContent = CrosswordDocument["content"]
 
 const big = defineCollection({ 
     loader: glob({ 

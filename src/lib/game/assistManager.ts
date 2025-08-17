@@ -23,12 +23,12 @@ export class AssistManager implements AssistManagerInterface {
     gridManager: GridManagerInterface
     timeManager: TimeManagerInterface
     storageManager: StorageManagerInterface
-    completedGrid: string[]
+    solution: string[]
     board: Cell[]
 
     constructor(state: GameStateStore, gridManager: GridManagerInterface, timeManager: TimeManagerInterface, storageManager: StorageManagerInterface, crossword: Crossword) {
         this.state = state
-        this.completedGrid = crossword.completedGrid
+        this.solution = crossword.solution
         this.board = crossword.grid
         this.gridManager = gridManager
         this.timeManager = timeManager
@@ -40,7 +40,7 @@ export class AssistManager implements AssistManagerInterface {
             return
         }
 
-        const isCorrect = this.completedGrid[cellIndex] === this.state.grid[cellIndex]
+        const isCorrect = this.solution[cellIndex] === this.state.grid[cellIndex]
         this.state.checked.set(cellIndex, isCorrect)
 
         this.storageManager.set(this.state)
@@ -75,7 +75,7 @@ export class AssistManager implements AssistManagerInterface {
     }
 
     revealCell(cellIndex: number): void {
-        this.gridManager.setGridCell(cellIndex, this.completedGrid[cellIndex])
+        this.gridManager.setGridCell(cellIndex, this.solution[cellIndex])
         this.state.checked.set(cellIndex, true)
         this.storageManager.set(this.state)
     }

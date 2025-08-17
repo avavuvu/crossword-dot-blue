@@ -1,7 +1,5 @@
-import { writable } from "svelte/store"
-import type { Cell, Clue, Crossword, Orientation } from "./types"
-import { coordsToIndex, getOrientation, indexToCoords, type Coord } from "./Coord"
-import { options } from "./options.svelte"
+import type { Cell, Crossword } from "./types"
+import { getOrientation } from "./Coord"
 import { AssistManager, type AssistManagerInterface } from "./assistManager"
 import type { ClueManagerInterface, GridManagerInterface } from "./interfaces"
 import { GameStateStore } from "./gameState.svelte"
@@ -23,7 +21,7 @@ class GameManager {
     storageManager!: StorageManagerInterface
 
     init(crossword: Crossword) {
-        this.storageManager = new StorageManager(crossword.metadata.collection, crossword.metadata.documentId)
+        this.storageManager = new StorageManager(crossword.metadata.collection, crossword.metadata.id)
         const savedState = this.storageManager.get()
 
         if(savedState) {   
@@ -72,6 +70,4 @@ class GameManager {
     }
 }
 
-
-// test data
 export const gameManager = new GameManager()

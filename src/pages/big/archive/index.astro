@@ -1,0 +1,13 @@
+---
+import SvelteArchive from "@/Archive.svelte";
+import Navbar from "@/navbar/Navbar.svelte";
+import Layout from "src/layouts/Layout.astro";
+import Archive from "@/archive/Archive.astro";
+---
+
+
+<Layout title=`Big Archive`>
+    <Navbar client:only="svelte"/>
+    
+    <Archive collection="big"></Archive>
+</Layout>
