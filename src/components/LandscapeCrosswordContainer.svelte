@@ -69,7 +69,7 @@
                 </div>
             </button>
         {:else}
-            <AssistBar rebus={crossword.rebus && rebusButton}/>
+            <AssistBar rebus={crossword.metadata.isRebus && rebusButton}/>
         {/if}
     </div>
 {/snippet}
@@ -99,9 +99,9 @@
         <div id="board" class="flex flex-col justify-normal items-center min-w-0 min-h-0 gap-2">
             <div class="h-8 w-full text-right">
                 <span>
-                    {#if metadata.title} 
+                    {#if metadata.name} 
                     <span class="italic">
-                        {metadata.title}
+                        {metadata.name}
                     </span> 
                     {:else}
                     <span class="italic">
@@ -138,7 +138,7 @@
 
             </div>
             
-            {@render TopBarSnippet(crossword.rebus)}
+            {@render TopBarSnippet(crossword.metadata.isRebus)}
             <div class="min-h-0 grid"  >
                 <div class="grid grid-1-1 min-h-0">
                     {#if halfScreenDrawer}
@@ -146,7 +146,7 @@
                             <VictoryDrawer bind:drawerOpen={halfScreenDrawer}/>
                         </div>
                     {:else}
-                        <div class="grid-stack min-h-0 grid  grid-cols-2" in:fly={transition.in} out:fly={transition.out}>
+                        <div class="grid-stack min-h-0 grid grid-cols-2" in:fly={transition.in} out:fly={transition.out}>
                             <Clues {crossword}/>
                         </div>
                     {/if}

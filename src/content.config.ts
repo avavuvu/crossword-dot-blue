@@ -6,7 +6,7 @@ const crosswordSchema = z.object({
     metadata: z.object({
         author: z.string(),
         date: z.coerce.date(),
-        name: z.string(),
+        name: z.string().optional(),
         difficulty: z.number().gt(0).lte(5),
         isRebus: z.boolean().default(false),
         characterSet: z.union([

@@ -9,7 +9,7 @@
     const onkeydown = (event: KeyboardEvent) => {
         event.preventDefault()
 
-        if(event.key === "`" && !crossword.rebus) {
+        if(event.key === "`" && !crossword.metadata.isRebus) {
             return
         }
         

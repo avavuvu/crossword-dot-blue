@@ -22,11 +22,9 @@
 
 <div>
     <Navbar archive={collection}>
-        {#snippet optionsSnippet()}
             <NavbarButton props={{onclick: () => showSettings = !showSettings}}>
                 <h1><Settings/></h1>
             </NavbarButton>
-        {/snippet}
     </Navbar>
 </div>
 

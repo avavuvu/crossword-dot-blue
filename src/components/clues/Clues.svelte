@@ -65,9 +65,9 @@
 </script>
 
 {#snippet clueColumn(clues: Clue[], title: string)}
-    <div id="{title}-column" class="min-w-[15ch] overflow-y-scroll min-h-0">
-        <h2 class="text-3xl font-bold capitalize sticky top-0 bg-white">{title}</h2>
-        <ul class="text-left ">
+    <div class="min-w-[15ch] min-h-0 flex flex-col">
+        <h2 class="text-3xl font-bold capitalize bg-white">{title}</h2>
+        <ul id="{title}-column"  class="text-left overflow-y-scroll min-h-0">
             {#each clues as clue}
                 <li 
                     id={clue.id}
