@@ -6,14 +6,14 @@
     import { Badge, BadgeCheck, BadgeHelp } from "lucide-svelte";
     import Loading from "./completion/Loading.svelte";
     import { StorageManager } from "$lib/game/storageManager";
-    import type { CrosswordDocument } from "src/content.config";
+    import type { CwFile } from "src/content.config";
 
     const { collection, crosswordsByMonth }: { 
         collection: CrosswordCollection,
-        crosswordsByMonth: Map<string, CrosswordDocument[]>
+        crosswordsByMonth: Map<string, CwFile[]>
     } = $props()
 
-    const crosswordsArray: [string, (CrosswordDocument & { completion: CompletionState | null})[]][] = [...crosswordsByMonth]
+    const crosswordsArray: [string, (CwFile & { completion: CompletionState | null})[]][] = [...crosswordsByMonth]
         .reverse()
         .map(([month, crosswords]) => 
             [month, crosswords.map(doc => {
@@ -61,7 +61,7 @@
                     <h1 class="capitalize mx-4 font-bold">{month}</h1>
 
                 </div>
-                {#each crosswords as {metadata: {name, date, id}, content: {width, height}, completion}}
+                {#each crosswords as {metadata: {name, date, id}, grid: {width, height}, completion}}
                     <a href={Navigation.construcrCrosswordUrl(collection, id)} class="flex flex-col mx-4">
                         <span class={[
                             "inline-flex justify-between",

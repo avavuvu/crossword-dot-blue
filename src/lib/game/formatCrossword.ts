@@ -1,20 +1,30 @@
 import { getOrientation, indexToCoords } from "./Coord"
 import type { Cell, Clue, Crossword, CrosswordCollection} from "../game/types"
-import type { CrosswordDocument } from "src/content.config"
+import type { CwFile } from "src/content.config"
+import { calculateWordBoundaries } from "./wordBoundaries"
 
-export const formatCrosswordDocument = (crosswordDocument: CrosswordDocument, collection: CrosswordCollection): Crossword => {
-    const clues: Clue[] = crosswordDocument.content.clues.map(clue => ({
+export const formatCrosswordDocument = (crosswordDocument: CwFile, collection: CrosswordCollection): Crossword => {
+
+    const clues: Clue[] = crosswordDocument.clues.map(clue => ({
         indexes: clue.coords,
         word: clue.word,
-        hint: clue.clue,
+        hint: clue.hint.text,
+        // TODO: Support multi hint clues
         isHorizontal: clue.isHorizontal,
         id: clue.id,
     }))
 
-    const grid: Cell[] = crosswordDocument.content.grid.map(char => {
+    const grid: Cell[] = crosswordDocument.grid.cells.map(cell => {
+
+        let circled = false
+
+        if(cell.type === "text") {
+            circled = cell.style?.circled || false
+        }
+
         return {
-            solid: char === ".",
-            circled: char.toLowerCase() === char && char !== ".",
+            solid: cell.type === "block",
+            circled: circled,
             gray: false, // i dont think i ever implemneted gray
             clues: {},
             wordBoundary: {}
@@ -22,15 +32,17 @@ export const formatCrosswordDocument = (crosswordDocument: CrosswordDocument, co
         }
     })
 
-    for (const clue of crosswordDocument.content.clues) {
-        if(!clue.wordBoundaries) {
+    for (const clue of crosswordDocument.clues) {
+        const wordBoundaries = calculateWordBoundaries(clue.word)
+        
+        if(!wordBoundaries) {
             continue
         }
 
-        for(const boundary of clue.wordBoundaries) {
+        for(const boundary of wordBoundaries) {
             const incrementor = clue.coords[0] + (clue.isHorizontal
                 ? boundary - 1
-                : (boundary - 1) * crosswordDocument.content.width);
+                : (boundary - 1) * crosswordDocument.grid.width);
             
             grid[incrementor].wordBoundary[
                 getOrientation(clue.isHorizontal)
@@ -60,9 +72,9 @@ export const formatCrosswordDocument = (crosswordDocument: CrosswordDocument, co
         }
     })
 
-    const solution = crosswordDocument.content.grid.map(char => char !== "." ? char.toLowerCase() : "")
+    const solution = crosswordDocument.grid.cells.map(cell => cell.type === "text" ? cell.text.toLowerCase() : "")
 
-    const links = crosswordDocument.content.links?.map(linkGroup => 
+    const links = crosswordDocument.links?.map(linkGroup => 
         linkGroup.map(id => {
             const clue = clues.find(clue => id === clue.id)
 
@@ -75,35 +87,16 @@ export const formatCrosswordDocument = (crosswordDocument: CrosswordDocument, co
     ) ?? []
 
     return { 
+        ...crosswordDocument,
         metadata: {
             ...crosswordDocument.metadata,
+            date: new Date(crosswordDocument.metadata.date),
             collection
         },
-        ...crosswordDocument.content,
         grid, clues, solution, links,
-        width: crosswordDocument.content.width,
-        height: crosswordDocument.content.height,
+        width: crosswordDocument.grid.width,
+        height: crosswordDocument.grid.height,
     }
-}
-
-// TODO: in an ideal world this wouldn't exist, and it would be calculate when uploaded.
-const calculateWordBoundaries = (clue: Clue, cellIndex: number, width: number) => {
-    let clueWithSeperator = [...clue.word]
-
-    let hasWordBoundary = false
-
-    if(clueWithSeperator.includes("|")) {
-        const seperatorIndices: number[] = []
-        while(clueWithSeperator.indexOf("|") !== -1) {
-            const index = clueWithSeperator.indexOf("|")
-            clueWithSeperator.splice(index, 1)
-            seperatorIndices.push(index)
-        }
-
-        
-    }
-
-    return hasWordBoundary
 }
 
 

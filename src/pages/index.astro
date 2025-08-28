@@ -2,10 +2,6 @@
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import Lander from "@/Lander.svelte"
-import NavbarButton from "@/navbar/NavbarButton.svelte"
-import Navbar from "@/navbar/Navbar.svelte"
-import { Settings } from "lucide-svelte";
-import { date } from "astro:schema";
 
 const big = await getCollection("big")
 const latestBig = big.sort((docA, docB) => {

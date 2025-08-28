@@ -1,6 +1,8 @@
-<script module>
+<script module lang="ts">
     export {logo}
 </script>
+
+<svelte:options runes={true} ></svelte:options>
 
 {#snippet logo()}
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50.2 56.41" class="w-full h-full">

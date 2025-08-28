@@ -4,7 +4,7 @@
     const { width, height, grid}: {
         width: number,
         height: number,
-        grid: string[]
+        grid: Cell[]
     } = $props()
 
     const generateSquares = () => {
@@ -17,13 +17,13 @@
 </script>
 
     <svg viewBox="0 0 {width} {height}">
-        {#each generateSquares() as {x, y, cell}, index}
+        {#each generateSquares() as {x, y, cell}}
         <g
             {x}
             {y}
             
             class="square"
-            class:solid={cell === "."}
+            class:solid={cell.solid}
             transform="{`translate(${x}, ${y})`}"
             >
             <rect 

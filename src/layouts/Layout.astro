@@ -17,5 +17,13 @@ const { title } = Astro.props
 <body>
     <slot></slot>
     <Head client:only="svelte"></Head>
+    <script is:inline>
+        const savedOptions = localStorage.getItem("options")
+        if(savedOptions) {
+            const options = JSON.parse(savedOptions)
+
+            document.documentElement.setAttribute('data-theme', options.Theme.setting);
+        }
+    </script>
 </body>
 </html>

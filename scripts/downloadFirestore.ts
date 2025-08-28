@@ -16,9 +16,16 @@ const crosswordCollection = "crosswords"
 // const snapshot = await getDocs(searchQuery)
 // const crosswords = firestore.convertSnapshotToCrosswordDocument(snapshot)
 
+const REBUS_REPLACEMENT = '\u{E000}';
+
 const calculateWordBoundaries = (clue: string) => {
+    const rebusRegex = /(\(+.*\))/g
+    const replaced = clue.replaceAll(rebusRegex, REBUS_REPLACEMENT)
+
+    console.log(replaced)
+
     const regex = /\s/g
-    const iterator = clue.trim().matchAll(regex)
+    const iterator = replaced.trim().matchAll(regex)
     
     return [...iterator].map(
         (match, index) => match.index - index

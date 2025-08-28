@@ -1,63 +1,31 @@
 import type { CrosswordCollection } from '$lib/game/types';
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { defineCollection, z } from 'astro:content';
+import fs from "node:fs"
+import { XMLParser } from "fast-xml-parser"
+import { crosswordSchema, extendMetadata } from '$lib/cw/cw';
+import { crosswordLoader } from '$lib/cw/loader';
 
-const crosswordSchema = z.object({
-    metadata: z.object({
-        author: z.string(),
-        date: z.coerce.date(),
-        name: z.string().optional(),
-        difficulty: z.number().gt(0).lte(5),
-        isRebus: z.boolean().default(false),
-        characterSet: z.union([
-            z.literal("a-to-z"),
-            z.literal("numbers"),
-            z.literal("special"),
-        ]).default("a-to-z"),
-        id: z.string()
-    }),
-    content: z.object({
-        height: z.number().gte(4),
-        width: z.number().gte(4),
-        grid: z.array(
-            z.string()
-        ),
-        links: z.array(
-            z.array(z.string())
-        ).optional(),
-        clues: z.array(
-            z.object({
-                clue: z.string(),
-                coords: z.array(z.number()),
-                id: z.string(),
-                isHorizontal: z.boolean(),
-                word: z.string(),
-                wordBoundaries: z.array(z.number()).optional()
-            })
-        )
-    })
+const blueSchema = extendMetadata({
+    name: z.string().optional(),
+    id: z.string(),
+    difficulty: z.number().gt(0).lte(5),
 })
 
-export interface CrosswordDocument extends z.infer<(typeof crosswordSchema)> {}
-export type CrosswordMetadata = CrosswordDocument["metadata"] & { collection: CrosswordCollection }
-export type CrosswordContent = CrosswordDocument["content"]
+export interface CwFile extends z.infer<(typeof blueSchema)> { }
+export type CrosswordMetadata = CwFile["metadata"] & { collection: CrosswordCollection }
 
-const big = defineCollection({ 
-    loader: glob({ 
-        pattern: "**/*.json", 
-        base: "./src/collections/big" 
-    }),
-    schema: crosswordSchema
+
+const big = defineCollection({
+    loader: crosswordLoader("big"),
+    schema: blueSchema
 })
 
-const mini = defineCollection({ 
-    loader: glob({ 
-        pattern: "**/*.json", 
-        base: "./src/collections/mini" 
-    }),
-    schema: crosswordSchema
+const mini = defineCollection({
+    loader: crosswordLoader("mini"),
+    schema: blueSchema
 })
 
-export const collections = { 
-    big, mini
+export const collections = {
+    mini, big
 }

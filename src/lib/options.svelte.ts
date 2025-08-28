@@ -29,6 +29,8 @@ type SettingTypes = "ArrowKeyChangeOrientation"
     | "ShowTimer"
     | "ForceMobile"
 
+export type Options = typeof options
+
 export const options: Record<SettingTypes, Setting> = $state({
     "ArrowKeyChangeOrientation": {
         category: "Controls",
@@ -113,8 +115,7 @@ export const options: Record<SettingTypes, Setting> = $state({
         name: "Show Timer",
         type: "bool",
         setting: true
-    }
-    
+    }  
 })
 
 export const setOptionsFromStorage = (savedOptions: Record<SettingTypes, Setting>) => {
