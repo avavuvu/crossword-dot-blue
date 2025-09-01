@@ -51,7 +51,7 @@
                 </div>
             </button>
         {:else}
-            <AssistBar rebus={crossword.rebus && rebusButton}/>
+            <AssistBar rebus={crossword.metadata.isRebus && rebusButton}/>
         {/if}
     </div>
 {/snippet}
@@ -62,9 +62,9 @@
         "flex-col lg:flex-row lg:gap-8"
         ]}>
         <span>
-            {#if metadata.title} 
+            {#if metadata.name} 
             <span class="italic">
-                {metadata.title}
+                {metadata.name}
             </span> 
             {:else}
             <span class="italic">

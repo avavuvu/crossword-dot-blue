@@ -5,6 +5,7 @@
         <difficulty>4</difficulty>
         <schema>crossword.blue</schema>
         <id>2025-08-28</id>
+        <name>Big Pond</name>
         <isRebus>true</isRebus>
     </metadata>
     <clues>
@@ -14,7 +15,7 @@
         </clue>
         <clue isHorizontal="false" id="1D" coords="0 16 32 48 64 80">
             <word>DYINGT</word>
-            <hint>Like traditional fishing that are being replaced by industrial techniques</hint>
+            <hint>Forms of expression that might get lost during modernization</hint>
         </clue>
         <clue isHorizontal="false" id="2D" coords="1 17 33 49 65 81">
             <word>LETS GO</word>
@@ -38,7 +39,7 @@
         </clue>
         <clue isHorizontal="false" id="6D" coords="7 23 39 55">
             <word>TORI</word>
-            <hint>Cornflake Girl Amos</hint>
+            <hint>"Cornflake Girl" Amos</hint>
         </clue>
         <clue isHorizontal="false" id="7D" coords="8 24 40 56">
             <word>ERIC</word>
@@ -54,7 +55,7 @@
         </clue>
         <clue isHorizontal="true" id="10A" coords="13 14 15">
             <word>TRE</word>
-            <hint>Uno + Uno + Uno</hint>
+            <hint>Uno + Dos</hint>
         </clue>
         <clue isHorizontal="false" id="10D" coords="13 29 45 61 77 93 109 125">
             <word>THR(EEL)IONS</word>
@@ -70,7 +71,7 @@
         </clue>
         <clue isHorizontal="true" id="13A" coords="16 17 18 19">
             <word>YEAS</word>
-            <hint>"The ___ have it" (heard in Parliament during a affirmative vote)</hint>
+            <hint>"The ___ have it" (Phrase that could be heard in Parliament during a affirmative vote)</hint>
         </clue>
         <clue isHorizontal="false" id="14D" coords="19 35 51 67">
             <word>SONY</word>
@@ -89,7 +90,7 @@
             <hint>Totals</hint>
         </clue>
         <clue isHorizontal="true" id="17A" coords="32 33 34 35">
-            <word>ITNO</word>
+            <word>IT NO</word>
             <hint>"Pay ___ mind"</hint>
         </clue>
         <clue isHorizontal="true" id="18A" coords="37 38 39 40 41 42 43 44 45 46 47">
@@ -106,7 +107,7 @@
         </clue>
         <clue isHorizontal="false" id="21D" coords="52 68 84 100 116 132">
             <word>CLASSY</word>
-            <hint>Ritzy</hint>
+            <hint>Like someone putting on the Ritz</hint>
         </clue>
         <clue isHorizontal="true" id="22A" coords="54 55 56 57 58 59 60 61 62 63">
             <word>TICKLE M(EEL)MO</word>
@@ -114,7 +115,7 @@
         </clue>
         <clue isHorizontal="true" id="23A" coords="64 65 66 67 68 69 70">
             <word>(GAR)GOYLES</word>
-            <hint>Carved figure on Notre Dame cathedral</hint>
+            <hint>Carved figures on Notre Dame</hint>
         </clue>
         <clue isHorizontal="false" id="24D" coords="69 85 101 117">
             <word>EDAM</word>
@@ -138,7 +139,7 @@
         </clue>
         <clue isHorizontal="false" id="28D" coords="88 104 120 136">
             <word>RELO</word>
-            <hint>Cousin or sister, slangily</hint>
+            <hint>Extended family, slangily</hint>
         </clue>
         <clue isHorizontal="true" id="29A" coords="92 93 94 95">
             <word>TORN</word>
@@ -158,7 +159,7 @@
         </clue>
         <clue isHorizontal="true" id="33A" coords="107 108 109 110 111">
             <word>LONGS</word>
-            <hint>Yens for</hint>
+            <hint>Yearns for</hint>
         </clue>
         <clue isHorizontal="false" id="33D" coords="107 123 139 155 171 187">
             <word>LYRIST</word>
@@ -209,7 +210,7 @@
             <hint>Panels on a roof</hint>
         </clue>
         <clue isHorizontal="true" id="44A" coords="144 145 146 147">
-            <word>UPTO</word>
+            <word>UP TO</word>
             <hint>___ no good</hint>
         </clue>
         <clue isHorizontal="true" id="45A" coords="149 150 151">
@@ -237,7 +238,7 @@
             <hint>Petrol pump</hint>
         </clue>
         <clue isHorizontal="false" id="49D" coords="158 174 190 206 222 238">
-            <word>ONELAP</word>
+            <word>ONE LAP</word>
             <hint>50 meters in a pool, perhaps</hint>
         </clue>
         <clue isHorizontal="false" id="50D" coords="159 175 191 207 223 239">
@@ -265,7 +266,7 @@
             <hint>State of being in an unbalanced relationship</hint>
         </clue>
         <clue isHorizontal="false" id="55D" coords="176 192 208 224">
-            <word>CERS</word>
+            <word>(COD)ERS</word>
             <hint>Some Googlers</hint>
         </clue>
         <clue isHorizontal="false" id="56D" coords="183 199 215 231">
@@ -309,7 +310,7 @@
             <hint>Hard drive alternative, abbr.</hint>
         </clue>
         <clue isHorizontal="true" id="66A" coords="229 230 231 232 233 234">
-            <word>SEENON</word>
+            <word>SEEN ON</word>
             <hint>"As ___ TV"</hint>
         </clue>
         <clue isHorizontal="true" id="67A" coords="237 238 239">

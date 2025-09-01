@@ -67,7 +67,7 @@
                 </div>
             </button>
         {:else}
-            <AssistBar rebus={crossword.rebus && rebusButton}/>
+            <AssistBar rebus={crossword.metadata.isRebus && rebusButton}/>
         {/if}
     </div>
 {/snippet}
