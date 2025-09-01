@@ -4,14 +4,13 @@
 
     const { crossword }: { crossword: Crossword } = $props()
 
-    const currentClueState = $derived(gameManager.state.clue?.indexes.map((clueIndex) => {
-        return {
-            char: gameManager.state.grid[clueIndex].toUpperCase() || " ",
-            checked: gameManager.state.checked.get(clueIndex)
-        }
-    }) ?? [])
+    const currentClueState = $derived(
+        gameManager.state.clue?.indexes
+            .flatMap((clueIndex) => [...gameManager.state.grid[clueIndex]])
+            .map(char => char.toUpperCase()) ?? [])
 
-    const maxLength = Math.max(crossword.width, crossword.height)
+    const maxLength = crossword.clues.reduce(
+        (accumulator, clue) => Math.max(clue.word.length, accumulator), 0)
 
     const getFontSize = (char: string) => {
         if(char.length === 1) {
@@ -33,8 +32,7 @@
             class=""
             viewBox="0 0 {maxLength} 1">
             
-            {#each currentClueState as {char, checked}, index}
-                <!-- {@const offset = (maxLength - currentClueState.length) / 2} -->
+            {#each currentClueState as char, index}
                 <g transform="{`translate(${index}, 0)`}">
                     <rect 
                         stroke-width=".02"
@@ -46,8 +44,6 @@
                     
                     <text 
                         class="char"
-                        class:incorrect={checked === false}
-                        class:correct={checked === true}
                         font-size={getFontSize(char)}
                         x="0.45"
                         y="0.75"
@@ -56,14 +52,6 @@
                         {char}
                     </text>
                 </g>
-                <!-- <span 
-                    style:color={checked === true 
-                        ? 'var(--color-primary)' 
-                        : 'black'}
-                    style:border-bottom={checked === false ? "var(--color-incorrect) solid 2px" : ""}
-                    class="p-[0.1em] m-[0.1em] border-2 border-black">
-                    
-                </span> -->
             {/each}
         </svg>
         <button onclick={() => gameManager.assistManager.getHint()} class="bg-white rounded-md px-2 hover:bg-selected">
@@ -91,11 +79,4 @@
         fill: var(--color-board-chars)
     }
 
-    text.correct {
-        fill: var(--color-correct);
-    }
-
-    text.incorrect {
-        fill: var(--color-incorrect)
-    }
 </style>

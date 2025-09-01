@@ -1,6 +1,8 @@
-<script module>
+<script module lang="ts">
     export {wordLogo}
 </script>
+
+<svelte:options runes={true} ></svelte:options>
 
 {#snippet wordLogo()}
     <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 176.97 50.31" class="w-full h-full">

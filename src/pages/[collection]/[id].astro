@@ -18,7 +18,7 @@ if(!["big", "mini", "secret"].includes(collection)) {
     return new Astro.redirect("404")
 }
 
-const crosswordDocument = await getEntry(collection as CollectionKey, id)
+const crosswordDocument = (await getCollection(collection as CollectionKey)).find(doc => doc.data.metadata.id === id)
 
 if(!crosswordDocument) {
     return new Astro.redirect("404")
@@ -32,16 +32,17 @@ export const getStaticPaths = (async () => {
         mini: await getCollection("mini")
     }
 
-    return Object.entries(collections).flatMap(([collection, docs]) => 
-        docs.map(doc => {
+    return Object.entries(collections).flatMap(([collection, docs]) => {
+        return docs.map(doc => {
             return {
                 params: {
                     collection: collection,
-                    id: doc.id
+                    id: doc.data.metadata.id
                 }
             }
-        }))
-}) satisfies GetStaticPaths;
+        })
+    })
+}) satisfies GetStaticPaths
 
 ---
 

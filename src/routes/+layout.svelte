@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { options } from '$lib/options.svelte';
+    import { optionss } from '$lib/options.svelte';
     import Footer from '@/Footer.svelte';
 	import '../app.css';
 	let { children } = $props();

@@ -1,7 +1,6 @@
 import { FirestoreApp } from '$lib/firestore/firestore'
 import { config } from '$lib/firestore/firestore.config'
 import { formatCrosswordDocument } from '$lib/game/formatCrossword'
-import type { CrosswordDocument } from '$lib/game/types'
 import { date } from 'astro:schema'
 import { initializeApp, type FirebaseApp } from 'firebase/app'
 import { collection, getDocs, getFirestore, orderBy, query, QueryDocumentSnapshot, QuerySnapshot, Timestamp, where, type Firestore } from 'firebase/firestore/lite'
@@ -9,29 +8,28 @@ import { mkdir, writeFile } from 'node:fs/promises'
 
 const crosswordCollection = "crosswords"
 
-const firestore = await FirestoreApp.create()
-const searchQuery = query(
-    collection(firestore.db, crosswordCollection),
-)
+// const firestore = await FirestoreApp.create()
+// const searchQuery = query(
+//     collection(firestore.db, crosswordCollection),
+// )
 
-const snapshot = await getDocs(searchQuery)
-const crosswords = firestore.convertSnapshotToCrosswordDocument(snapshot)
+// const snapshot = await getDocs(searchQuery)
+// const crosswords = firestore.convertSnapshotToCrosswordDocument(snapshot)
+
+const REBUS_REPLACEMENT = '\u{E000}';
 
 const calculateWordBoundaries = (clue: string) => {
-    let clueWithSeperator = [...clue]
+    const rebusRegex = /(\(+.*\))/g
+    const replaced = clue.replaceAll(rebusRegex, REBUS_REPLACEMENT)
 
-    if(clueWithSeperator.includes("|")) {
-        const seperatorIndices: number[] = []
-        while(clueWithSeperator.indexOf("|") !== -1) {
-            const index = clueWithSeperator.indexOf("|")
-            clueWithSeperator.splice(index, 1)
-            seperatorIndices.push(index)
-        }
+    console.log(replaced)
 
-        return seperatorIndices
-    }
-
-    return undefined
+    const regex = /\s/g
+    const iterator = replaced.trim().matchAll(regex)
+    
+    return [...iterator].map(
+        (match, index) => match.index - index
+    )
 }
 
 const saveCrossword = async (crosswordDocument: CrosswordDocument) => {
@@ -67,4 +65,4 @@ const saveCrossword = async (crosswordDocument: CrosswordDocument) => {
     await writeFile(`./scripts/output/${crosswordCollection}/${documentId}.json`, JSON.stringify(crosswordFormatVersion2))
 }
 
-crosswords.forEach(crossword => saveCrossword(crossword))
+// crosswords.forEach(crossword => saveCrossword(crossword))

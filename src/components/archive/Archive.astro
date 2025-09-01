@@ -1,6 +1,6 @@
 ---
 import { getCollection, type CollectionKey } from "astro:content"
-import type { CrosswordDocument } from "src/content.config"
+import type { CwFile } from "src/content.config"
 import SvelteArchive from "@/Archive.svelte";
 
 interface Props {
@@ -10,9 +10,9 @@ interface Props {
 const { collection } = Astro.props
 
 const crosswordEntries = await getCollection(collection as CollectionKey)
-const crosswordDocuments = crosswordEntries.map(entry => entry.data as CrosswordDocument)
+const crosswordDocuments = crosswordEntries.map(entry => entry.data as CwFile)
 
-const crosswordsByMonth: Map<string, CrosswordDocument[]> = new Map()
+const crosswordsByMonth: Map<string, CwFile[]> = new Map()
 crosswordDocuments.forEach((doc) => {
     const year = doc.metadata.date.getFullYear()
     const month = doc.metadata.date.toLocaleString('default', { month: 'long' })

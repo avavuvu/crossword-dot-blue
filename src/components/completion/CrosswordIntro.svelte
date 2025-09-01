@@ -47,8 +47,6 @@
         </div>
     </button>
 
-    <hr class="p-12">
-
     <p class="text-xl">
         <span class="font-bold">{metadata.date.toDateString()}</span> — by {metadata.author}
     </p>
