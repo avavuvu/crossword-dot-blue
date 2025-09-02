@@ -2,7 +2,7 @@
     <metadata>
         <author>Ava Vu</author>
         <date>2025-09-02</date>
-        <difficulty>5</difficulty>
+        <difficulty>2</difficulty>
         <id>2025-09-02</id>
         <schema>crossword.blue</schema>
     </metadata>
@@ -104,7 +104,7 @@
             <hint>Not a LOTE class</hint>
         </clue>
         <clue isHorizontal="true" id="22A" coords="52 53 54 55 56 57 58">
-            <word>ACOUPLE</word>
+            <word>A COUPLE</word>
             <hint>Two, or thereabout</hint>
         </clue>
         <clue isHorizontal="true" id="23A" coords="60 61 62 63">
