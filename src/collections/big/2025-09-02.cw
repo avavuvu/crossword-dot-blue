@@ -200,15 +200,15 @@
             <hint>Set (up)</hint>
         </clue>
         <clue isHorizontal="true" id="43A" coords="132 133 134 135 136">
-            <word>STEPB</word>
+            <word>STEP B</word>
             <hint>Second instruction in a manual</hint>
         </clue>
         <clue isHorizontal="false" id="44D" coords="135 151 167 183 199 215 231">
-            <word>PIETINS</word>
+            <word>PIE TINS</word>
             <hint>Baking vessels</hint>
         </clue>
         <clue isHorizontal="false" id="45D" coords="136 152 168 184 200">
-            <word>BIGIF</word>
+            <word>BIG IF</word>
             <hint>Important stipulation</hint>
         </clue>
         <clue isHorizontal="true" id="46A" coords="138 139 140 141 142 143">
