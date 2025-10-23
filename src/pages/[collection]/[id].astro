@@ -29,7 +29,8 @@ const crossword = formatCrosswordDocument(crosswordDocument.data, collection as 
 export const getStaticPaths = (async () => {
     const collections = {
         big: await getCollection("big"),
-        mini: await getCollection("mini")
+        mini: await getCollection("mini"),
+        secret: await getCollection("secret")
     }
 
     return Object.entries(collections).flatMap(([collection, docs]) => {

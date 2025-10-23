@@ -326,7 +326,7 @@
             <block/>
             <style circled="true"/>
         </cell>
-        <cell>
+        <cell text="A" alt="">
             <text>S</text>
         </cell>
         <cell>

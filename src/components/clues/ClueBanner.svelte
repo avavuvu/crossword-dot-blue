@@ -6,7 +6,9 @@
 
     const currentClueState = $derived(
         gameManager.state.clue?.indexes
-            .flatMap((clueIndex) => [...gameManager.state.grid[clueIndex]])
+            .flatMap((clueIndex) => 
+                gameManager.state.grid[clueIndex]
+            )
             .map(char => char.toUpperCase()) ?? [])
 
     const maxLength = crossword.clues.reduce(
