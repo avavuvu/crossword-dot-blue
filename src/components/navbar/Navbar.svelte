@@ -16,7 +16,7 @@
     
 </script>
 
-<div class="flex bg-selected  mx-auto max-w-main w-full font-bold
+<div class="flex bg-navbar  mx-auto max-w-main w-full font-bold
             h-16 lg:h-24 lg:rounded-3xl">
     
     <div class="flex flex-row w-full h-full">

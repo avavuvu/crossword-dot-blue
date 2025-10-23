@@ -2,8 +2,9 @@
     <metadata>
         <author>Ava Vu</author>
         <date>2025-09-02</date>
-        <difficulty>5</difficulty>
+        <difficulty>2</difficulty>
         <id>2025-09-02</id>
+        <name>Gotta Go Fast!</name>
         <schema>crossword.blue</schema>
     </metadata>
     <clues>
@@ -104,16 +105,16 @@
             <hint>Not a LOTE class</hint>
         </clue>
         <clue isHorizontal="true" id="22A" coords="52 53 54 55 56 57 58">
-            <word>ACOUPLE</word>
+            <word>A COUPLE</word>
             <hint>Two, or thereabout</hint>
         </clue>
         <clue isHorizontal="true" id="23A" coords="60 61 62 63">
-            <word>COLE</word>
-            <hint>"Fill 'em with some Leo DiCap's and some ___ Sprouses" (Tyler the Creator lyric)</hint>
+            <word>ROLE</word>
+            <hint>Job position</hint>
         </clue>
         <clue isHorizontal="false" id="23D" coords="60 76 92">
-            <word>CYA</word>
-            <hint>"bye!!!"</hint>
+            <word>RYU</word>
+            <hint>Video game character whose signature move is the "Hadouken"</hint>
         </clue>
         <clue isHorizontal="true" id="24A" coords="67 68 69 70 71 72 73 74 75 76 77 78 79">
             <word>FRENCH ARMY BEE</word>
@@ -181,7 +182,7 @@
         </clue>
         <clue isHorizontal="true" id="38A" coords="121 122 123 124 125 126 127">
             <word>REELECT</word>
-            <hint>It was done for Anthony Albanese, but not Scott Morrison</hint>
+            <hint>Australia did it for Anthony Albanese, but not Scott Morrison</hint>
         </clue>
         <clue isHorizontal="false" id="39D" coords="124 140 156 172">
             <word>LEAN</word>
@@ -193,22 +194,22 @@
         </clue>
         <clue isHorizontal="false" id="41D" coords="126 142 158">
             <word>CVS</word>
-            <hint>Resumes</hint>
+            <hint>Résumés</hint>
         </clue>
         <clue isHorizontal="false" id="42D" coords="127 143 159">
             <word>TEE</word>
             <hint>Set (up)</hint>
         </clue>
         <clue isHorizontal="true" id="43A" coords="132 133 134 135 136">
-            <word>STEPB</word>
+            <word>STEP B</word>
             <hint>Second instruction in a manual</hint>
         </clue>
         <clue isHorizontal="false" id="44D" coords="135 151 167 183 199 215 231">
-            <word>PIETINS</word>
+            <word>PIE TINS</word>
             <hint>Baking vessels</hint>
         </clue>
         <clue isHorizontal="false" id="45D" coords="136 152 168 184 200">
-            <word>BIGIF</word>
+            <word>BIG IF</word>
             <hint>Important stipulation</hint>
         </clue>
         <clue isHorizontal="true" id="46A" coords="138 139 140 141 142 143">
@@ -245,7 +246,7 @@
         </clue>
         <clue isHorizontal="true" id="53A" coords="160 161 162 163 164 165 166 167 168 169 170 171 172">
             <word>POWDER KEGGMAN</word>
-            <hint>Jim Carey role that's set to explode</hint>
+            <hint>Jim Carrey role that's set to explode</hint>
         </clue>
         <clue isHorizontal="false" id="54D" coords="165 181 197 213 229">
             <word>RHODE</word>
@@ -510,7 +511,7 @@
             <block/>
         </cell>
         <cell>
-            <text>C</text>
+            <text>R</text>
         </cell>
         <cell>
             <text>O</text>
@@ -606,7 +607,7 @@
             <text>O</text>
         </cell>
         <cell>
-            <text>A</text>
+            <text>U</text>
         </cell>
         <cell>
             <text>S</text>

@@ -73,7 +73,12 @@ export const options: Record<SettingTypes, Setting> = $state({
             {
                 value: "midnight",
                 name: "🌚 Midnight"
+            },
+            {
+                value: "boba",
+                name: "🧋 Boba"
             }
+            
         ]
     },
     "NextClueSelection": {

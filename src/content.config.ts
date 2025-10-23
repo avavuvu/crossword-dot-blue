@@ -26,6 +26,11 @@ const mini = defineCollection({
     schema: blueSchema
 })
 
+const secret = defineCollection({
+    loader: crosswordLoader("secret"),
+    schema: blueSchema
+})
+
 export const collections = {
-    mini, big
+    mini, big, secret
 }

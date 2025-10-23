@@ -1,0 +1,41 @@
+---
+import Navbar from "@/navbar/Navbar.svelte";
+import Layout from "src/layouts/Layout.astro";
+import ArchiveComponent from "@/archive/Archive.astro";
+import type { GetStaticPaths } from "astro";
+
+const { collection } = Astro.params
+
+if(!collection) { 
+    return new Astro.redirect("404")
+}
+
+const collections = ["big", "mini", "secret"]
+
+if(!collections.includes(collection)) {
+    return new Astro.redirect("404")
+}
+
+export const getStaticPaths = (async () => {
+    return ["big", "mini", "secret"].map(collection => ({
+        params: {
+            collection,
+        }
+    }))
+}) satisfies GetStaticPaths
+
+---
+
+
+<Layout title=`Big Archive`>
+    <Navbar client:load="svelte"/>
+
+    {collection === "secret" ? (
+        <main class="max-w-[400px] mx-auto">
+            <h2>Nice try... You aren't finding my secrets that easily</h2>
+        </main>
+    ) : (
+        <ArchiveComponent collection={collection}></ArchiveComponent>
+    )}
+    
+</Layout>
