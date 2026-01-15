@@ -160,7 +160,7 @@
             <hint>Dart</hint>
         </clue>
         <clue isHorizontal="true" id="35A" coords="109 110 111 112 113 114 115">
-            <word>BONSOIR</word>
+            <word>BON SOIR</word>
             <hint>Good night, Frenchly</hint>
         </clue>
         <clue isHorizontal="true" id="36A" coords="120 121 122 123 124 125 126 127 128 129 130 131 132 133 134">
@@ -216,7 +216,7 @@
             <hint>Mythological serpent-like figure that is a national symbol of Thailand</hint>
         </clue>
         <clue isHorizontal="true" id="48A" coords="155 156 157 158 159">
-            <word>DIDWE</word>
+            <word>DID WE</word>
             <hint>"Are you sure that was us?"</hint>
         </clue>
         <clue isHorizontal="false" id="48D" coords="155 170 185 200 215">
