@@ -2,6 +2,7 @@
     <metadata>
         <author>Ava Vu</author>
         <date>0</date>
+        <id>evil</id>
         <difficulty>5</difficulty>
         <schema>crossword.blue</schema>
     </metadata>
