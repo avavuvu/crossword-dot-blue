@@ -1,0 +1,105 @@
+main.settings {
+    max-width: var(--md);
+    margin: 0 auto;
+    padding: 2em 1em 4em;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+
+    & .settings-header {
+        padding: 2em 1em;
+        color: var(--color-surface);
+        background-color: var(--color-1);
+
+        & h1 {
+            font-family: "Heal The Web";
+            font-size: 3em;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+
+        & .subtitle {
+            margin-top: 0.5em;
+
+            & a:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    & .profile-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+
+    & .save-status {
+        font-size: 0.875em;
+        opacity: 0.7;
+        min-height: 1.25em;
+    }
+
+    & .avatar-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+
+        & h2 {
+            font-weight: bold;
+            font-size: 1.25em;
+        }
+    }
+
+    & .avatar-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5em;
+    }
+
+    & .avatar-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75em;
+        flex: 1;
+    }
+
+    & .dropzone {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25em;
+        padding: 1.25em 1em;
+        border: 1px dashed var(--color-dark);
+        text-align: center;
+        cursor: pointer;
+        position: relative;
+
+        &:hover,
+        &:has(input:focus-visible) {
+            border-color: var(--color-focus);
+        }
+
+        & input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        & .prompt {
+            font-weight: bold;
+        }
+
+        & .formats {
+            font-size: 0.875em;
+            opacity: 0.6;
+        }
+    }
+}
+
+@media (width < 640px) {
+    main.settings .avatar-row {
+        flex-direction: column;
+        align-items: center;
+    }
+}

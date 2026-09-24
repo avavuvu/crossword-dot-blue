@@ -1,0 +1,41 @@
+header.top,
+footer.bottom {
+    background-color: var(--color-dark);
+
+    & a.logo {
+        display: block;
+        height: 100%;
+
+        & img {
+            height: 100%;
+        }
+    }
+}
+
+header.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    height: var(--header-height);
+    padding: 1em 2em;
+
+    & nav {
+        display: flex;
+        gap: 0.5em;
+
+        & .button.ghost {
+            color: var(--color-surface);
+
+            &:hover {
+                background-color: color-mix(in srgb, var(--color-surface) 15%, transparent);
+            }
+        }
+
+        & .button.primary {
+            border-color: var(--color-surface);
+        }
+    }
+}

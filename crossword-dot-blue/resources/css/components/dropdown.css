@@ -1,0 +1,47 @@
+.dropdown {
+    position: relative;
+    display: inline-block;
+
+    & > .menu {
+        position: absolute;
+        position-area: bottom span-right;
+        inset: auto;
+        margin-top: 0.6em;
+        min-inline-size: 10em;
+        border: 1px solid var(--color-dark);
+        background-color: var(--color-surface);
+        color: var(--color-text);
+
+        & [role="menuitem"] {
+            display: block;
+            inline-size: 100%;
+            padding: 0.5em 0.75em;
+            border: 0;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+
+            &:hover,
+            &:focus-visible {
+                background-color: var(--color-secondary-active);
+                outline: none;
+            }
+        }
+
+        & hr {
+            margin: 0.25em 0;
+            border: 0;
+            border-top: 1px solid var(--color-dark);
+            opacity: 0.2;
+        }
+    }
+}
+
+@supports not (position-area: bottom) {
+    .dropdown > .menu {
+        position: fixed;
+        inset: auto;
+        top: var(--menu-top, 50%);
+        left: var(--menu-left, 50%);
+    }
+}

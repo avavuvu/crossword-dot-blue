@@ -1,0 +1,26 @@
+footer.bottom {
+    margin-top: 4em;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+    align-items: center;
+    text-align: center;
+
+    & > * {
+        grid-area: 1 / 1 / 2 / 2;
+    }
+
+     & .info {
+         /*color: var(--color-surface);*/
+
+         justify-content: center;
+         display: flex;
+
+         & > * {
+             width: fit-content;
+             background-color: var(--color-surface);
+             padding: 1em;
+             border: 1px solid var(--color-dark);
+         }
+     }
+}

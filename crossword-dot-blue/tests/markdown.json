@@ -1,0 +1,32 @@
+[
+    { "input": "a **b** *c*", "output": "a <strong>b</strong> <em>c</em>" },
+    { "input": "see [12 Down](https://example.com)", "output": "see <a href=\"https://example.com\">12 Down</a>" },
+    { "input": "[**a**](/x)", "output": "<a href=\"/x\"><strong>a</strong></a>" },
+    { "input": "[mail](mailto:hi@example.com)", "output": "<a href=\"mailto:hi@example.com\">mail</a>" },
+
+    { "input": "***a***", "output": "<em><strong>a</strong></em>" },
+    { "input": "**a*b**", "output": "<strong>a*b</strong>" },
+    { "input": "*a **b** c*", "output": "<em>a <strong>b</strong> c</em>" },
+    { "input": "a * b", "output": "a * b" },
+    { "input": "**", "output": "**" },
+    { "input": "Low-** (x)", "output": "Low-** (x)" },
+    { "input": "*open", "output": "*open" },
+    { "input": "2*3*4", "output": "2<em>3</em>4" },
+    { "input": "****", "output": "****" },
+
+    { "input": "Low-__ (potato quality)", "output": "Low-__ (potato quality)" },
+    { "input": "__ and __", "output": "__ and __" },
+    { "input": "snake_case_word", "output": "snake_case_word" },
+    { "input": "_not italic_", "output": "_not italic_" },
+
+    { "input": "# not a heading", "output": "# not a heading" },
+    { "input": "- not a list", "output": "- not a list" },
+    { "input": "> not a quote", "output": "&gt; not a quote" },
+    { "input": "`not code`", "output": "`not code`" },
+
+    { "input": "<b>x</b>", "output": "&lt;b&gt;x&lt;/b&gt;" },
+    { "input": "[x](javascript:alert(1))", "output": "x" },
+    { "input": "![alt](https://x/y.png)", "output": "!<a href=\"https://x/y.png\">alt</a>" },
+    { "input": "a [b c", "output": "a [b c" },
+    { "input": "a ] b", "output": "a ] b" }
+]

@@ -1,0 +1,112 @@
+.board {
+    min-height: 0;
+    min-width: 0;
+    container-type: size;
+    display: grid;
+    place-items: center;
+}
+
+crossword-board {
+    display: block;
+    aspect-ratio: var(--cols) / var(--rows);
+    width: min(100%, calc(100cqh * var(--cols) / var(--rows)));
+    outline: none;
+    touch-action: manipulation;
+}
+
+svg.grid {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    & .cell {
+        fill: var(--color-surface);
+        stroke: var(--color-board-border);
+        stroke-width: 0.02;
+    }
+
+    & .cell.block {
+        fill: var(--color-board-block);
+    }
+
+    & .cell.shaded {
+        fill: color-mix(in srgb, var(--color-dark) 20%, var(--color-surface));
+    }
+
+    & .cell.empty {
+        fill: none;
+        stroke: none;
+    }
+
+    & .cell.word {
+        fill: var(--color-secondary-active);
+    }
+
+    & .cell.active {
+        fill: var(--color-active);
+    }
+
+    & text {
+        pointer-events: none;
+        fill: var(--color-board-text);
+    }
+
+    & .circle {
+        fill: none;
+        stroke: var(--color-board-border);
+        stroke-width: 0.03;
+    }
+
+    & .number {
+        font-size: 0.28px;
+    }
+
+    & .prefilled,
+    & .entry {
+        font-size: 0.7px;
+        text-anchor: middle;
+    }
+
+    & .entry.rebus {
+        font-size: 0.32px;
+    }
+
+    & .entry.correct {
+        fill: var(--color-correct);
+    }
+
+    & .entry.wrong {
+        fill: var(--color-wrong);
+        text-decoration: underline;
+    }
+
+    & .split {
+        stroke: var(--color-board-border);
+        stroke-width: 0.08;
+        stroke-dasharray: 0.09;
+        stroke-dashoffset: 0.1;
+    }
+
+    & .outline {
+        fill: none;
+        stroke-width: 0.06;
+    }
+
+    &.thumbnail {
+        background-color: var(--color-surface);
+
+        & .blocks {
+            fill: var(--color-board-block);
+        }
+
+        & .shaded {
+            fill: color-mix(in srgb, var(--color-dark) 20%, var(--color-surface));
+        }
+
+        & .lines {
+            fill: none;
+            stroke: var(--color-board-border);
+            stroke-width: 0.02;
+        }
+    }
+}

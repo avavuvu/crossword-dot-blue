@@ -1,0 +1,29 @@
+[package]
+name = "crossword-dot-blue"
+version.workspace = true
+edition.workspace = true
+build = "build.rs"
+
+[features]
+local = ["boutique/devtools"]
+
+[dependencies]
+axum = { version = "0.8.9", features = ["multipart"] }
+boutique = { path = "/Users/adem/Desktop/showroom/showroom-rs/boutique",  features = ["migration"] }
+chrono = "0.4.45"
+crossword-tools = { path = "../crossword-tools" }
+dotenvy = "0.15.7"
+markdown = "1"
+maud = { version = "0.27.0", features = ["axum"] }
+nanorand = "0.8.0"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "multipart", "json"] }
+sea-orm = { version = "1", features = ["sqlx-postgres", "runtime-tokio-rustls", "macros"] }
+serde = "1.0.229"
+serde_json = "1"
+sha1 = "0.10"
+slugify = "0.1.0"
+tokio = { version = "1", features = ["full"] }
+validator = { version = "0.20", features = ["derive"] }
+
+[build-dependencies]
+markdown = "1"

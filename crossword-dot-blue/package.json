@@ -1,0 +1,16 @@
+{
+    "name": "crossword-dot-blue",
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev:vite": "concurrently -n vite,dx -c cyan,yellow \"vite build --watch\" \"~/.cargo/bin/dx serve --hot-patch --features local --package crossword-dot-blue\"",
+        "fonts": "sh scripts/fonts.sh",
+        "test": "bun test"
+    },
+    "devDependencies": {
+        "@types/bun": "latest",
+        "concurrently": "^10.0.5",
+        "typescript": "^5.0.0",
+        "vite": "^8.3.0"
+    }
+}

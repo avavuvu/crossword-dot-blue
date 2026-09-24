@@ -1,0 +1,171 @@
+.puzzle-cards {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14em, 1fr));
+    gap: 1em;
+}
+
+.puzzle-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-dark);
+    background-color: var(--color-surface);
+
+    & .thumbnail {
+        display: block;
+        border-bottom: 1px solid var(--color-dark);
+
+        & svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+    }
+
+    & .card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25em;
+        padding: 0.75em 1em 1em;
+    }
+
+    & h3 {
+        font-size: 1.125em;
+        font-weight: bold;
+        line-height: 1.2;
+
+        & a:hover {
+            text-decoration: underline;
+        }
+    }
+
+    & .byline a:hover {
+        text-decoration: underline;
+    }
+
+    & .details {
+        font-size: 0.875em;
+        opacity: 0.8;
+    }
+
+    & .progress {
+        font-size: 0.875em;
+        font-weight: bold;
+
+        &[hidden] {
+            display: none;
+        }
+    }
+
+    & .badges {
+        display: flex;
+        gap: 0.5em;
+        margin-top: 0.25em;
+    }
+
+    & .card-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: auto;
+        padding-top: 0.5em;
+    }
+
+    &.row {
+        flex-direction: row;
+        align-items: stretch;
+
+        & .thumbnail {
+            flex: 0 0 12em;
+            border-bottom: 0;
+            border-right: 1px solid var(--color-dark);
+
+            & svg {
+                height: 100%;
+            }
+        }
+
+        & .card-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        &.reverse {
+            flex-direction: row-reverse;
+
+            & .thumbnail {
+                border-right: 0;
+                border-left: 1px solid var(--color-dark);
+            }
+        }
+    }
+
+    & + .puzzle-card.row {
+        margin-top: 1em;
+    }
+}
+
+@media (width < 640px) {
+    .puzzle-card {
+        max-width: min(80%, 400px);
+        margin: 0 auto;
+    }
+
+    .puzzle-card.row,
+    .puzzle-card.row.reverse {
+        flex-direction: column;
+
+        & .thumbnail {
+            flex-basis: auto;
+            border-right: 0;
+            border-left: 0;
+            border-bottom: 1px solid var(--color-dark);
+
+            & svg {
+                height: auto;
+            }
+        }
+    }
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.1em 0.5em;
+    font-size: 0.75em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-surface);
+    background-color: var(--color-dark);
+
+    &.cryptic {
+        background-color: var(--color-4);
+    }
+
+    &.featured {
+        background-color: var(--color-2);
+        color: var(--color-dark);
+    }
+}
+
+& section.featured {
+    & .card-body {
+        color: var(--color-surface);
+
+        &.category-big {
+            background-color: var(--color-big);
+        }
+
+        &.category-midi {
+            background-color: var(--color-midi);
+        }
+
+        &.category-mini {
+            background-color: var(--color-mini);
+        }
+
+        & .badge {
+            background-color: var(--color-surface);
+            color: var(--color-dark);
+        }
+    }
+}

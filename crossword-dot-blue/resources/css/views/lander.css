@@ -1,0 +1,154 @@
+main.lander {
+    min-height: 100vh;
+}
+
+section.hero {
+    padding: 4em 1em 1em;
+    background-color: var(--color-dark);
+    z-index: 11;
+    position: relative;
+
+    & .intro {
+        display: contents;
+    }
+
+    & svg {
+        display: block;
+        width: 100%;
+        max-height: 30vh;
+        margin: 0 auto;
+    }
+}
+
+section.hero + header.top {
+    & a.logo {
+        translate: 0 -200%;
+        transition: translate 0.15s ease-in-out;
+    }
+
+    &[data-hero-gone] a.logo {
+        translate: 0 0;
+    }
+}
+
+section.hero .intro {
+    --blue-hold: 1400ms;
+    --move: 700ms;
+    --pause-after-move: 400ms;
+    --fade: 650ms;
+
+    --move-at: calc(var(--total) + var(--blue-hold));
+    --cross-at: calc(var(--move-at) + var(--move) + var(--pause-after-move));
+    --word-at: calc(var(--cross-at) + var(--fade));
+    --dot-at: calc(var(--word-at) + var(--fade));
+
+    & .cross {
+        fill: var(--color-1);
+    }
+    & .word {
+        fill: var(--color-2);
+    }
+    & .dot {
+        fill: var(--color-3);
+    }
+    & .blue {
+        fill: var(--color-4);
+        opacity: 0;
+        animation: appear 1ms step-end forwards;
+        animation-delay: var(--total);
+    }
+
+    & .cross,
+    & .word,
+    & .dot {
+        opacity: 0;
+        animation: appear var(--fade) ease-out forwards;
+    }
+
+    & .cross {
+        animation-delay: var(--cross-at);
+    }
+
+    & .word {
+        animation-delay: var(--word-at);
+    }
+
+    & .dot {
+        animation-delay: var(--dot-at);
+    }
+
+    & .tail {
+        translate: var(--center-shift) 0;
+        animation: slide var(--move) cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        animation-delay: var(--move-at);
+    }
+
+    .buzzword {
+        fill: var(--color-4);
+        font-family: "Heal The Web";
+        font-size: 166.43px;
+        letter-spacing: -0.04em;
+
+        & text {
+            opacity: 0;
+            animation: flash var(--slot) step-end forwards;
+            animation-delay: var(--start);
+            pointer-events: none;
+        }
+    }
+}
+
+@keyframes flash {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes appear {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slide {
+    to {
+        translate: 0 0;
+    }
+}
+
+section.hero[data-intro-done] .intro {
+    & .tail,
+    & .cross,
+    & .word,
+    & .dot,
+    & .blue {
+        animation: none;
+        opacity: 1;
+        translate: none;
+    }
+
+    & .buzzword text {
+        animation: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    section.hero .intro {
+        & .tail,
+        & .cross,
+        & .word,
+        & .dot,
+        & .blue {
+            animation: none;
+            opacity: 1;
+            translate: none;
+        }
+
+        & .buzzword text {
+            animation: none;
+        }
+    }
+}
