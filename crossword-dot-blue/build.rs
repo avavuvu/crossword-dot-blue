@@ -1,8 +1,14 @@
 use std::{env, fs, path::Path};
 
 const CONTENT_DIR: &str = "resources/content";
+const MANIFEST: &str = "public/build/.vite/manifest.json";
 
 fn main() {
+    println!("cargo:rerun-if-changed={MANIFEST}");
+    if env::var("PROFILE").as_deref() == Ok("release") && !Path::new(MANIFEST).exists() {
+        panic!("{MANIFEST} not found: run `bun run build` before a release build");
+    }
+
     let out_dir = env::var("OUT_DIR").expect("OUT_DIR is set by cargo");
     let out = Path::new(&out_dir).join("content");
     fs::create_dir_all(&out).expect("create content output dir");
