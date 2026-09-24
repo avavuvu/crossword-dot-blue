@@ -9,8 +9,9 @@ export default defineConfig({
         },
     },
     build: {
-        outDir: "public",
-        emptyOutDir: false,
+        outDir: "public/build",
+        emptyOutDir: true,
+        manifest: true,
         rollupOptions: {
             input: {
                 app: "resources/css/app.css",
@@ -19,9 +20,9 @@ export default defineConfig({
                 editor: "resources/js/editor.ts",
             },
             output: {
-                entryFileNames: "assets/[name].js",
-                chunkFileNames: "assets/[name]-[hash].js",
-                assetFileNames: "assets/[name].[ext]",
+                entryFileNames: "[name]-[hash].js",
+                chunkFileNames: "[name]-[hash].js",
+                assetFileNames: "[name]-[hash].[ext]",
             },
         },
     },

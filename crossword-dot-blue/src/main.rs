@@ -1,3 +1,4 @@
+mod assets;
 mod cloudinary;
 mod components;
 mod error;
@@ -36,6 +37,7 @@ async fn serve((state, port): (AppState, String)) {
     Server::new(state.clone())
         .debug(cfg!(debug_assertions))
         .static_dir("/assets", "public/assets")
+        .static_dir(assets::ROUTE, assets::DIR)
         .serve(create_router(state), &port)
         .await;
 }
@@ -66,6 +68,7 @@ async fn main() {
     ADMIN_EMAILS.set(admin_emails).ok();
 
     cloudinary::init();
+    assets::init();
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
     let db = Database::connect(&database_url)

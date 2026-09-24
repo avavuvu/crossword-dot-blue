@@ -266,6 +266,7 @@ dependencies = [
 [[package]]
 name = "boutique"
 version = "0.1.1"
+source = "git+https://github.com/avavuvu/showroom.git?rev=88c49884505fd57da762968f087a3f43de354f8e#88c49884505fd57da762968f087a3f43de354f8e"
 dependencies = [
  "argon2",
  "axum",

@@ -9,7 +9,7 @@ local = ["boutique/devtools"]
 
 [dependencies]
 axum = { version = "0.8.9", features = ["multipart"] }
-boutique = { path = "/Users/adem/Desktop/showroom/showroom-rs/boutique",  features = ["migration"] }
+boutique = { git = "https://github.com/avavuvu/showroom.git", rev = "88c49884505fd57da762968f087a3f43de354f8e", features = ["migration"] }
 chrono = "0.4.45"
 crossword-tools = { path = "../crossword-tools" }
 dotenvy = "0.15.7"

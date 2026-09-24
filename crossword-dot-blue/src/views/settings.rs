@@ -2,6 +2,7 @@ use boutique::{components::Button, htmx::partial};
 use maud::{Markup, html};
 
 use crate::{
+    assets,
     cloudinary,
     components::ui::markdown_textarea,
     models::user,
@@ -51,7 +52,7 @@ pub fn avatar_block(user: &user::Model) -> Markup {
 
 pub fn show(user: &user::Model) -> Markup {
     shell(
-        page("Settings — Crossword Dot Blue").htmx().module("/assets/editor.js"),
+        page("Settings — Crossword Dot Blue").htmx().module(assets::url("editor")),
         &ViewState::from(user),
         html! {
             main.settings {

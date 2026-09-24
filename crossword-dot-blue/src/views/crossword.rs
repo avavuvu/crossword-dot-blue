@@ -3,6 +3,7 @@ use crossword_tools::puzzle::{Cell, Clue, Direction, Puzzle};
 use maud::{Markup, PreEscaped, html};
 
 use crate::{
+    assets,
     components::ui::{Icon, footer, header::header, share_button},
     models::{puzzle::{self, Category}, user},
     views::{grid::{self, Fill}, layouts::page, markdown, state::ViewState},
@@ -18,7 +19,7 @@ pub fn show(model: &puzzle::Model, author: &user::Model, content: &Puzzle, state
     let title = title.as_str();
 
     base(
-        &page(format!("{title} — Crossword Dot Blue")).module("/assets/crossword.js"),
+        &page(format!("{title} — Crossword Dot Blue")).module(assets::url("crossword")),
         html! {
             article.crossword data-key=(model.key()) {
                 div.above {

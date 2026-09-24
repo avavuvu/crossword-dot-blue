@@ -14,6 +14,7 @@ pub use preview::grid_preview;
 pub use share::share_block;
 
 use crate::{
+    assets,
     models::{puzzle, user},
     views::{layouts::{page, shell}, state::ViewState},
 };
@@ -34,7 +35,7 @@ pub fn edit(puzzle: &puzzle::Model, author: &user::Model, viewer: &user::Model, 
     let action = puzzle.edit_path();
 
     shell(
-        page(format!("{heading} — Crossword Dot Blue")).htmx().module("/assets/editor.js"),
+        page(format!("{heading} — Crossword Dot Blue")).htmx().module(assets::url("editor")),
         &ViewState::from(viewer),
         html! {
             main.edit {

@@ -1,0 +1,8 @@
+{
+    "name": "crossword-rs",
+    "private": true,
+    "scripts": {
+        "dev": "cd crossword-dot-blue && bun run dev",
+        "build": "cd crossword-dot-blue && bun install --frozen-lockfile && bun run build"
+    }
+}
