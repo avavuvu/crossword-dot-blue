@@ -13,10 +13,17 @@ pub fn index(state: &ViewState, buzzwords: &[&str], featured: &Featured, public:
     base(
         &page("Crossword dot blue"),
         html! {
-            section.hero { (super::intro::intro(buzzwords)) }
             (header(state))
+            section.hero { (super::intro::intro(buzzwords)) }
             main.lander.listing {
                 h1.sr-only { "Crossword dot blue" }
+
+                p {
+                    "Crossword dot blue is a free and open source crossword repository. It has (tentatively) launched on 24 September 2026, with submissions open to the public. "
+                    a.link href="/about" {
+                        "Find out more here."
+                    }
+                }
 
                 @if !featured.is_empty() {
                     section.category-section.featured {

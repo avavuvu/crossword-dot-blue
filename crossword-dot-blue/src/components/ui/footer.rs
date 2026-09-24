@@ -3,11 +3,9 @@ use maud::{Markup, html};
 pub fn footer() -> Markup {
     html! {
         footer.bottom {
-            a.logo href="/" {
-                picture {
-                    source media="(width < 768px)" srcset="/assets/images/stacked.svg";
-                    img src="/assets/images/small.svg" alt="Crossword.blue";
-                }
+            picture.logo {
+                source media="(width < 768px)" srcset="/assets/images/stacked.svg";
+                img src="/assets/images/small.svg" alt="Crossword.blue";
             }
 
             div.info {

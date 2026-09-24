@@ -37,6 +37,7 @@ async fn serve((state, port): (AppState, String)) {
     Server::new(state.clone())
         .debug(cfg!(debug_assertions))
         .static_dir("/assets", "public/assets")
+        .file("/favicon.ico", "public/assets/favicon.ico")
         .static_dir(assets::ROUTE, assets::DIR)
         .serve(create_router(state), &port)
         .await;

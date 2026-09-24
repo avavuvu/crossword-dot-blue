@@ -125,6 +125,7 @@ article.crossword {
         & .prev,
         & .next {
             min-width: 2.5em;
+            touch-action: manipulation;
         }
 
         & .current-clue {
@@ -157,6 +158,7 @@ article.crossword {
                 width: 100%;
                 text-align: left;
                 font-weight: normal;
+                touch-action: manipulation;
             }
 
             & .number {

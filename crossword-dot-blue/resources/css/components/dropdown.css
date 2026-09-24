@@ -1,6 +1,7 @@
 .dropdown {
     position: relative;
     display: inline-block;
+    touch-action: manipulation;
 
     & > .menu {
         position: absolute;
