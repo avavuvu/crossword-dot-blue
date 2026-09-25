@@ -14,7 +14,6 @@ export default defineConfig({
         manifest: true,
         rollupOptions: {
             input: {
-                app: "resources/css/app.css",
                 site: "resources/js/site.ts",
                 crossword: "resources/js/crossword.ts",
                 editor: "resources/js/editor.ts",

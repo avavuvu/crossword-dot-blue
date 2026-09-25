@@ -4,7 +4,7 @@ use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, QueryOrder};
 
 use crate::{AppState, error::AppResult, models::{puzzle, user}, views};
 
-pub async fn index(
+pub async fn show(
     AuthenticatedUser(user): AuthenticatedUser<user::Model>,
     State(state): State<AppState>,
 ) -> AppResult {
@@ -14,5 +14,5 @@ pub async fn index(
         .all(&state.db)
         .await?;
 
-    Ok(views::app::index::index(&user, puzzles).into_response())
+    Ok(views::app::index::page(&user, puzzles).into_response())
 }

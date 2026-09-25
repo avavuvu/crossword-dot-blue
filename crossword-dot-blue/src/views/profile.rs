@@ -2,7 +2,7 @@ use maud::{Markup, html};
 
 use crate::{
     models::{listing::{Entry, Filter}, puzzle::Region, user},
-    views::{layouts::{page, shell}, listing, markdown, state::ViewState},
+    views::{layouts::{head, shell}, listing, markdown, viewer::Viewer},
 };
 
 pub fn avatar(user: &user::Model) -> Markup {
@@ -16,19 +16,19 @@ pub fn avatar(user: &user::Model) -> Markup {
     }
 }
 
-pub fn show(
-    state: &ViewState,
+pub fn page(
+    viewer: &Viewer,
     profile: &user::Model,
     filter: &Filter,
     regions: &[Region],
     entries: &[Entry],
 ) -> Markup {
     let path = profile.path();
-    let is_owner = state.user_id.as_deref() == Some(profile.id.as_str());
+    let is_owner = viewer.user_id.as_deref() == Some(profile.id.as_str());
 
     shell(
-        page(format!("@{} — Crossword Dot Blue", profile.username)),
-        state,
+        head(format!("@{} — Crossword Dot Blue", profile.username)),
+        viewer,
         html! {
             main.profile.listing {
                 header.profile-header {
@@ -46,7 +46,7 @@ pub fn show(
                 }
                 (listing::category_tabs_query(&path, filter))
                 (listing::filter_form(&path, filter, regions))
-                (listing::results(entries, state))
+                (listing::results(entries, viewer))
             }
         }
     )

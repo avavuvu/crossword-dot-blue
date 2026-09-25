@@ -1,16 +1,16 @@
-use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter};
-use axum::{Extension, Form, extract::State, response::{IntoResponse, Redirect, Response}};
+use axum::{Extension, Form, extract::State, response::{IntoResponse, Redirect}};
 use boutique::{UserContext, htmx, session};
-use boutique::validator::Validate;
+use boutique::validator::{Validate, ValidationError};
+use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter};
 use serde::Deserialize;
 
-use crate::{AppState, models::user::{self, Entity as User}, views};
+use crate::{AppState, error::{AppError, AppResult}, models::user, views};
 
-fn alphanumeric(value: &str) -> Result<(), boutique::validator::ValidationError> {
+fn alphanumeric(value: &str) -> Result<(), ValidationError> {
     if value.chars().all(|c| c.is_alphanumeric()) {
         Ok(())
     } else {
-        let mut e = boutique::validator::ValidationError::new("alphanumeric");
+        let mut e = ValidationError::new("alphanumeric");
         e.message = Some("Username can only contain letters and numbers".into());
         Err(e)
     }
@@ -29,71 +29,48 @@ pub struct SignupForm {
     pub password: String,
 }
 
-fn something_went_wrong() -> Response {
-    htmx::fragments::error("Something went wrong, please try again").into_response()
-}
-
-pub async fn signup_page(
-    Extension(ctx): Extension<UserContext>,
-) -> Response {
+pub async fn show(Extension(ctx): Extension<UserContext>) -> AppResult {
     if ctx.is_authenticated() {
-        return Redirect::to("/app").into_response();
+        return Ok(Redirect::to("/app").into_response());
     }
 
-    views::auth::signup().into_response()
+    Ok(views::auth::signup::page().into_response())
 }
 
-pub async fn signup(
-    State(state): State<AppState>,
-    Form(form): Form<SignupForm>,
-) -> Response {
-    if let Err(errors) = form.validate() {
-        return htmx::fragments::from_errors(errors).into_response();
-    }
+pub async fn create(State(state): State<AppState>, Form(form): Form<SignupForm>) -> AppResult {
+    form.validate()?;
 
-    let email_taken = User::find()
+    let email_taken = user::Entity::find()
         .filter(user::Column::Email.eq(&form.email))
         .one(&state.db)
-        .await
-        .unwrap()
+        .await?
         .is_some();
 
-    let username_taken = User::find()
+    let username_taken = user::Entity::find()
         .filter(user::Column::Username.eq(&form.username))
         .one(&state.db)
-        .await
-        .unwrap()
+        .await?
         .is_some();
 
     if email_taken || username_taken {
-        return htmx::fragments::field_errors(&[
-            ("email", email_taken.then_some("An account with this email already exists")),
-            ("username", username_taken.then_some("This username is already taken")),
-        ]).into_response();
+        let mut fields = Vec::new();
+        if email_taken {
+            fields.push(("email", "An account with this email already exists".to_string()));
+        }
+        if username_taken {
+            fields.push(("username", "This username is already taken".to_string()));
+        }
+        return Err(AppError::Fields(fields));
     }
 
     let is_admin = crate::is_admin_email(&form.email);
-    let new_user = match user::new(&form.email, &form.username, &form.password, is_admin) {
-        Ok(user) => user,
-        Err(e) => {
-            eprintln!("[signup] {e}");
-            return something_went_wrong();
-        }
-    };
+    let new_user = user::new(&form.email, &form.username, &form.password, is_admin)
+        .map_err(|e| AppError::internal("password hash", e))?;
+    let saved = new_user.insert(&state.db).await?;
 
-    let user = match new_user.insert(&state.db).await {
-        Ok(user) => user,
-        Err(e) => {
-            eprintln!("[signup] {e}");
-            return something_went_wrong();
-        }
-    };
+    let session = session::issue(&state, &saved)
+        .await
+        .map_err(|e| AppError::internal("session", format!("{e:?}")))?;
 
-    match session::issue(&state, &user).await {
-        Ok(session) => (session, htmx::redirect("/app")).into_response(),
-        Err(e) => {
-            eprintln!("[signup] {e:?}");
-            something_went_wrong()
-        }
-    }
+    Ok((session, htmx::redirect("/app")).into_response())
 }

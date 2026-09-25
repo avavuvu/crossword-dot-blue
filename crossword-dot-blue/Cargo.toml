@@ -9,8 +9,10 @@ local = ["boutique/devtools"]
 
 [dependencies]
 axum = { version = "0.8.9", features = ["multipart"] }
+bon = "3"
 boutique = { git = "https://github.com/avavuvu/showroom.git", rev = "88c49884505fd57da762968f087a3f43de354f8e", features = ["migration"] }
 chrono = "0.4.45"
+crossword-macros = { path = "../crossword-macros" }
 crossword-tools = { path = "../crossword-tools" }
 dotenvy = "0.15.7"
 markdown = "1"
@@ -23,6 +25,7 @@ serde_json = "1"
 sha1 = "0.10"
 slugify = "0.1.0"
 tokio = { version = "1", features = ["full"] }
+ts-rs = { version = "12", features = ["serde-compat"] }
 validator = { version = "0.20", features = ["derive"] }
 
 [build-dependencies]

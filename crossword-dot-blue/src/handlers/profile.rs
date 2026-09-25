@@ -10,7 +10,7 @@ use crate::{
     AppState,
     error::{AppError, AppResult},
     models::{listing::{self, Filter}, user},
-    views::{self, state::ViewState},
+    views::{self, viewer::Viewer},
 };
 
 pub async fn show(
@@ -29,5 +29,5 @@ pub async fn show(
     let regions = listing::regions(&all);
     let entries = filter.apply(all);
 
-    Ok(views::profile::show(&ViewState::from(&ctx), &profile, &filter, &regions, &entries).into_response())
+    Ok(views::profile::page(&Viewer::from(&ctx), &profile, &filter, &regions, &entries).into_response())
 }

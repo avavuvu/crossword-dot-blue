@@ -1,34 +1,38 @@
+conventions
+
 paths
 
-- [ ] / 
-    - [ ] /login
-    - [ ] /signup
-- [ ] /settings
+- [x] / 
+    - [x] /login
+    - [x] /signup
+- [x] /settings
 - [ ] /settings/account
 - [x] /app
     - [x] /app/upload
     - [x] /app/edit/[...]
 - [x] /crossword/[...]
-- [ ] /browse
+- [x] /browse
     - [ ] /browse/big
     - [ ] /browse/midi
     - [ ] /browse/mini
-- [ ] /@[user]
+- [x] /@[user]
 
 todo
-- [x] public crossword list
-- [x] user page
-- [x] lander
+
 - [ ] import/export
-    - [x] better splits
-- [x] clean up compleition / intro solve / share
-- [x] mobile assist area
-- [x] about page / text view
+- [ ] convert region to tags and make proper region
+- [ ] better admin dashboard
+- [ ] move site url out of .env
 - [ ] privacy policy
-- [x] fix share link
-
-launch!
-
-- guest crossword upload
-- scores on the server
--
+- [ ] guest crossword upload
+- [ ] scores on the server
+- [ ] proper setting page
+    - [ ] themes
+    - [ ] control options
+- [ ] image uploads
+- [ ] images in crosswords
+- [ ] crossword grid painter
+- [ ] less awkward edit page
+- [ ] promotion
+- [ ] sitemap / seo
+    - [ ] og image per crossword

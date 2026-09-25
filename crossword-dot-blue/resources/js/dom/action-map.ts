@@ -1,37 +1,48 @@
-import type { Action, ActionType, AssistScope } from "../game/actions";
+import type { UiAction } from "@bindings/UiAction";
+import type { Action } from "../game/actions";
 
-const getAction = (type: string, scope?: AssistScope): Action | null => {
-    switch (type) {
+function fromUiAction(name: UiAction): Action {
+    switch (name) {
+        case "start":
+            return { type: "start" };
+        case "dismiss":
+            return { type: "dismiss" };
+        case "reset":
+            return { type: "reset" };
+        case "hint":
+            return { type: "hint" };
         case "prev-clue":
             return { type: "next-clue", delta: -1 };
         case "next-clue":
             return { type: "next-clue", delta: 1 };
-        case "toggle-rebus":
-            return { type: "toggle-rebus" };
         case "toggle-direction":
             return { type: "toggle-direction" };
-        case "check":
-            return scope ? { type: "check", scope } : null;
-        case "reveal":
-            return scope ? { type: "reveal", scope } : null;
-        default:
-            return { type } as Action
+        case "toggle-rebus":
+            return { type: "toggle-rebus" };
+        case "check-cell":
+            return { type: "check", scope: "cell" };
+        case "check-word":
+            return { type: "check", scope: "word" };
+        case "check-puzzle":
+            return { type: "check", scope: "puzzle" };
+        case "reveal-cell":
+            return { type: "reveal", scope: "cell" };
+        case "reveal-word":
+            return { type: "reveal", scope: "word" };
+        case "reveal-puzzle":
+            return { type: "reveal", scope: "puzzle" };
+        default: {
+            const unhandled: never = name;
+            throw new Error(`unhandled ui action ${String(unhandled)}`);
+        }
     }
 }
 
-export function actionFromNames(name: string): Array<Action> {
-    let actions: Array<Action> = []
-
-    for (const actionName of name.split(" ")) {
-        const [type, scope] = actionName.split(":") as [string, AssistScope | undefined];
-
-        const action = getAction(type, scope)
-        if (action) {
-            actions.push(action)
-        }
-    }
-
-    return actions
+export function actionsFromAttribute(value: string): Array<Action> {
+    return value
+        .split(" ")
+        .filter((name) => name.length > 0)
+        .map((name) => fromUiAction(name as UiAction));
 }
 
 export function actionFromKeyboardEvent(event: KeyboardEvent): Action | null {

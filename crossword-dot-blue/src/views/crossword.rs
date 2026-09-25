@@ -1,29 +1,32 @@
+mod action;
+
 use boutique::{components::Button, views::base};
 use crossword_tools::puzzle::{Cell, Clue, Direction, Puzzle};
 use maud::{Markup, PreEscaped, html};
 
+use action::{UiAction, actions};
+
 use crate::{
-    assets,
-    components::ui::{Icon, footer, header::header, share_button},
-    models::{puzzle::{self, Category}, user},
-    views::{grid::{self, Fill}, layouts::page, markdown, state::ViewState},
+    components::{Icon, footer, grid::{self, Fill}, header, share_button},
+    models::{puzzle::{self, Category, get_category}, user},
+    views::{layouts::{HeadExt, head}, markdown, viewer::Viewer},
 };
 
-fn json_script(content: &Puzzle) -> Markup {
-    let json = serde_json::to_string(content).unwrap_or_default();
+fn json_script(puzzle: &Puzzle) -> Markup {
+    let json = serde_json::to_string(puzzle).unwrap_or_default();
     PreEscaped(json.replace('<', "\\u003c"))
 }
 
-pub fn show(model: &puzzle::Model, author: &user::Model, content: &Puzzle, state: &ViewState) -> Markup {
+pub fn page(model: &puzzle::Model, author: &user::Model, puzzle: &Puzzle, viewer: &Viewer) -> Markup {
     let title = model.display_title();
     let title = title.as_str();
 
     base(
-        &page(format!("{title} — Crossword Dot Blue")).module(assets::url("crossword")),
+        &head(format!("{title} — Crossword Dot Blue")).entry("crossword"),
         html! {
             article.crossword data-key=(model.key()) {
                 div.above {
-                    (header(state))
+                    (header(viewer))
                     hgroup {
                         h1 { (title) }
                         p.byline {
@@ -44,23 +47,23 @@ pub fn show(model: &puzzle::Model, author: &user::Model, content: &Puzzle, state
                         p data-entry-preview {}
                     }
 
-                    (assist_bar(content))
+                    (assist_bar(puzzle))
 
                     (clue_banner())
 
-                    (keyboard(content))
+                    (keyboard(puzzle))
 
                     section.board {
-                        crossword-board style=(format!("--cols: {}; --rows: {}", content.width, content.height)) {
-                            script type="application/json" data-puzzle { (json_script(content)) }
-                            (grid::grid_svg(content, Fill::Empty))
+                        crossword-board style=(format!("--cols: {}; --rows: {}", puzzle.width, puzzle.height)) {
+                            script type="application/json" data-puzzle { (json_script(puzzle)) }
+                            (grid::grid_svg(puzzle, Fill::Empty))
                         }
                     }
 
-                    (clue_group(content, Direction::Across, "Across"))
-                    (clue_group(content, Direction::Down, "Down"))
+                    (clue_group(puzzle, Direction::Across, "Across"))
+                    (clue_group(puzzle, Direction::Down, "Down"))
 
-                    (intro(model, content))
+                    (intro(model, puzzle))
                     (won())
                     (almost())
                 }
@@ -71,23 +74,23 @@ pub fn show(model: &puzzle::Model, author: &user::Model, content: &Puzzle, state
 }
 
 
-fn intro(model: &puzzle::Model, content: &Puzzle) -> Markup {
+fn intro(model: &puzzle::Model, puzzle: &Puzzle) -> Markup {
     html! {
         section.intro {
-            @match puzzle::get_category(content.width, content.height) {
+            @match get_category(puzzle.width, puzzle.height) {
                 Category::Mini => (Icon::CrosswordMini),
                 Category::Midi => (Icon::CrosswordMidi),
                 Category::Big => (Icon::CrosswordBig),
             }
             p.dimensions {
-                (content.width) "×" (content.height)
+                (puzzle.width) "×" (puzzle.height)
                 @if model.is_cryptic { " · Cryptic" }
             }
 
             @if let Some(notes) = model.notes.as_deref() {
                 div.notes { (markdown::block(notes)) }
             }
-            (Button::button(html! { "Let's play!" }).primary().action("start"))
+            (Button::button(html! { "Let's play!" }).primary().action(UiAction::Start.as_str()))
         }
     }
 }
@@ -98,8 +101,8 @@ fn won() -> Markup {
             h2 id="won-title" tabindex="-1" { "Solved in " time data-completion-time {} "!" }
             (Icon::CrosswordSolved)
             div.actions {
-                (Button::button(html! { "View Puzzle" }).action("dismiss").primary())
-                (Button::button(html! { "Play again" }).action("reset").ghost())
+                (Button::button(html! { "View Puzzle" }).action(UiAction::Dismiss.as_str()).primary())
+                (Button::button(html! { "Play again" }).action(UiAction::Reset.as_str()).ghost())
             }
         }
     }
@@ -111,8 +114,8 @@ fn almost() -> Markup {
             h2 id="almost-title" tabindex="-1" { "Almost" }
             p.message { "The grid is full, but something is not right yet." }
             div.actions {
-                (Button::button(html! { "Keep going" }).action("dismiss").primary())
-                (Button::button(html! { "Check" }).action("check:puzzle dismiss").ghost())
+                (Button::button(html! { "Keep going" }).action(UiAction::Dismiss.as_str()).primary())
+                (Button::button(html! { "Check" }).action(&actions(&[UiAction::CheckPuzzle, UiAction::Dismiss])).ghost())
             }
         }
     }
@@ -120,8 +123,8 @@ fn almost() -> Markup {
 
 const KEY_ROWS: [&str; 3] = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
 
-fn keyboard(content: &Puzzle) -> Markup {
-    let has_rebus = has_rebus(content);
+fn keyboard(puzzle: &Puzzle) -> Markup {
+    let has_rebus = has_rebus(puzzle);
 
     html! {
         section.keyboard aria-label="Keyboard" {
@@ -150,8 +153,8 @@ fn keyboard(content: &Puzzle) -> Markup {
     }
 }
 
-fn has_rebus(content: &Puzzle) -> bool {
-    content
+fn has_rebus(puzzle: &Puzzle) -> bool {
+    puzzle
         .cells
         .iter()
         .any(|cell| matches!(cell, Cell::Letter { solution, .. } if solution.chars().count() > 1))
@@ -160,33 +163,33 @@ fn has_rebus(content: &Puzzle) -> bool {
 fn clue_banner() -> Markup {
     html! {
         section.clue-banner {
-            button.prev type="button" data-action="prev-clue" aria-label="Previous clue" { "‹" }
-            button.current-clue type="button" data-action="toggle-direction" aria-label="Switch direction" {
+            button.prev type="button" data-action=(UiAction::PrevClue) aria-label="Previous clue" { "‹" }
+            button.current-clue type="button" data-action=(UiAction::ToggleDirection) aria-label="Switch direction" {
                 span.clue-label data-clue-label {}
                 " "
                 span.clue-text data-clue-text {}
             }
-            button.next type="button" data-action="next-clue" aria-label="Next clue" { "›" }
+            button.next type="button" data-action=(UiAction::NextClue) aria-label="Next clue" { "›" }
         }
     }
 }
 
-fn assist_bar(content: &Puzzle) -> Markup {
-    let has_hints = content.clues.values().any(|clue| clue.hint.is_some());
-    let has_rebus = has_rebus(content);
+fn assist_bar(puzzle: &Puzzle) -> Markup {
+    let has_hints = puzzle.clues.values().any(|clue| clue.hint.is_some());
+    let has_rebus = has_rebus(puzzle);
 
     let check_items = || html! {
-        button type="button" role="menuitem" data-action="check:cell" { "Check cell" }
-        button type="button" role="menuitem" data-action="check:word" { "Check word" }
-        button type="button" role="menuitem" data-action="check:puzzle" { "Check puzzle" }
+        button type="button" role="menuitem" data-action=(UiAction::CheckCell) { "Check cell" }
+        button type="button" role="menuitem" data-action=(UiAction::CheckWord) { "Check word" }
+        button type="button" role="menuitem" data-action=(UiAction::CheckPuzzle) { "Check puzzle" }
     };
     let reveal_items = || html! {
-        button type="button" role="menuitem" data-action="reveal:cell" { "Reveal cell" }
-        button type="button" role="menuitem" data-action="reveal:word" { "Reveal word" }
-        button type="button" role="menuitem" data-action="reveal:puzzle" { "Reveal puzzle" }
+        button type="button" role="menuitem" data-action=(UiAction::RevealCell) { "Reveal cell" }
+        button type="button" role="menuitem" data-action=(UiAction::RevealWord) { "Reveal word" }
+        button type="button" role="menuitem" data-action=(UiAction::RevealPuzzle) { "Reveal puzzle" }
     };
     let reset_items = || html! {
-        button type="button" role="menuitem" data-action="reset" { "Reset puzzle" }
+        button type="button" role="menuitem" data-action=(UiAction::Reset) { "Reset puzzle" }
     };
 
     html! {
@@ -204,11 +207,11 @@ fn assist_bar(content: &Puzzle) -> Markup {
             }))
 
             @if has_hints {
-                button.hint type="button" data-action="hint" data-hint-button hidden { "Hint" }
+                button.hint type="button" data-action=(UiAction::Hint) data-hint-button hidden { "Hint" }
             }
 
             @if has_rebus {
-                button.rebus type="button" data-action="toggle-rebus" aria-pressed="false" { "Rebus" }
+                button.rebus type="button" data-action=(UiAction::ToggleRebus) aria-pressed="false" { "Rebus" }
             }
         }
     }

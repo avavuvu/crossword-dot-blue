@@ -2,15 +2,15 @@ use boutique::views::{Head, base};
 use maud::{Markup, html};
 
 use crate::{
-    components::ui::{footer, header},
-    views::state::ViewState,
+    components::{footer, header},
+    views::viewer::Viewer,
 };
 
-pub fn dashboard_shell(view: Head, state: &ViewState, content: Markup) -> Markup {
+pub fn dashboard_shell(head: Head, viewer: &Viewer, content: Markup) -> Markup {
     base(
-        &view,
+        &head,
         html! {
-            (header::header(state))
+            (header(viewer))
             (content)
             (footer())
         }

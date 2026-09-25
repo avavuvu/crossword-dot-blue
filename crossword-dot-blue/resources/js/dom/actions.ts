@@ -1,5 +1,5 @@
 import type { Game } from "../game/game";
-import { actionFromNames } from "./action-map";
+import { actionsFromAttribute } from "./action-map";
 
 export type ActionsUi = {
     start(): void;
@@ -14,8 +14,7 @@ export function attachActions(game: Game, root: HTMLElement, ui: ActionsUi): voi
         const name = button.dataset.action!;
         button.closest<HTMLElement>("[popover]")?.hidePopover();
 
-        const actions = actionFromNames(name);
-        for (const action of actions) {
+        for (const action of actionsFromAttribute(name)) {
             switch (action.type) {
                 case "start":
                     ui.start();
@@ -27,7 +26,6 @@ export function attachActions(game: Game, root: HTMLElement, ui: ActionsUi): voi
                     game.dispatch(action);
                     break;
             }
-
         }
     });
 }

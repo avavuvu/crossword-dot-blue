@@ -1,61 +1,45 @@
-use axum::{
-    extract::{Multipart, State},
-    response::{IntoResponse, Response},
-};
+use axum::extract::{Multipart, State};
 use boutique::{AuthenticatedUser, htmx};
 use crossword_tools::xd;
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, ColumnTrait, DbErr, EntityTrait, QueryFilter};
 
-use crate::{AppState, error::AppResult, models::{puzzle, user}};
+use crate::{
+    AppState,
+    error::{AppError, AppResult},
+    handlers::form::{UploadError, single_file},
+    models::{puzzle, user},
+};
 
-pub async fn upload(
+pub async fn create(
     AuthenticatedUser(user): AuthenticatedUser<user::Model>,
     State(state): State<AppState>,
     mut multipart: Multipart,
 ) -> AppResult {
-    let file = loop {
-        match multipart.next_field().await {
-            Ok(Some(field)) if field.name() == Some("file") => break field,
-            Ok(Some(_)) => continue,
-            Ok(None) => return Ok(file_error("Choose a puzzle file to upload")),
-            Err(e) => {
-                eprintln!("[upload] {e}");
-                return Ok(file_error("Something went wrong reading the upload"));
-            }
-        }
-    };
+    let file = single_file(&mut multipart, "file").await.map_err(|e| match e {
+        UploadError::Missing => AppError::field("file", "Choose a puzzle file to upload"),
+        UploadError::Unreadable => AppError::field("file", "Something went wrong reading the upload"),
+    })?;
 
-    let Some(extension) = file
-        .file_name()
+    let extension = file
+        .file_name
+        .as_deref()
         .and_then(|name| name.rsplit_once('.'))
         .map(|(_, ext)| ext.to_string())
-    else {
-        return Ok(file_error("The file needs a .ipuz, .puz or .xd extension"));
-    };
+        .ok_or_else(|| AppError::field("file", "The file needs a .ipuz, .puz or .xd extension"))?;
 
-    let bytes = match file.bytes().await {
-        Ok(bytes) => bytes,
-        Err(e) => {
-            eprintln!("[upload] {e}");
-            return Ok(file_error("Something went wrong reading the upload"));
-        }
-    };
-
-    let puzzle = match crossword_tools::parse(&extension, &bytes) {
-        Ok(puzzle) => puzzle,
-        Err(e) => return Ok(file_error(&e.to_string())),
-    };
+    let parsed = crossword_tools::parse(&extension, &file.bytes)
+        .map_err(|e| AppError::field("file", e.to_string()))?;
 
     let now = chrono::Utc::now().fixed_offset();
-    let new_puzzle = puzzle::ActiveModel {
+    let new_model = puzzle::ActiveModel {
         id: Set(unused_id(&state).await?),
         author_id: Set(user.id),
         created_at: Set(now),
         updated_at: Set(now),
-        content: Set(serde_json::to_value(&puzzle)?),
-        xd: Set(xd::write::write_xd(&puzzle)),
-        title: Set(puzzle.meta.title),
-        notes: Set(puzzle.meta.notes),
+        content: Set(serde_json::to_value(&parsed)?),
+        xd: Set(xd::write::write_xd(&parsed)),
+        title: Set(parsed.meta.title),
+        notes: Set(parsed.meta.notes),
         difficulty: Set(None),
         region: Set(None),
         themed: Set(false),
@@ -66,7 +50,7 @@ pub async fn upload(
         share_token: Set(Some(puzzle::new_share_token())),
     };
 
-    let saved = new_puzzle.insert(&state.db).await?;
+    let saved = new_model.insert(&state.db).await?;
     Ok(htmx::redirect(&saved.edit_path()))
 }
 
@@ -83,8 +67,4 @@ async fn unused_id(state: &AppState) -> Result<String, DbErr> {
             return Ok(id);
         }
     }
-}
-
-fn file_error(message: &str) -> Response {
-    htmx::fragments::field_errors(&[("file", Some(message))]).into_response()
 }

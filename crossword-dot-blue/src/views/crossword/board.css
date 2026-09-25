@@ -1,0 +1,16 @@
+.board {
+    min-height: 0;
+    min-width: 0;
+    container-type: size;
+    display: grid;
+    place-items: center;
+}
+
+crossword-board {
+    display: block;
+    aspect-ratio: var(--cols) / var(--rows);
+    width: min(100%, calc(100cqh * var(--cols) / var(--rows)));
+    outline: none;
+    touch-action: manipulation;
+}
+

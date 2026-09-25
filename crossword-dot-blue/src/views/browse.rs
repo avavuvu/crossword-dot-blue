@@ -2,11 +2,11 @@ use maud::{Markup, html};
 
 use crate::{
     models::{listing::{Entry, Filter}, puzzle::{Category, Region}},
-    views::{layouts::{page, shell}, listing, state::ViewState},
+    views::{layouts::{head, shell}, listing, viewer::Viewer},
 };
 
-pub fn index(
-    state: &ViewState,
+pub fn page(
+    viewer: &Viewer,
     category: Option<Category>,
     filter: &Filter,
     regions: &[Region],
@@ -16,8 +16,8 @@ pub fn index(
     let action = category.map(|c| c.browse_path()).unwrap_or_else(|| "/browse".to_string());
 
     shell(
-        page(format!("Browse {heading} — Crossword Dot Blue")),
-        state,
+        head(format!("Browse {heading} — Crossword Dot Blue")),
+        viewer,
         html! {
             main.browse.listing {
                 header.listing-header {
@@ -25,7 +25,7 @@ pub fn index(
                     (listing::category_tabs("/browse", category, filter))
                 }
                 (listing::filter_form(&action, filter, regions))
-                (listing::results(entries, state))
+                (listing::results(entries, viewer))
             }
         }
     )

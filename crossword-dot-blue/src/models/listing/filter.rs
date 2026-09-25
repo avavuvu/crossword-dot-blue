@@ -30,9 +30,9 @@ impl Filter {
     }
 
     pub fn matches(&self, entry: &Entry) -> bool {
-        let category = self.category().is_none_or(|category| entry.puzzle.category() == category);
-        let region = self.region().is_none_or(|region| entry.puzzle.region.as_ref() == Some(&region));
-        let cryptic = !self.cryptic() || entry.puzzle.is_cryptic;
+        let category = self.category().is_none_or(|category| entry.model.category() == category);
+        let region = self.region().is_none_or(|region| entry.model.region.as_ref() == Some(&region));
+        let cryptic = !self.cryptic() || entry.model.is_cryptic;
         category && region && cryptic
     }
 

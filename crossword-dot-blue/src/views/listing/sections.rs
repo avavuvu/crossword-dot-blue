@@ -1,16 +1,16 @@
 use maud::{Markup, html};
 
 use super::cards;
-use crate::{models::listing::Entry, views::state::ViewState};
+use crate::{models::listing::Entry, views::viewer::Viewer};
 
-pub fn results(entries: &[Entry], state: &ViewState) -> Markup {
+pub fn results(entries: &[Entry], viewer: &Viewer) -> Markup {
     let entries: Vec<&Entry> = entries.iter().collect();
 
     html! {
         @if entries.is_empty() {
-            p.empty-state { "No puzzles match these filters." }
+            p.empty-viewer { "No puzzles match these filters." }
         } @else {
-            (cards(&entries, state))
+            (cards(&entries, viewer))
         }
     }
 }

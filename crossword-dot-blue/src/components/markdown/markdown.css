@@ -1,0 +1,79 @@
+cw-markdown {
+    display: block;
+
+    & .editor {
+        position: relative;
+        display: grid;
+
+        & > * {
+            grid-area: 1 / 1;
+            font: inherit;
+            line-height: 1.4;
+            padding: 0.5em 0.75em;
+            border: 1px solid transparent;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            margin: 0;
+        }
+    }
+
+    & .editor > .backdrop, .hint {
+        color: var(--color-text);
+        pointer-events: none;
+        overflow: hidden;
+
+        & strong {
+            font-weight: inherit;
+            color: var(--color-1);
+        }
+
+        & em {
+            font-style: italic;
+        }
+
+        & a {
+            text-decoration: underline;
+            text-underline-offset: 0.15em;
+            color: var(--color-1);
+        }
+
+        & .marker {
+            text-decoration: none;
+            color: color-mix(in srgb, var(--color-dark) 40%, transparent);
+        }
+    }
+
+    & .editor > textarea {
+        position: relative;
+        width: 100%;
+        resize: none;
+        field-sizing: content;
+        background: transparent;
+        color: var(--color-text);
+        caret-color: var(--color-text);
+
+        &.highlighted {
+            color: transparent;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 1px;
+        }
+    }
+
+    & .hint {
+        font-size: 0.8em;
+        opacity: 0.6;
+    }
+}
+
+cw-markdown[bordered] {
+    & .editor > * {
+        border-color: var(--color-dark);
+    }
+
+    & .editor > .backdrop {
+        background: var(--color-surface);
+    }
+}

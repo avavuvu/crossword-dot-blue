@@ -14,51 +14,50 @@ pub use preview::grid_preview;
 pub use share::share_block;
 
 use crate::{
-    assets,
     models::{puzzle, user},
-    views::{layouts::{page, shell}, state::ViewState},
+    views::{layouts::{HeadExt, head, shell}, viewer::Viewer},
 };
 
-pub fn save_response(puzzle: &puzzle::Model, author: &user::Model, viewer: &user::Model) -> Markup {
+pub fn save_response(model: &puzzle::Model, author: &user::Model, viewer: &user::Model) -> Markup {
     html! {
-        (save_status(puzzle))
-        (partial("#share", share_block(puzzle, author)))
+        (save_status(model))
+        (partial("#share", share_block(model, author)))
         @if viewer.is_admin {
-            (partial("#feature", feature_block(puzzle)))
+            (partial("#feature", feature_block(model)))
         }
     }
 }
 
-pub fn edit(puzzle: &puzzle::Model, author: &user::Model, viewer: &user::Model, content: &Puzzle) -> Markup {
-    let heading = puzzle.display_title();
-    let key = puzzle.key();
-    let action = puzzle.edit_path();
+pub fn page(model: &puzzle::Model, author: &user::Model, viewer: &user::Model, puzzle: &Puzzle) -> Markup {
+    let heading = model.display_title();
+    let key = model.key();
+    let action = model.edit_path();
 
     shell(
-        page(format!("{heading} — Crossword Dot Blue")).htmx().module(assets::url("editor")),
-        &ViewState::from(viewer),
+        head(format!("{heading} — Crossword Dot Blue")).htmx().entry("editor"),
+        &Viewer::from(viewer),
         html! {
             main.edit {
                 section.editing {
-                    (form::meta_form(puzzle, author, viewer, content))
+                    (form::meta_form(model, author, viewer, puzzle))
 
                     p.actions {
-                        (Button::link(html! { "View puzzle" }, puzzle.path(&author.username)).secondary().attr("data-leave", ""))
+                        (Button::link(html! { "View model" }, model.path(&author.username)).secondary().attr("data-leave", ""))
                         (Button::link(html! { "Back to dashboard" }, "/app").ghost().attr("data-leave", ""))
                     }
 
-                    (share_block(puzzle, author))
+                    (share_block(model, author))
 
                     @if viewer.is_admin {
-                        (feature_block(puzzle))
+                        (feature_block(model))
                     }
 
-                    (clues::clue_list(key, content))
+                    (clues::clue_list(key, puzzle))
 
                     details.danger-zone {
-                        summary { "Delete this puzzle" }
-                        p { "This removes the puzzle and its clues for good. Players lose their saved progress." }
-                        (Button::post(html! { "Delete puzzle" }, format!("{action}/delete")).danger())
+                        summary { "Delete this model" }
+                        p { "This removes the model and its clues for good. Players lose their saved progress." }
+                        (Button::post(html! { "Delete model" }, format!("{action}/delete")).danger())
                     }
                 }
 
@@ -68,7 +67,7 @@ pub fn edit(puzzle: &puzzle::Model, author: &user::Model, viewer: &user::Model, 
                     }
 
                     (preview::preview_tabs())
-                    (grid_preview(content, false))
+                    (grid_preview(puzzle, false))
                 }
             }
         }

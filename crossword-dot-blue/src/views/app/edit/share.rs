@@ -1,21 +1,21 @@
 use boutique::components::Button;
 use maud::{Markup, html};
 
-use crate::{components::ui::copy_button, models::{puzzle, user}};
+use crate::{components::copy_button, models::{puzzle, user}};
 
-pub fn share_block(puzzle: &puzzle::Model, author: &user::Model) -> Markup {
-    let share_url = format!("{}/share", puzzle.edit_path());
-    let link = puzzle.link(&author.username);
+pub fn share_block(model: &puzzle::Model, author: &user::Model) -> Markup {
+    let share_url = format!("{}/share", model.edit_path());
+    let link = model.link(&author.username);
 
     html! {
         section.share id="share" {
             h2 { "Share" }
-            @if puzzle.is_public {
-                p { "This puzzle is public. Anyone can play it at this link." }
+            @if model.is_public {
+                p { "This model is public. Anyone can play it at this link." }
             } @else if link.is_some() {
-                p { "Anyone with this link can play the puzzle while it stays private." }
+                p { "Anyone with this link can play the model while it stays private." }
             } @else {
-                p { "This puzzle is private and has no share link." }
+                p { "This model is private and has no share link." }
             }
 
             @if let Some(url) = &link {
@@ -25,7 +25,7 @@ pub fn share_block(puzzle: &puzzle::Model, author: &user::Model) -> Markup {
                 }
             }
 
-            @if !puzzle.is_public {
+            @if !model.is_public {
                 div.share-actions {
                     @if link.is_some() {
                         (Button::button(html! { "Reset link" }).ghost().small()

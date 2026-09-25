@@ -2,15 +2,15 @@ use crossword_tools::puzzle::Puzzle;
 use maud::{Markup, html};
 
 use crate::{
-    components::ui::markdown_textarea,
+    components::markdown,
     models::{puzzle::{self, Region}, user},
 };
 
-pub fn save_status(puzzle: &puzzle::Model) -> Markup {
+pub fn save_status(model: &puzzle::Model) -> Markup {
     html! {
-        @if puzzle.is_public { "Public" } @else { "Private" }
+        @if model.is_public { "Public" } @else { "Private" }
         ", saved at "
-        time datetime=(puzzle.updated_at.to_rfc3339()) { (puzzle.updated_at.format("%-d %b %Y, %H:%M")) }
+        time datetime=(model.updated_at.to_rfc3339()) { (model.updated_at.format("%-d %b %Y, %H:%M")) }
     }
 }
 
@@ -25,10 +25,10 @@ fn toggle(name: &str, label: &str, checked: bool) -> Markup {
     }
 }
 
-pub fn meta_form(puzzle: &puzzle::Model, author: &user::Model, viewer: &user::Model, content: &Puzzle) -> Markup {
-    let heading = puzzle.display_title();
-    let action = puzzle.edit_path();
-    let difficulty = puzzle.difficulty.map(|d| d.to_string()).unwrap_or_default();
+pub fn meta_form(model: &puzzle::Model, author: &user::Model, viewer: &user::Model, puzzle: &Puzzle) -> Markup {
+    let heading = model.display_title();
+    let action = model.edit_path();
+    let difficulty = model.difficulty.map(|d| d.to_string()).unwrap_or_default();
 
     html! {
         form.meta
@@ -46,32 +46,32 @@ pub fn meta_form(puzzle: &puzzle::Model, author: &user::Model, viewer: &user::Mo
                     id="title"
                     name="title"
                     type="text"
-                    value=(puzzle.title.as_deref().unwrap_or(""))
+                    value=(model.title.as_deref().unwrap_or(""))
                     placeholder=(heading)
                     autocomplete="off";
                 p.error id="title-error" {}
             }
 
             p.dimensions {
-                (content.width) "×" (content.height)
+                (puzzle.width) "×" (puzzle.height)
             }
 
             div.input-component {
                 label for="notes" { "Notes" }
-                (markdown_textarea(true, html! {
-                    textarea id="notes" name="notes" rows="4" data-markdown {
-                        (puzzle.notes.as_deref().unwrap_or(""))
+                (markdown(html! {
+                    textarea id="notes" name="notes" rows="4" {
+                        (model.notes.as_deref().unwrap_or(""))
                     }
-                }))
+                }).hint(true).bordered(true))
                 p.error id="notes-error" {}
             }
 
             @if author.id != viewer.id {
-                p.hint { "Editing as admin. This puzzle belongs to @" (author.username) "." }
+                p.hint { "Editing as admin. This model belongs to @" (author.username) "." }
             }
 
-            (toggle("themed", "Themed", puzzle.themed))
-            (toggle("is_cryptic", "Cryptic", puzzle.is_cryptic))
+            (toggle("themed", "Themed", model.themed))
+            (toggle("is_cryptic", "Cryptic", model.is_cryptic))
 
             div.input-component {
                 label for="difficulty" { "Difficulty" }
@@ -81,7 +81,7 @@ pub fn meta_form(puzzle: &puzzle::Model, author: &user::Model, viewer: &user::Mo
 
             div.input-component {
                 label for="region" { "Region" }
-                input id="region" name="region" type="text" list="region-options" value=(puzzle.region.as_ref().map(Region::as_str).unwrap_or(""));
+                input id="region" name="region" type="text" list="region-options" value=(model.region.as_ref().map(Region::as_str).unwrap_or(""));
                 datalist id="region-options" {
                     @for region in Region::DEFAULTS {
                         option value=(region.as_str()) {}
@@ -90,9 +90,9 @@ pub fn meta_form(puzzle: &puzzle::Model, author: &user::Model, viewer: &user::Mo
                 p.error id="region-error" {}
             }
 
-            (toggle("is_public", "Public", puzzle.is_public))
+            (toggle("is_public", "Public", model.is_public))
 
-            p.save-status id="save-status" { (save_status(puzzle)) }
+            p.save-status id="save-status" { (save_status(model)) }
         }
     }
 }

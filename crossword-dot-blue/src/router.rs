@@ -1,56 +1,56 @@
 use axum::{Router, extract::DefaultBodyLimit, routing::{get, post}};
-use crate::{AppState, handlers};
+use crate::{AppState, handlers::{app, auth, browse, crossword, lander, profile, settings, text}};
 
 pub fn create_router(state: AppState) -> Router {
     let router = Router::new()
         .route("/",
-            get(handlers::lander::lander))
+            get(lander::show))
         .route("/about",
-            get(handlers::text::about))
+            get(text::show))
         .route("/privacy",
-            get(handlers::text::privacy))
+            get(text::show))
         .route("/login",
-            get(handlers::auth::login_page)
-            .post(handlers::auth::login))
-        .route("/signup",
-            get(handlers::auth::signup_page)
-            .post(handlers::auth::signup))
+            get(auth::session::show)
+            .post(auth::session::create))
         .route("/logout",
-            post(handlers::auth::logout))
+            post(auth::session::delete))
+        .route("/signup",
+            get(auth::signup::show)
+            .post(auth::signup::create))
         .route("/crossword/{slug}",
-            get(handlers::crossword::show))
+            get(crossword::show))
         .route("/browse",
-            get(handlers::browse::index))
+            get(browse::index))
         .route("/browse/{category}",
-            get(handlers::browse::category))
+            get(browse::index))
         .route("/@{username}",
-            get(handlers::profile::show))
+            get(profile::show))
         .route("/settings",
-            get(handlers::settings::page)
-            .post(handlers::settings::update))
+            get(settings::show)
+            .post(settings::update))
         .route("/settings/avatar",
-            post(handlers::settings::avatar)
-            .layer(DefaultBodyLimit::max(handlers::settings::AVATAR_MAX_BYTES + 64 * 1024)))
+            post(settings::upload_avatar)
+            .layer(DefaultBodyLimit::max(settings::AVATAR_MAX_BYTES + 64 * 1024)))
         .route("/app",
-            get(handlers::app::index))
+            get(app::index::show))
         .route("/app/upload",
-            post(handlers::app::upload))
+            post(app::upload::create))
         .route("/app/edit/{key}",
-            get(handlers::app::edit_page)
-            .post(handlers::app::edit))
+            get(app::edit::show)
+            .post(app::edit::update))
         .route("/app/edit/{key}/share",
-            post(handlers::app::edit::reset_share)
-            .delete(handlers::app::edit::remove_share))
+            post(app::edit::reset_share)
+            .delete(app::edit::remove_share))
         .route("/app/edit/{key}/feature",
-            post(handlers::app::edit::toggle_feature))
+            post(app::edit::toggle_feature))
         .route("/app/edit/{key}/delete",
-            post(handlers::app::edit::delete))
+            post(app::edit::delete))
         .route("/app/edit/{key}/clues/{clue_id}",
-            post(handlers::app::edit::clues::update_clue))
+            post(app::edit::clues::update))
         .route("/app/edit/{key}/clues/{clue_id}/split/{position}",
-            post(handlers::app::edit::clues::toggle_split))
+            post(app::edit::clues::toggle_split))
         .route("/app/edit/{key}/clues/{clue_id}/refs/{ref_id}/remove",
-            post(handlers::app::edit::clues::remove_ref));
+            post(app::edit::clues::remove_ref));
 
     router.with_state(state)
 }

@@ -14,7 +14,7 @@ pub(super) async fn load(query: Select<puzzle::Entity>, db: &DatabaseConnection)
     let rows = query.find_also_related(user::Entity).all(db).await?;
     Ok(rows
         .into_iter()
-        .filter_map(|(puzzle, author)| author.map(|author| Entry { puzzle, author }))
+        .filter_map(|(model, author)| author.map(|author| Entry { model, author }))
         .collect())
 }
 

@@ -2,7 +2,7 @@ use boutique::htmx::partial;
 use crossword_tools::puzzle::{Cell, Clue, Direction, Puzzle};
 use maud::{Markup, html};
 
-use crate::components::ui::markdown_textarea;
+use crate::components::markdown;
 
 pub fn clue_list(key: &str, puzzle: &Puzzle) -> Markup {
     html! {
@@ -57,11 +57,10 @@ pub fn clue_row(key: &str, puzzle: &Puzzle, clue: &Clue, error: Option<&str>, as
                 }
 
                 div {
-                    (markdown_textarea(false, html! {
+                    (markdown(html! {
                         textarea.clue-body
                             name="body"
                             rows="1"
-                            data-markdown
                             aria-label="Clue"
                             placeholder="Clue"
                             data-submit-on-enter

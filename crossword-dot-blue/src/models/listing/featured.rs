@@ -40,7 +40,7 @@ pub async fn featured(db: &DatabaseConnection) -> Result<Featured, DbErr> {
 
     let mut featured = Featured::default();
     for entry in load(query, db).await? {
-        let slot = featured.slot(entry.puzzle.category());
+        let slot = featured.slot(entry.model.category());
         if slot.is_none() {
             *slot = Some(entry);
         }

@@ -2,13 +2,13 @@ use super::Entry;
 use crate::models::{category::Category, region::Region};
 
 pub fn in_category(entries: &[Entry], category: Category) -> Vec<&Entry> {
-    entries.iter().filter(|entry| entry.puzzle.category() == category).collect()
+    entries.iter().filter(|entry| entry.model.category() == category).collect()
 }
 
 pub fn regions(entries: &[Entry]) -> Vec<Region> {
     let mut regions: Vec<Region> = Vec::new();
     for entry in entries {
-        if let Some(region) = &entry.puzzle.region {
+        if let Some(region) = &entry.model.region {
             if !regions.contains(region) {
                 regions.push(region.clone());
             }

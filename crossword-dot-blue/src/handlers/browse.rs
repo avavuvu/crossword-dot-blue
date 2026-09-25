@@ -9,31 +9,27 @@ use crate::{
     AppState,
     error::{AppError, AppResult},
     models::{listing::{self, Filter}, puzzle::Category},
-    views::{self, state::ViewState},
+    views::{self, viewer::Viewer},
 };
 
 pub async fn index(
     State(state): State<AppState>,
     Extension(ctx): Extension<UserContext>,
+    category: Option<Path<String>>,
     Query(filter): Query<Filter>,
 ) -> AppResult {
-    render(&state, &ctx, filter, None).await
-}
+    let category = match category {
+        Some(Path(slug)) => Some(Category::parse(&slug).ok_or(AppError::NotFound)?),
+        None => None,
+    };
+    let filter = match category {
+        Some(category) => filter.with_category(category),
+        None => filter,
+    };
 
-pub async fn category(
-    State(state): State<AppState>,
-    Extension(ctx): Extension<UserContext>,
-    Path(category): Path<String>,
-    Query(filter): Query<Filter>,
-) -> AppResult {
-    let category = Category::parse(&category).ok_or(AppError::NotFound)?;
-    render(&state, &ctx, filter.with_category(category), Some(category)).await
-}
-
-async fn render(state: &AppState, ctx: &UserContext, filter: Filter, category: Option<Category>) -> AppResult {
     let all = listing::public(&state.db).await?;
     let regions = listing::regions(&all);
     let entries = filter.apply(all);
 
-    Ok(views::browse::index(&ViewState::from(ctx), category, &filter, &regions, &entries).into_response())
+    Ok(views::browse::page(&Viewer::from(&ctx), category, &filter, &regions, &entries).into_response())
 }

@@ -25,10 +25,11 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
 
+    "types": ["bun", "vite/client"],
     "baseUrl": ".",
     "paths": {
       "@bindings/*": ["../crossword-tools/bindings/*"]
     }
   },
-  "include": ["resources/js", "tests", "../crossword-tools/bindings"]
+  "include": ["resources/js", "src", "tests", "../crossword-tools/bindings"]
 }

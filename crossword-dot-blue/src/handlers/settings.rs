@@ -1,13 +1,19 @@
 use axum::{
     Form,
     extract::{Multipart, State},
-    response::{IntoResponse, Response},
+    response::IntoResponse,
 };
-use boutique::{AuthenticatedUser, htmx, validator::Validate};
+use boutique::{AuthenticatedUser, validator::Validate};
 use sea_orm::{ActiveModelTrait, ActiveValue::Set};
 use serde::Deserialize;
 
-use crate::{AppState, cloudinary, error::AppResult, models::user, views};
+use crate::{
+    AppState, cloudinary,
+    error::{AppError, AppResult},
+    handlers::form::{UploadError, blank_to_none, single_file},
+    models::user,
+    views,
+};
 
 pub const AVATAR_MAX_BYTES: usize = 5 * 1024 * 1024;
 const AVATAR_TYPES: [&str; 3] = ["image/jpeg", "image/png", "image/webp"];
@@ -20,10 +26,8 @@ pub struct SettingsForm {
     pub bio: String,
 }
 
-pub async fn page(
-    AuthenticatedUser(user): AuthenticatedUser<user::Model>,
-) -> AppResult {
-    Ok(views::settings::show(&user).into_response())
+pub async fn show(AuthenticatedUser(user): AuthenticatedUser<user::Model>) -> AppResult {
+    Ok(views::settings::page(&user).into_response())
 }
 
 pub async fn update(
@@ -31,73 +35,51 @@ pub async fn update(
     State(state): State<AppState>,
     Form(form): Form<SettingsForm>,
 ) -> AppResult {
-    if let Err(errors) = form.validate() {
-        return Ok(htmx::fragments::from_errors(errors).into_response());
-    }
+    form.validate()?;
 
     let mut active: user::ActiveModel = user.into();
     active.display_name = Set(blank_to_none(form.display_name));
     active.bio = Set(blank_to_none(form.bio));
     active.updated_at = Set(Some(chrono::Utc::now().fixed_offset()));
 
-    match active.update(&state.db).await {
-        Ok(saved) => Ok(views::settings::save_status(&saved).into_response()),
-        Err(e) => {
-            eprintln!("[settings] {e}");
-            Ok(htmx::fragments::error("Something went wrong saving your profile").into_response())
-        }
-    }
+    let saved = active.update(&state.db).await?;
+    Ok(views::settings::save_status(&saved).into_response())
 }
 
-pub async fn avatar(
+pub async fn upload_avatar(
     AuthenticatedUser(user): AuthenticatedUser<user::Model>,
     State(state): State<AppState>,
     mut multipart: Multipart,
 ) -> AppResult {
     if !cloudinary::is_configured() {
-        return Ok(file_error("Image uploads are not available right now"));
+        return Err(AppError::field("avatar", "Image uploads are not available right now"));
     }
 
-    let file = loop {
-        match multipart.next_field().await {
-            Ok(Some(field)) if field.name() == Some("avatar") => break field,
-            Ok(Some(_)) => continue,
-            Ok(None) => return Ok(file_error("Choose an image to upload")),
-            Err(e) => {
-                eprintln!("[avatar] {e}");
-                return Ok(file_error("Something went wrong reading the upload"));
-            }
-        }
-    };
+    let file = single_file(&mut multipart, "avatar").await.map_err(|e| match e {
+        UploadError::Missing => AppError::field("avatar", "Choose an image to upload"),
+        UploadError::Unreadable => AppError::field("avatar", "The image is too large or could not be read"),
+    })?;
 
-    let content_type = file.content_type().unwrap_or("").to_string();
+    let content_type = file.content_type.unwrap_or_default();
     if !AVATAR_TYPES.contains(&content_type.as_str()) {
-        return Ok(file_error("The image needs to be a JPEG, PNG or WebP"));
+        return Err(AppError::field("avatar", "The image needs to be a JPEG, PNG or WebP"));
     }
 
-    let bytes = match file.bytes().await {
-        Ok(bytes) => bytes,
-        Err(e) => {
-            eprintln!("[avatar] {e}");
-            return Ok(file_error("The image is too large or could not be read"));
-        }
-    };
-
+    let bytes = file.bytes;
     if bytes.len() > AVATAR_MAX_BYTES {
-        return Ok(file_error("The image needs to be 5 MB or smaller"));
+        return Err(AppError::field("avatar", "The image needs to be 5 MB or smaller"));
     }
 
     if !looks_like_image(&bytes) {
-        return Ok(file_error("The file does not look like an image"));
+        return Err(AppError::field("avatar", "The file does not look like an image"));
     }
 
-    let public_id = match cloudinary::upload(bytes.to_vec(), &user.avatar_public_id(), &content_type).await {
-        Ok(public_id) => public_id,
-        Err(e) => {
+    let public_id = cloudinary::upload(bytes.to_vec(), &user.avatar_public_id(), &content_type)
+        .await
+        .map_err(|e| {
             eprintln!("[avatar] {e}");
-            return Ok(file_error("Something went wrong uploading the image"));
-        }
-    };
+            AppError::field("avatar", "Something went wrong uploading the image")
+        })?;
 
     let mut active: user::ActiveModel = user.into();
     active.avatar_public_id = Set(Some(public_id));
@@ -111,13 +93,4 @@ fn looks_like_image(bytes: &[u8]) -> bool {
     bytes.starts_with(&[0xFF, 0xD8, 0xFF])
         || bytes.starts_with(&[0x89, b'P', b'N', b'G'])
         || (bytes.starts_with(b"RIFF") && bytes.get(8..12) == Some(b"WEBP"))
-}
-
-fn blank_to_none(value: String) -> Option<String> {
-    let trimmed = value.trim();
-    if trimmed.is_empty() { None } else { Some(trimmed.to_string()) }
-}
-
-fn file_error(message: &str) -> Response {
-    htmx::fragments::field_errors(&[("avatar", Some(message))]).into_response()
 }

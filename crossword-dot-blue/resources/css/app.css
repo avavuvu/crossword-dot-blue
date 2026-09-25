@@ -1,23 +1,7 @@
 @import "reset.css";
 @import "fonts.css";
-@import "crossword/layout.css";
-@import "crossword/theme.css";
-@import "crossword/grid.css";
-@import "components/header.css";
 @import "components/button.css";
 @import "components/input.css";
-@import "components/dropdown.css";
-@import "components/keyboard.css";
-@import "components/puzzle-card.css";
-@import "components/markdown-textarea.css";
-@import "components/footer.css";
-@import "app/auth.css";
-@import "app/edit.css";
-@import "app/dashboard.css";
-@import "app/settings.css";
-@import "views/lander.css";
-@import "views/listing.css";
-@import "views/text.css";
 
 :root {
     --color-1: #0e94dd;

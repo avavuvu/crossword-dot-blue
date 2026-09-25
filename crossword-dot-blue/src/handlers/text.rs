@@ -1,13 +1,10 @@
-use axum::Extension;
+use axum::{Extension, extract::MatchedPath, response::IntoResponse};
 use boutique::UserContext;
-use maud::Markup;
 
-use crate::views::{self, state::ViewState};
-
-pub struct TextPage {
-    pub title: &'static str,
-    pub html: &'static str,
-}
+use crate::{
+    error::{AppError, AppResult},
+    views::{self, text::TextPage, viewer::Viewer},
+};
 
 macro_rules! text_page {
     ($slug:literal, $title:literal) => {
@@ -18,10 +15,12 @@ macro_rules! text_page {
     };
 }
 
-pub async fn about(Extension(ctx): Extension<UserContext>) -> Markup {
-    views::text::show(&text_page!("about", "About"), &ViewState::from(&ctx))
-}
+pub async fn show(path: MatchedPath, Extension(ctx): Extension<UserContext>) -> AppResult {
+    let text = match path.as_str() {
+        "/about" => text_page!("about", "About"),
+        "/privacy" => text_page!("privacy", "Privacy policy"),
+        _ => return Err(AppError::NotFound),
+    };
 
-pub async fn privacy(Extension(ctx): Extension<UserContext>) -> Markup {
-    views::text::show(&text_page!("privacy", "Privacy policy"), &ViewState::from(&ctx))
+    Ok(views::text::page(&text, &Viewer::from(&ctx)).into_response())
 }

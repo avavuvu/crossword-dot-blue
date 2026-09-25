@@ -136,7 +136,7 @@ impl Model {
         (read("width"), read("height"))
     }
 
-    pub fn content(&self) -> Result<Puzzle, serde_json::Error> {
+    pub fn puzzle(&self) -> Result<Puzzle, serde_json::Error> {
         serde_json::from_value(self.content.clone())
     }
 }

@@ -2,7 +2,7 @@ use boutique::htmx::partial;
 use crossword_tools::{puzzle::Puzzle, xd};
 use maud::{Markup, html};
 
-use crate::views::grid::{self, Fill};
+use crate::components::grid::{self, Fill};
 
 const VIEWS: [(&str, &str); 3] = [("grid", "Grid"), ("json", "JSON"), ("xd", ".xd")];
 
@@ -23,14 +23,14 @@ pub fn preview_tabs() -> Markup {
     }
 }
 
-pub fn grid_preview(content: &Puzzle, as_partial: bool) -> Markup {
-    let json = serde_json::to_string_pretty(content).unwrap_or_default();
-    let xd = xd::write::write_xd(content);
+pub fn grid_preview(puzzle: &Puzzle, as_partial: bool) -> Markup {
+    let json = serde_json::to_string_pretty(puzzle).unwrap_or_default();
+    let xd = xd::write::write_xd(puzzle);
 
     maybe_partial(as_partial, "#grid-preview", html! {
         div id="grid-preview" .preview {
             div.panel.grid-panel {
-                (grid::grid_svg(content, Fill::Solution))
+                (grid::grid_svg(puzzle, Fill::Solution))
             }
             pre.panel.json-panel { code { (json) } }
             pre.panel.xd-panel { code { (xd) } }

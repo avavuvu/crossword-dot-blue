@@ -12,7 +12,7 @@ use serde::Deserialize;
 use crate::{
     AppState,
     error::{AppError, AppResult},
-    models::{puzzle, user},
+    models::{puzzle::ActiveModel, user},
     views::app::edit::{clues::{clue_row, ref_label}, grid_preview},
 };
 
@@ -31,7 +31,7 @@ enum Action {
     RemoveRef(String),
 }
 
-pub async fn update_clue(
+pub async fn update(
     AuthenticatedUser(user): AuthenticatedUser<user::Model>,
     State(state): State<AppState>,
     Path((key, clue_id)): Path<(String, String)>,
@@ -67,20 +67,20 @@ async fn save_clue(
     action: Action,
 ) -> AppResult {
     let model = find_puzzle(state, user, key).await?;
-    let mut content = model.content()?;
+    let mut puzzle = model.puzzle()?;
 
-    if !content.clues.contains_key(clue_id) {
+    if !puzzle.clues.contains_key(clue_id) {
         return Err(AppError::NotFound);
     }
 
-    let error_row = |content: &Puzzle, message: &str| -> Response {
-        clue_row(key, content, &content.clues[clue_id], Some(message), false).into_response()
+    let error_row = |puzzle: &Puzzle, message: &str| -> Response {
+        clue_row(key, puzzle, &puzzle.clues[clue_id], Some(message), false).into_response()
     };
 
     let body = form.body.split_whitespace().collect::<Vec<_>>().join(" ");
     let body = body.as_str();
     if body.is_empty() {
-        return Ok(error_row(&content, "Clue text is required"));
+        return Ok(error_row(&puzzle, "Clue text is required"));
     }
 
     let mut linked: Option<String> = None;
@@ -89,7 +89,7 @@ async fn save_clue(
     match action {
         Action::Save => {}
         Action::ToggleSplit(position) => {
-            let clue = content.clues.get_mut(clue_id).unwrap();
+            let clue = puzzle.clues.get_mut(clue_id).unwrap();
             if position == 0 || position >= clue.indexes.len() {
                 return Err(AppError::BadRequest);
             }
@@ -104,54 +104,54 @@ async fn save_clue(
             }
         }
         Action::RemoveRef(ref_id) => {
-            unlink(&mut content, clue_id, &ref_id);
+            unlink(&mut puzzle, clue_id, &ref_id);
             linked = Some(ref_id);
         }
     }
 
     if !form.add_ref.trim().is_empty() {
         let Some(ref_id) = parse_ref(&form.add_ref) else {
-            return Ok(error_row(&content, "Enter a clue like 12 Down or D12"));
+            return Ok(error_row(&puzzle, "Enter a clue like 12 Down or D12"));
         };
         if ref_id == clue_id {
-            return Ok(error_row(&content, "A clue cannot link to itself"));
+            return Ok(error_row(&puzzle, "A clue cannot link to itself"));
         }
-        if !content.clues.contains_key(&ref_id) {
-            return Ok(error_row(&content, &format!("There is no clue {}", ref_label(&ref_id))));
+        if !puzzle.clues.contains_key(&ref_id) {
+            return Ok(error_row(&puzzle, &format!("There is no clue {}", ref_label(&ref_id))));
         }
-        link(&mut content, clue_id, &ref_id);
+        link(&mut puzzle, clue_id, &ref_id);
         linked = Some(ref_id);
     }
 
-    content.clues.get_mut(clue_id).unwrap().body = body.to_string();
+    puzzle.clues.get_mut(clue_id).unwrap().body = body.to_string();
 
-    let mut active: puzzle::ActiveModel = model.into();
-    active.content = Set(serde_json::to_value(&content)?);
-    active.xd = Set(xd::write::write_xd(&content));
+    let mut active: ActiveModel = model.into();
+    active.content = Set(serde_json::to_value(&puzzle)?);
+    active.xd = Set(xd::write::write_xd(&puzzle));
     active.updated_at = Set(chrono::Utc::now().fixed_offset());
 
     if let Err(e) = active.update(&state.db).await {
         eprintln!("[clues] {e}");
-        return Ok(error_row(&content, "Something went wrong saving the clue"));
+        return Ok(error_row(&puzzle, "Something went wrong saving the clue"));
     }
 
-    let other = linked.and_then(|id| content.clues.get(&id));
+    let other = linked.and_then(|id| puzzle.clues.get(&id));
 
     Ok(html! {
-        (clue_row(key, &content, &content.clues[clue_id], None, false))
+        (clue_row(key, &puzzle, &puzzle.clues[clue_id], None, false))
         @if let Some(other) = other {
-            (clue_row(key, &content, other, None, true))
+            (clue_row(key, &puzzle, other, None, true))
         }
         @if split_changed {
-            (grid_preview(&content, true))
+            (grid_preview(&puzzle, true))
         }
     }
     .into_response())
 }
 
-fn link(content: &mut Puzzle, from: &str, to: &str) {
+fn link(puzzle: &mut Puzzle, from: &str, to: &str) {
     for (a, b) in [(from, to), (to, from)] {
-        if let Some(clue) = content.clues.get_mut(a) {
+        if let Some(clue) = puzzle.clues.get_mut(a) {
             if !clue.refs.iter().any(|r| r == b) {
                 clue.refs.push(b.to_string());
             }
@@ -159,9 +159,9 @@ fn link(content: &mut Puzzle, from: &str, to: &str) {
     }
 }
 
-fn unlink(content: &mut Puzzle, from: &str, to: &str) {
+fn unlink(puzzle: &mut Puzzle, from: &str, to: &str) {
     for (a, b) in [(from, to), (to, from)] {
-        if let Some(clue) = content.clues.get_mut(a) {
+        if let Some(clue) = puzzle.clues.get_mut(a) {
             clue.refs.retain(|r| r != b);
         }
     }

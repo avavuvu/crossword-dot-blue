@@ -7,7 +7,7 @@ use boutique::UserContext;
 use sea_orm::{ColumnTrait, EntityTrait, ModelTrait, QueryFilter};
 use serde::Deserialize;
 
-use crate::{AppState, error::{AppError, AppResult}, models::{puzzle, user}, views::{self, state::ViewState}};
+use crate::{AppState, error::{AppError, AppResult}, models::{puzzle, user}, views::{self, viewer::Viewer}};
 
 #[derive(Deserialize)]
 pub struct ShowQuery {
@@ -49,6 +49,6 @@ pub async fn show(
         return Ok(Redirect::permanent(&target).into_response());
     }
 
-    let content = model.content()?;
-    Ok(views::crossword::show(&model, &author, &content, &ViewState::from(&ctx)).into_response())
+    let puzzle = model.puzzle()?;
+    Ok(views::crossword::page(&model, &author, &puzzle, &Viewer::from(&ctx)).into_response())
 }

@@ -4,7 +4,7 @@ use axum::{
     Form,
     extract::{Path, State},
     http::{HeaderMap, StatusCode},
-    response::{IntoResponse, Redirect, Response},
+    response::{IntoResponse, Redirect},
 };
 use boutique::{AuthenticatedUser, htmx, validator::Validate};
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, ModelTrait, QueryFilter};
@@ -13,6 +13,7 @@ use serde::Deserialize;
 use crate::{
     AppState,
     error::{AppError, AppResult},
+    handlers::form::blank_to_none,
     models::{puzzle::{self, Region}, user},
     views,
 };
@@ -58,41 +59,39 @@ pub(super) async fn find_author(state: &AppState, user: &user::Model, model: &pu
         .ok_or(AppError::NotFound)
 }
 
-pub async fn edit_page(
+pub async fn show(
     AuthenticatedUser(user): AuthenticatedUser<user::Model>,
     State(state): State<AppState>,
     Path(key): Path<String>,
 ) -> AppResult {
     let model = find_puzzle(&state, &user, &key).await?;
     let author = find_author(&state, &user, &model).await?;
-    let content = model.content()?;
-    Ok(views::app::edit::edit(&model, &author, &user, &content).into_response())
+    let puzzle = model.puzzle()?;
+    Ok(views::app::edit::page(&model, &author, &user, &puzzle).into_response())
 }
 
-pub async fn edit(
+pub async fn update(
     AuthenticatedUser(user): AuthenticatedUser<user::Model>,
     State(state): State<AppState>,
     Path(key): Path<String>,
     Form(form): Form<EditForm>,
 ) -> AppResult {
-    if let Err(errors) = form.validate() {
-        return Ok(htmx::fragments::from_errors(errors).into_response());
-    }
+    form.validate()?;
 
     let difficulty = match form.difficulty.trim() {
         "" => None,
         value => match value.parse::<i16>() {
             Ok(d) if (1..=5).contains(&d) => Some(d),
-            _ => return Ok(field_error("difficulty", "Difficulty must be a number from 1 to 5")),
+            _ => return Err(AppError::field("difficulty", "Difficulty must be a number from 1 to 5")),
         },
     };
 
-    let existing = find_puzzle(&state, &user, &key).await?;
-    let author = find_author(&state, &user, &existing).await?;
+    let model = find_puzzle(&state, &user, &key).await?;
+    let author = find_author(&state, &user, &model).await?;
     let now = chrono::Utc::now().fixed_offset();
     let is_public = form.is_public.is_some();
 
-    let mut active: puzzle::ActiveModel = existing.clone().into();
+    let mut active: puzzle::ActiveModel = model.clone().into();
     active.title = Set(blank_to_none(form.title));
     active.notes = Set(blank_to_none(form.notes));
     active.difficulty = Set(difficulty);
@@ -102,20 +101,15 @@ pub async fn edit(
     active.is_public = Set(is_public);
     active.updated_at = Set(now);
 
-    if is_public && existing.published_at.is_none() {
+    if is_public && model.published_at.is_none() {
         active.published_at = Set(Some(now));
     }
     if !is_public {
         active.featured_at = Set(None);
     }
 
-    match active.update(&state.db).await {
-        Ok(saved) => Ok(views::app::edit::save_response(&saved, &author, &user).into_response()),
-        Err(e) => {
-            eprintln!("[edit] {e}");
-            Ok(htmx::fragments::error("Something went wrong saving the puzzle").into_response())
-        }
-    }
+    let saved = active.update(&state.db).await?;
+    Ok(views::app::edit::save_response(&saved, &author, &user).into_response())
 }
 
 pub async fn toggle_feature(
@@ -127,14 +121,14 @@ pub async fn toggle_feature(
         return Err(AppError::NotFound);
     }
 
-    let existing = find_puzzle(&state, &user, &key).await?;
-    let featured_at = match (existing.is_public, existing.featured_at) {
+    let model = find_puzzle(&state, &user, &key).await?;
+    let featured_at = match (model.is_public, model.featured_at) {
         (false, _) => None,
         (true, Some(_)) => None,
         (true, None) => Some(chrono::Utc::now().fixed_offset()),
     };
 
-    let mut active: puzzle::ActiveModel = existing.into();
+    let mut active: puzzle::ActiveModel = model.into();
     active.featured_at = Set(featured_at);
 
     let saved = active.update(&state.db).await?;
@@ -158,10 +152,10 @@ pub async fn remove_share(
 }
 
 async fn set_share(state: &AppState, user: &user::Model, key: &str, token: Option<String>) -> AppResult {
-    let existing = find_puzzle(state, user, key).await?;
-    let author = find_author(state, user, &existing).await?;
+    let model = find_puzzle(state, user, key).await?;
+    let author = find_author(state, user, &model).await?;
 
-    let mut active: puzzle::ActiveModel = existing.into();
+    let mut active: puzzle::ActiveModel = model.into();
     active.share_token = Set(token);
 
     let saved = active.update(&state.db).await?;
@@ -174,21 +168,12 @@ pub async fn delete(
     Path(key): Path<String>,
     headers: HeaderMap,
 ) -> AppResult {
-    let existing = find_puzzle(&state, &user, &key).await?;
-    existing.delete(&state.db).await?;
+    let model = find_puzzle(&state, &user, &key).await?;
+    model.delete(&state.db).await?;
 
     Ok(if htmx::is_htmx(&headers) {
         StatusCode::OK.into_response()
     } else {
         Redirect::to("/app").into_response()
     })
-}
-
-fn blank_to_none(value: String) -> Option<String> {
-    let trimmed = value.trim();
-    if trimmed.is_empty() { None } else { Some(trimmed.to_string()) }
-}
-
-fn field_error(field: &str, message: &str) -> Response {
-    htmx::fragments::field_errors(&[(field, Some(message))]).into_response()
 }
