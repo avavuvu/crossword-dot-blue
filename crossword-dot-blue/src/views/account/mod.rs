@@ -25,9 +25,9 @@ pub fn avatar_block(user: &user::Model) -> Markup {
                 @if cloudinary::is_configured() {
                     form.avatar-form
                         method="POST"
-                        action="/settings/avatar"
+                        action="/account/avatar"
                         enctype="multipart/form-data"
-                        hx-post="/settings/avatar"
+                        hx-post="/account/avatar"
                         hx-encoding="multipart/form-data"
                         hx-trigger="change, submit"
                         hx-target="#avatar"
@@ -51,22 +51,22 @@ pub fn avatar_block(user: &user::Model) -> Markup {
 
 pub fn page(user: &user::Model) -> Markup {
     shell(
-        head("Settings — Crossword Dot Blue").htmx().entry("editor"),
+        head("Account — Crossword Dot Blue").htmx().entry("editor").css("account"),
         &Viewer::from(user),
         html! {
-            main.settings {
-                header.settings-header {
-                    h1 { "Settings" }
+            main.account {
+                header.account-header {
+                    h1 { "Account settings" }
                     p.subtitle { a href=(user.path()) { "@" (user.username) } }
                 }
 
                 form.profile-form
                     method="POST"
-                    action="/settings"
-                    hx-post="/settings"
+                    action="/account"
+                    hx-post="/account"
                     hx-trigger="change delay:500ms, submit"
                     hx-sync="this:replace"
-                    hx-target="#settings-status"
+                    hx-target="#account-status"
                     data-autosave
                 {
                     div.input-component {
@@ -88,7 +88,7 @@ pub fn page(user: &user::Model) -> Markup {
                         p.error id="bio-error" {}
                     }
 
-                    p.save-status id="settings-status" {
+                    p.save-status id="account-status" {
                         @if user.updated_at.is_some() { (save_status(user)) }
                     }
 

@@ -2,7 +2,7 @@ use maud::{Markup, html};
 
 use crate::{
     models::{listing::{Entry, Filter}, puzzle::{Category, Region}},
-    views::{layouts::{head, shell}, listing, viewer::Viewer},
+    views::{layouts::{HeadExt, head, shell}, listing, viewer::Viewer},
 };
 
 pub fn page(
@@ -16,7 +16,7 @@ pub fn page(
     let action = category.map(|c| c.browse_path()).unwrap_or_else(|| "/browse".to_string());
 
     shell(
-        head(format!("Browse {heading} — Crossword Dot Blue")),
+        head(format!("Browse {heading} — Crossword Dot Blue")).css("listing"),
         viewer,
         html! {
             main.browse.listing {

@@ -1,45 +1,70 @@
-article.crossword {
-    & hgroup {
-        padding: 1em;
+cw-crossword {
+    max-width: var(--lg);
+    margin: 0 auto;
+    height: 100svh;
+    touch-action: manipulation;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "info           assist          assist"
+        "clue-banner    across-header   down-header"
+        "board          across-clues    down-clues"
+        "keyboard       keyboard        keyboard";
 
-        & h1 {
-            font-family: "Heal The Web";
-            font-size: clamp(2.5rem, 12vw, 5rem);
-            line-height: 1;
-            letter-spacing: -0.03em;
-            overflow-wrap: anywhere;
-            text-wrap: balance;
-        }
-
-        & .byline {
-            & a {
-                text-decoration: underline;
-            }
-        }
+    & .info {
+        grid-area: info;
+        min-width: 0;
     }
 
-    @media (width < 768px) {
-        & .assist,
-        & .info {
-            border-top: 1px solid var(--color-dark);
-        }
+    & .assist {
+        grid-area: assist;
+        min-width: 0;
+    }
 
-        & .assist {
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            gap: 0.25em 0.5em;
+    & .across-header {
+        grid-area: across-header;
+    }
 
-            & > * {
-                min-width: 0;
-            }
-        }
+    & .down-header {
+        grid-area: down-header;
+    }
 
-        & .info [data-entry-preview] {
-            letter-spacing: 0.2em;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
+    & .clue-banner {
+        grid-area: clue-banner;
+    }
+
+    & .across-clues {
+        grid-area: across-clues;
+    }
+
+    & .down-clues {
+        grid-area: down-clues;
+    }
+
+    & .across-clues,
+    & .down-clues {
+        min-height: 0;
+        overflow-y: auto;
+    }
+
+    & .keyboard {
+        grid-area: keyboard;
+        display: none;
+    }
+
+    & .intro {
+        grid-row: info-start / keyboard-end;
+        grid-column: 1 / -1;
+        z-index: 2;
+    }
+
+    & .completion {
+        grid-row: across-clues-start / across-clues-end;
+        grid-column: across-header-start / down-clues-end;
+        z-index: 1;
     }
 
     & .intro,
@@ -178,6 +203,36 @@ article.crossword {
             & button.referenced .number {
                 border-left: 10px solid var(--color-active);
             }
+        }
+    }
+}
+
+@media (width < 768px) {
+    cw-crossword {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto auto;
+        grid-template-areas:
+            "info           assist"
+            "board          board"
+            "clue-banner    clue-banner"
+            "keyboard       keyboard";
+
+        & .across-header,
+        & .down-header,
+        & .across-clues,
+        & .down-clues {
+            display: none;
+        }
+
+        & .completion {
+            grid-row: board-start / keyboard-end;
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (pointer: coarse) {
+        cw-crossword .keyboard {
+            display: block;
         }
     }
 }

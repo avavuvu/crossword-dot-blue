@@ -1,4 +1,4 @@
-import type { Game } from "../game/game";
+import type { Game } from "../_game/game";
 import { actionFromKey, actionFromKeyboardEvent } from "./action-map";
 
 const INTERACTIVE = "button, a, input, select, textarea, [popover]";

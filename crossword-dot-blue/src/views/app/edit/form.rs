@@ -67,7 +67,7 @@ pub fn meta_form(model: &puzzle::Model, author: &user::Model, viewer: &user::Mod
             }
 
             @if author.id != viewer.id {
-                p.hint { "Editing as admin. This model belongs to @" (author.username) "." }
+                p.hint { "Editing as admin. This puzzle belongs to @" (author.username) "." }
             }
 
             (toggle("themed", "Themed", model.themed))

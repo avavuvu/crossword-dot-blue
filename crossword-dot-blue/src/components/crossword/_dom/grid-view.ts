@@ -1,5 +1,5 @@
-import type { Game } from "../game/game";
-import { clueAt } from "../game/puzzle";
+import type { Game } from "../_game/game";
+import { clueAt } from "../_game/puzzle";
 
 export function attachGrid(game: Game, svg: SVGSVGElement): void {
     const cells = new Map<number, SVGElement>();

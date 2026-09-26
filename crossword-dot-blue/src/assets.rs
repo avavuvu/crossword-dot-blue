@@ -17,7 +17,7 @@ struct Chunk {
 }
 
 pub struct Entry {
-    pub script: String,
+    pub file: String,
     pub styles: Vec<String>,
 }
 
@@ -33,7 +33,7 @@ fn read() -> Option<Manifest> {
             .into_values()
             .filter(|chunk| chunk.is_entry)
             .filter_map(|chunk| {
-                let entry = Entry { script: chunk.file, styles: chunk.css };
+                let entry = Entry { file: chunk.file, styles: chunk.css };
                 chunk.name.map(|name| (name, entry))
             })
             .collect(),
@@ -41,11 +41,15 @@ fn read() -> Option<Manifest> {
 }
 
 fn lookup<T>(name: &str, pick: impl Fn(&Entry) -> T) -> Option<T> {
-    if cfg!(debug_assertions) {
+    let found = if cfg!(debug_assertions) {
         read().and_then(|manifest| manifest.get(name).map(pick))
     } else {
         MANIFEST_CACHE.get().and_then(|manifest| manifest.get(name).map(pick))
+    };
+    if found.is_none() {
+        eprintln!("[assets] no entry named {name:?} in {MANIFEST}");
     }
+    found
 }
 
 pub fn init() {
@@ -60,22 +64,10 @@ pub fn init() {
     MANIFEST_CACHE.set(manifest).ok();
 }
 
-pub fn url(name: &str) -> String {
-    match lookup(name, |entry| entry.script.clone()) {
-        Some(file) => format!("{ROUTE}/{file}"),
-        None => {
-            eprintln!("[assets] no entry named {name:?} in {MANIFEST}");
-            format!("{ROUTE}/{name}.js")
-        }
-    }
+pub fn url(name: &str) -> Option<String> {
+    lookup(name, |entry| format!("{ROUTE}/{}", entry.file))
 }
 
 pub fn styles(name: &str) -> Vec<String> {
-    match lookup(name, |entry| entry.styles.clone()) {
-        Some(files) => files.into_iter().map(|file| format!("{ROUTE}/{file}")).collect(),
-        None => {
-            eprintln!("[assets] no entry named {name:?} in {MANIFEST}");
-            Vec::new()
-        }
-    }
+    lookup(name, |entry| entry.styles.iter().map(|file| format!("{ROUTE}/{file}")).collect()).unwrap_or_default()
 }

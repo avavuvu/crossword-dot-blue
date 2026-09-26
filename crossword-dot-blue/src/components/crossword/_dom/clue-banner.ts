@@ -1,5 +1,5 @@
-import type { Game } from "../game/game";
-import { clueAt } from "../game/puzzle";
+import type { Game } from "../_game/game";
+import { clueAt } from "../_game/puzzle";
 
 export function attachClueBanner(game: Game, host: HTMLElement): void {
     const label = host.querySelector<HTMLElement>("[data-clue-label]");

@@ -1,0 +1,63 @@
+html:has(article.crossword) {
+    scroll-snap-type: y mandatory;
+}
+
+article.crossword {
+    & .above {
+        scroll-snap-align: start;
+    }
+
+    & cw-crossword {
+        scroll-snap-align: start;
+    }
+
+    & ~ footer.bottom {
+        scroll-snap-align: end;
+    }
+
+    & hgroup {
+        max-width: var(--lg);
+        margin: 0 auto;
+        padding: 1em;
+
+        & h1 {
+            font-family: "Heal The Web";
+            font-size: clamp(2.5rem, 12vw, 5rem);
+            line-height: 1;
+            letter-spacing: -0.03em;
+            overflow-wrap: anywhere;
+            text-wrap: balance;
+        }
+
+        & .byline {
+            & a {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    @media (width < 768px) {
+        & .assist,
+        & .info {
+            border-top: 1px solid var(--color-dark);
+        }
+
+        & .assist {
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.25em 0.5em;
+
+            & > * {
+                min-width: 0;
+            }
+        }
+
+        & .info [data-entry-preview] {
+            letter-spacing: 0.2em;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+
+}

@@ -1,4 +1,4 @@
-import type { Game } from "../game/game";
+import type { Game } from "../_game/game";
 import { actionsFromAttribute } from "./action-map";
 
 export type ActionsUi = {

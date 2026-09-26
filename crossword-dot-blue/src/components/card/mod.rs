@@ -51,8 +51,7 @@ pub fn card(
 
     html! {
         cw-card
-            id={ "model-" (key) }
-            data-model-key=(key)
+            key=(key)
             layout=(layout.as_str())
             tinted[tinted]
         {
@@ -120,7 +119,6 @@ fn body(model: &puzzle::Model, author: &user::Model, path: &str, is_author: bool
 }
 
 fn manage_actions(model: &puzzle::Model, author: &user::Model, path: &str) -> Markup {
-    let key = model.key();
     let edit_path = model.edit_path();
 
     html! {
@@ -134,9 +132,9 @@ fn manage_actions(model: &puzzle::Model, author: &user::Model, path: &str) -> Ma
                 .danger()
                 .small()
                 .hx_post(format!("{edit_path}/delete"))
-                .hx_target(format!("#model-{key}"))
+                .hx_target("closest cw-card")
                 .hx_swap("delete")
-                .hx_confirm("Delete this model? Players lose their progress."))
+                .hx_confirm("Delete this puzzle? Players lose their progress."))
         }
     }
 }

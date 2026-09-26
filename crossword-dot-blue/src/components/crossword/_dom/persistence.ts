@@ -1,5 +1,5 @@
-import type { Game } from "../game/game";
-import { deserialize, isEmpty, serialize, storageKey, type StoredGame } from "../game/storage";
+import type { Game } from "../_game/game";
+import { deserialize, isEmpty, serialize, storageKey, type StoredGame } from "../_game/storage";
 import type { Timer } from "./timer";
 
 const SAVE_DELAY_MS = 300;

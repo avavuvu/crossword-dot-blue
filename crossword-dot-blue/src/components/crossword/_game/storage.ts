@@ -4,25 +4,9 @@ import type { CompletionState } from "./events";
 import { isBlock } from "./puzzle";
 import { completionOf } from "./reduce/entry";
 import type { GameState } from "./state";
+import { STORAGE_VERSION, type StoredGame, storageKey } from "./stored";
 
-export const STORAGE_VERSION = 1;
-
-export type StoredGame = {
-    version: typeof STORAGE_VERSION;
-    puzzleKey: string;
-    savedAt: number;
-    solvedAt: number | null;
-    entries: string[];
-    checked: [number, boolean][];
-    cursor: number;
-    direction: Direction;
-    completion: CompletionState;
-    elapsedMs: number;
-};
-
-export function storageKey(puzzleKey: string): string {
-    return `crossword:v${STORAGE_VERSION}:${puzzleKey}`;
-}
+export { type StoredGame, storageKey };
 
 export function serialize(puzzleKey: string, state: GameState, elapsedMs: number, previous?: StoredGame | null): StoredGame {
     const now = Date.now();

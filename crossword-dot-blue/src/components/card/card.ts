@@ -1,5 +1,5 @@
-import { storageKey, type StoredGame } from "../../../resources/js/game/storage";
-import { formatDuration } from "../../../resources/js/game/time";
+import { storageKey, type StoredGame } from "../crossword/_game/stored";
+import { formatDuration } from "../crossword/_game/time";
 
 type Status = { kind: "solved"; label: string } | { kind: "in-progress"; label: string };
 
@@ -29,7 +29,7 @@ export class CwCard extends HTMLElement {
     }
 
     refresh(): void {
-        const key = this.dataset.puzzleKey;
+        const key = this.getAttribute("key");
         if (!key) return;
 
         const stored = read(key);

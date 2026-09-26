@@ -1,5 +1,5 @@
-import type { CompletionState } from "../game/events";
-import type { Game } from "../game/game";
+import type { CompletionState } from "../_game/events";
+import type { Game } from "../_game/game";
 
 export type Screens = {
     start(): void;

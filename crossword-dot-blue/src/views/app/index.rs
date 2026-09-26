@@ -4,7 +4,7 @@ use crate::{
     components::{Actions, Layout, card},
     models::{puzzle, user},
     components::grid::Fill,
-    views::{self, layouts::{dashboard_shell, head}, viewer::Viewer},
+    views::{self, layouts::{HeadExt, dashboard_shell, head}, viewer::Viewer},
 };
 
 pub fn page(user: &user::Model, puzzles: Vec<puzzle::Model>) -> Markup {
@@ -12,7 +12,7 @@ pub fn page(user: &user::Model, puzzles: Vec<puzzle::Model>) -> Markup {
     let viewer = Viewer::from(user);
 
     dashboard_shell(
-        head("Dashboard — Crossword Dot Blue").htmx(),
+        head("Dashboard — Crossword Dot Blue").htmx().css("dashboard"),
         &viewer,
         html! {
             main.dashboard {

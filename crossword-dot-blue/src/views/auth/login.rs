@@ -1,11 +1,11 @@
 use boutique::components::{Button, Input};
 use maud::{Markup, html};
 
-use crate::views::{layouts::{head, shell}, viewer::Viewer};
+use crate::views::{layouts::{HeadExt, head, shell}, viewer::Viewer};
 
 pub fn page() -> Markup {
     shell(
-        head("Log in").htmx(),
+        head("Log in").htmx().css("auth"),
         &Viewer::guest(),
         html! {
             main.auth {

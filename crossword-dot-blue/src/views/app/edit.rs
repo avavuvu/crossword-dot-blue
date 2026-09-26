@@ -34,7 +34,7 @@ pub fn page(model: &puzzle::Model, author: &user::Model, viewer: &user::Model, p
     let action = model.edit_path();
 
     shell(
-        head(format!("{heading} — Crossword Dot Blue")).htmx().entry("editor"),
+        head(format!("{heading} — Crossword Dot Blue")).htmx().entry("editor").css("edit"),
         &Viewer::from(viewer),
         html! {
             main.edit {
@@ -42,7 +42,7 @@ pub fn page(model: &puzzle::Model, author: &user::Model, viewer: &user::Model, p
                     (form::meta_form(model, author, viewer, puzzle))
 
                     p.actions {
-                        (Button::link(html! { "View model" }, model.path(&author.username)).secondary().attr("data-leave", ""))
+                        (Button::link(html! { "View puzzle" }, model.path(&author.username)).secondary().attr("data-leave", ""))
                         (Button::link(html! { "Back to dashboard" }, "/app").ghost().attr("data-leave", ""))
                     }
 
@@ -55,9 +55,9 @@ pub fn page(model: &puzzle::Model, author: &user::Model, viewer: &user::Model, p
                     (clues::clue_list(key, puzzle))
 
                     details.danger-zone {
-                        summary { "Delete this model" }
-                        p { "This removes the model and its clues for good. Players lose their saved progress." }
-                        (Button::post(html! { "Delete model" }, format!("{action}/delete")).danger())
+                        summary { "Delete this puzzle" }
+                        p { "This removes the puzzle and its clues for good. Players lose their saved progress." }
+                        (Button::post(html! { "Delete puzzle" }, format!("{action}/delete")).danger())
                     }
                 }
 

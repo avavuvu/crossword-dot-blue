@@ -19,7 +19,7 @@ pub const AVATAR_MAX_BYTES: usize = 5 * 1024 * 1024;
 const AVATAR_TYPES: [&str; 3] = ["image/jpeg", "image/png", "image/webp"];
 
 #[derive(Deserialize, Validate)]
-pub struct SettingsForm {
+pub struct AccountSettingsForm {
     #[validate(length(max = 60, message = "Display name must be 60 characters or fewer"))]
     pub display_name: String,
     #[validate(length(max = 1000, message = "Bio must be 1000 characters or fewer"))]
@@ -27,13 +27,13 @@ pub struct SettingsForm {
 }
 
 pub async fn show(AuthenticatedUser(user): AuthenticatedUser<user::Model>) -> AppResult {
-    Ok(views::settings::page(&user).into_response())
+    Ok(views::account::page(&user).into_response())
 }
 
 pub async fn update(
     AuthenticatedUser(user): AuthenticatedUser<user::Model>,
     State(state): State<AppState>,
-    Form(form): Form<SettingsForm>,
+    Form(form): Form<AccountSettingsForm>,
 ) -> AppResult {
     form.validate()?;
 
@@ -43,7 +43,7 @@ pub async fn update(
     active.updated_at = Set(Some(chrono::Utc::now().fixed_offset()));
 
     let saved = active.update(&state.db).await?;
-    Ok(views::settings::save_status(&saved).into_response())
+    Ok(views::account::save_status(&saved).into_response())
 }
 
 pub async fn upload_avatar(
@@ -86,7 +86,7 @@ pub async fn upload_avatar(
     active.updated_at = Set(Some(chrono::Utc::now().fixed_offset()));
 
     let saved = active.update(&state.db).await?;
-    Ok(views::settings::avatar_block(&saved).into_response())
+    Ok(views::account::avatar_block(&saved).into_response())
 }
 
 fn looks_like_image(bytes: &[u8]) -> bool {

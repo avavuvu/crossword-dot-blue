@@ -7,6 +7,6 @@ pub mod layouts;
 pub mod listing;
 pub mod markdown;
 pub mod profile;
-pub mod settings;
+pub mod account;
 pub mod viewer;
 pub mod text;

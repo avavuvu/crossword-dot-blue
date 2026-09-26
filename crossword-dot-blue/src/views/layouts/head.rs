@@ -4,6 +4,7 @@ use crate::assets;
 
 pub trait HeadExt {
     fn entry(self, name: &str) -> Self;
+    fn css(self, name: &str) -> Self;
 }
 
 impl HeadExt for Head {
@@ -11,7 +12,17 @@ impl HeadExt for Head {
         for href in assets::styles(name) {
             self = self.stylesheet(href);
         }
-        self.module(assets::url(name))
+        match assets::url(name) {
+            Some(src) => self.module(src),
+            None => self,
+        }
+    }
+
+    fn css(self, name: &str) -> Self {
+        match assets::url(name) {
+            Some(href) => self.stylesheet(href),
+            None => self,
+        }
     }
 }
 

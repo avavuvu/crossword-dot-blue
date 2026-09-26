@@ -1,5 +1,5 @@
 use axum::{Router, extract::DefaultBodyLimit, routing::{get, post}};
-use crate::{AppState, handlers::{app, auth, browse, crossword, lander, profile, settings, text}};
+use crate::{AppState, handlers::{app, auth, browse, crossword, lander, profile, account, text}};
 
 pub fn create_router(state: AppState) -> Router {
     let router = Router::new()
@@ -25,12 +25,12 @@ pub fn create_router(state: AppState) -> Router {
             get(browse::index))
         .route("/@{username}",
             get(profile::show))
-        .route("/settings",
-            get(settings::show)
-            .post(settings::update))
-        .route("/settings/avatar",
-            post(settings::upload_avatar)
-            .layer(DefaultBodyLimit::max(settings::AVATAR_MAX_BYTES + 64 * 1024)))
+        .route("/account",
+            get(account::show)
+            .post(account::update))
+        .route("/account/avatar",
+            post(account::upload_avatar)
+            .layer(DefaultBodyLimit::max(account::AVATAR_MAX_BYTES + 64 * 1024)))
         .route("/app",
             get(app::index::show))
         .route("/app/upload",

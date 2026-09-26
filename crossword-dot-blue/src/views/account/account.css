@@ -1,4 +1,4 @@
-main.settings {
+main.account {
     max-width: var(--md);
     margin: 0 auto;
     padding: 2em 1em 4em;
@@ -6,7 +6,7 @@ main.settings {
     flex-direction: column;
     gap: 2em;
 
-    & .settings-header {
+    & .account-header {
         padding: 2em 1em;
         color: var(--color-surface);
         background-color: var(--color-1);

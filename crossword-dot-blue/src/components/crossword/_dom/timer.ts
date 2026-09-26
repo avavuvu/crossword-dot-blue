@@ -1,5 +1,5 @@
-import type { Game } from "../game/game";
-import { formatDuration, isoDuration } from "../game/time";
+import type { Game } from "../_game/game";
+import { formatDuration, isoDuration } from "../_game/time";
 
 export type Timer = {
     elapsed(): number;

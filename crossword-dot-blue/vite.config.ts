@@ -1,5 +1,12 @@
 import { defineConfig } from "vite";
 import { fileURLToPath } from "node:url";
+import { globSync } from "node:fs";
+
+const viewStyles = Object.fromEntries(
+    globSync("src/views/**/*.css")
+        .map((file) => [file.split("/").pop()!.replace(/\.css$/, ""), file])
+        .filter(([name]) => !name.startsWith("_")),
+);
 
 export default defineConfig({
     publicDir: false,
@@ -15,8 +22,8 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 site: "resources/js/site.ts",
-                crossword: "resources/js/crossword.ts",
                 editor: "resources/js/editor.ts",
+                ...viewStyles,
             },
             output: {
                 entryFileNames: "[name]-[hash].js",

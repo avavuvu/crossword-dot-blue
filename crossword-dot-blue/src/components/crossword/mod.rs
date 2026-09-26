@@ -1,78 +1,53 @@
 mod action;
 
-use boutique::{components::Button, views::base};
+use boutique::components::Button;
+use crossword_macros::component;
 use crossword_tools::puzzle::{Cell, Clue, Direction, Puzzle};
 use maud::{Markup, PreEscaped, html};
 
 use action::{UiAction, actions};
 
 use crate::{
-    components::{Icon, footer, grid::{self, Fill}, header, share_button},
-    models::{puzzle::{self, Category, get_category}, user},
-    views::{layouts::{HeadExt, head}, markdown, viewer::Viewer},
+    components::{Icon, grid::{self, Fill}},
+    models::puzzle::{self, Category, get_category},
+    views::markdown,
 };
+
+#[component]
+pub fn crossword(#[builder(start_fn)] model: &puzzle::Model, #[builder(start_fn)] puzzle: &Puzzle) -> Markup {
+    html! {
+        cw-crossword key=(model.key()) style=(format!("--cols: {}; --rows: {}", puzzle.width, puzzle.height)) {
+            script type="application/json" data-puzzle { (json_script(puzzle)) }
+
+            section.info {
+                time data-timer datetime="PT0S" { "0:00" }
+                p data-entry-preview {}
+            }
+
+            (assist_bar(puzzle))
+            (clue_banner())
+            (keyboard(puzzle))
+
+            section.board {
+                div.frame tabindex="0" {
+                    (grid::grid_svg(puzzle, Fill::Empty))
+                }
+            }
+
+            (clue_group(puzzle, Direction::Across, "Across"))
+            (clue_group(puzzle, Direction::Down, "Down"))
+
+            (intro(model, puzzle))
+            (won())
+            (almost())
+        }
+    }
+}
 
 fn json_script(puzzle: &Puzzle) -> Markup {
     let json = serde_json::to_string(puzzle).unwrap_or_default();
     PreEscaped(json.replace('<', "\\u003c"))
 }
-
-pub fn page(model: &puzzle::Model, author: &user::Model, puzzle: &Puzzle, viewer: &Viewer) -> Markup {
-    let title = model.display_title();
-    let title = title.as_str();
-
-    base(
-        &head(format!("{title} — Crossword Dot Blue")).entry("crossword"),
-        html! {
-            article.crossword data-key=(model.key()) {
-                div.above {
-                    (header(viewer))
-                    hgroup {
-                        h1 { (title) }
-                        p.byline {
-                            "by "
-                            a href=(format!("/@{}", author.username)) {
-                                "@" (author.username)
-                            }
-                        }
-                        @if model.is_public {
-                            (share_button(&model.url(&author.username)))
-                        }
-                    }
-                }
-
-                div.game {
-                    section.info {
-                        time data-timer datetime="PT0S" { "0:00" }
-                        p data-entry-preview {}
-                    }
-
-                    (assist_bar(puzzle))
-
-                    (clue_banner())
-
-                    (keyboard(puzzle))
-
-                    section.board {
-                        crossword-board style=(format!("--cols: {}; --rows: {}", puzzle.width, puzzle.height)) {
-                            script type="application/json" data-puzzle { (json_script(puzzle)) }
-                            (grid::grid_svg(puzzle, Fill::Empty))
-                        }
-                    }
-
-                    (clue_group(puzzle, Direction::Across, "Across"))
-                    (clue_group(puzzle, Direction::Down, "Down"))
-
-                    (intro(model, puzzle))
-                    (won())
-                    (almost())
-                }
-            }
-            (footer())
-        }
-    )
-}
-
 
 fn intro(model: &puzzle::Model, puzzle: &Puzzle) -> Markup {
     html! {

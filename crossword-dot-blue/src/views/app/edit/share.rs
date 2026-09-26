@@ -11,11 +11,11 @@ pub fn share_block(model: &puzzle::Model, author: &user::Model) -> Markup {
         section.share id="share" {
             h2 { "Share" }
             @if model.is_public {
-                p { "This model is public. Anyone can play it at this link." }
+                p { "This puzzle is public. Anyone can play it at this link." }
             } @else if link.is_some() {
-                p { "Anyone with this link can play the model while it stays private." }
+                p { "Anyone with this link can play the puzzle while it stays private." }
             } @else {
-                p { "This model is private and has no share link." }
+                p { "This puzzle is private and has no share link." }
             }
 
             @if let Some(url) = &link {

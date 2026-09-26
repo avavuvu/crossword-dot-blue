@@ -6,14 +6,14 @@ use maud::{Markup, html};
 use crate::{
     components::{Layout, card, footer, header},
     models::{listing::{self, Entry, Featured}, puzzle::Category},
-    views::{layouts::head, listing as listing_view, viewer::Viewer},
+    views::{layouts::{HeadExt, head}, listing as listing_view, viewer::Viewer},
 };
 
 const PER_CATEGORY: usize = 6;
 
 pub fn page(viewer: &Viewer, buzzwords: &[&str], featured: &Featured, public: &[Entry]) -> Markup {
     base(
-        &head("Crossword dot blue"),
+        &head("Crossword dot blue").css("lander").css("listing"),
         html! {
             (header(viewer))
             section.hero { (intro::intro(buzzwords)) }

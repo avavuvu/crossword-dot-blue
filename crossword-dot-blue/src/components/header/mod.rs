@@ -12,7 +12,7 @@ pub fn header(viewer: &Viewer) -> Markup {
             nav {
                 @if viewer.is_authenticated() {
                     (Button::link(html! { "Dashboard" }, "/app").ghost().small())
-                    (Button::link(html! { "Settings" }, "/settings").ghost().small())
+                    (Button::link(html! { "Account" }, "/account").ghost().small())
                     (Button::post(html! { "Log out" }, "/logout").ghost().small())
                 } @else {
                     (Button::link(html! { "Log in" }, "/login").ghost().small())

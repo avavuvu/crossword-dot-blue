@@ -1,0 +1,15 @@
+cw-crossword .board {
+    grid-area: board;
+    min-height: 0;
+    min-width: 0;
+    container-type: size;
+    display: grid;
+    place-items: center;
+
+    & .frame {
+        display: block;
+        aspect-ratio: var(--cols) / var(--rows);
+        width: min(100%, calc(100cqh * var(--cols) / var(--rows)));
+        outline: none;
+    }
+}

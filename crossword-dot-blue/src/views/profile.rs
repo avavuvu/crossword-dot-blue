@@ -2,7 +2,7 @@ use maud::{Markup, html};
 
 use crate::{
     models::{listing::{Entry, Filter}, puzzle::Region, user},
-    views::{layouts::{head, shell}, listing, markdown, viewer::Viewer},
+    views::{layouts::{HeadExt, head, shell}, listing, markdown, viewer::Viewer},
 };
 
 pub fn avatar(user: &user::Model) -> Markup {
@@ -27,7 +27,7 @@ pub fn page(
     let is_owner = viewer.user_id.as_deref() == Some(profile.id.as_str());
 
     shell(
-        head(format!("@{} — Crossword Dot Blue", profile.username)),
+        head(format!("@{} — Crossword Dot Blue", profile.username)).css("listing"),
         viewer,
         html! {
             main.profile.listing {

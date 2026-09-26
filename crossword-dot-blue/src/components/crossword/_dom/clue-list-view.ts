@@ -1,5 +1,5 @@
-import type { Game } from "../game/game";
-import { clueIdAt, opposite } from "../game/puzzle";
+import type { Game } from "../_game/game";
+import { clueIdAt, opposite } from "../_game/puzzle";
 
 export function attachClueList(game: Game, root: HTMLElement): void {
     const buttons = new Map<string, HTMLButtonElement>();

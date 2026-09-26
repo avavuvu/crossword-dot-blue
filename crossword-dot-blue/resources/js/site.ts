@@ -1,15 +1,6 @@
 import "../css/app.css";
 
 import.meta.glob("../../src/components/**/*.css", { eager: true });
-import.meta.glob(
-    [
-        "../../src/views/**/*.css",
-        "!../../src/views/crossword/*.css",
-        "!../../src/views/app/edit/edit.css",
-        "!../../src/views/settings/settings.css",
-    ],
-    { eager: true },
-);
 import.meta.glob(["../../src/components/**/*.ts", "!../../src/components/**/_*.ts"], { eager: true });
 
 const FEEDBACK_MS = 1500;
@@ -54,4 +45,3 @@ document.addEventListener("keydown", (event) => {
     event.preventDefault();
     field.form?.requestSubmit();
 });
-

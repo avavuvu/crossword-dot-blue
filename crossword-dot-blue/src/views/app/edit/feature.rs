@@ -16,8 +16,8 @@ pub fn feature_block(model: &puzzle::Model) -> Markup {
                     .hx_target("#feature")
                     .hx_swap("outerHTML"))
             } @else if model.is_public {
-                p { "Show this model on the front page." }
-                (Button::button(html! { "Feature this model" }).secondary().small()
+                p { "Show this puzzle on the front page." }
+                (Button::button(html! { "Feature this puzzle" }).secondary().small()
                     .hx_post(&feature_url)
                     .hx_target("#feature")
                     .hx_swap("outerHTML"))
