@@ -13,7 +13,7 @@ name = "migration"
 path = "src/main.rs"
 
 [dependencies]
-boutique = { git = "https://github.com/avavuvu/boutique.git", rev = "009486ce077a5e21e5bee8b3aae8d8216742c388", features = ["migration"] }
+boutique = { git = "https://github.com/avavuvu/boutique.git", rev = "4c89ec487f87545d75553c7d807d879128d9e779", features = ["migration"] }
 dotenvy = "0.15"
 sea-orm-migration = { version = "1", features = ["sqlx-postgres", "runtime-tokio-rustls"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
