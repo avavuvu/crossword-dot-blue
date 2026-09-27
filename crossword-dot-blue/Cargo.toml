@@ -10,8 +10,8 @@ local = ["boutique/devtools"]
 [dependencies]
 axum = { version = "0.8.9", features = ["multipart"] }
 axum-extra = { version = "0.10", features = ["cookie"] }
-boutique = { git = "https://github.com/avavuvu/boutique.git", rev = "6ac8593083d3bf60408e13761c4214927ec0d1a9", features = ["migration", "cloudinary"] }
-bq_components = { git = "https://github.com/avavuvu/boutique.git", rev = "6ac8593083d3bf60408e13761c4214927ec0d1a9" }
+boutique = { git = "https://github.com/avavuvu/boutique.git", rev = "009486ce077a5e21e5bee8b3aae8d8216742c388", features = ["migration", "cloudinary"] }
+bq_components = { git = "https://github.com/avavuvu/boutique.git", rev = "009486ce077a5e21e5bee8b3aae8d8216742c388" }
 chrono = "0.4.45"
 crossword-tools = { path = "../crossword-tools" }
 dotenvy = "0.15.7"

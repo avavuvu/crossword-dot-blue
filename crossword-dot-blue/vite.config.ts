@@ -28,7 +28,6 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 site: "resources/js/site.ts",
-                editor: "resources/js/editor.ts",
                 ...viewStyles,
             },
             output: {

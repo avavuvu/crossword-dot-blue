@@ -5,6 +5,9 @@
     --font-display-family: "Heal The Web", var(--font-family);
     --font-board-family: var(--font-family);
 
+    --ink: #222222;
+    --paper: #fefefe;
+
     --color-1: #0e94dd;
     --color-1-light: #cfe8ff;
     --color-2: #fab81d;
@@ -12,10 +15,10 @@
     --color-3: #a0cc40;
     --color-4: #ea5498;
 
-    --color-surface: #fefefe;
-    --color-text: #222222;
-    --color-border: #222222;
-    --color-contrast: #222222;
+    --color-surface: var(--paper);
+    --color-text: var(--ink);
+    --color-border: var(--ink);
+    --color-contrast: var(--ink);
     --color-on-contrast: var(--color-surface);
     --color-on-brand: var(--color-surface);
     --color-wrong: #cc2222;
@@ -34,6 +37,12 @@
     --color-board-border: var(--color-border);
     --color-board-text: var(--color-text);
     --color-board-shaded: color-mix(in srgb, var(--color-border) 20%, var(--color-board-surface));
+
+    --color-primary: var(--color-1);
+    --color-error: var(--color-wrong);
+    --color-muted: color-mix(in srgb, var(--color-text) 45%, var(--color-surface));
+    --color-surface-muted: color-mix(in srgb, var(--color-text) 7%, var(--color-surface));
+    --font-body: var(--font-family);
 }
 
 [data-theme="green"] {

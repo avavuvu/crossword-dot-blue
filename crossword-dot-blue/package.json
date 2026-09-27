@@ -12,7 +12,7 @@
     },
     "devDependencies": {
         "@types/bun": "latest",
-        "boutique": "github:avavuvu/boutique#6ac8593083d3bf60408e13761c4214927ec0d1a9",
+        "boutique": "github:avavuvu/boutique#009486ce077a5e21e5bee8b3aae8d8216742c388",
         "concurrently": "^10.0.5",
         "typescript": "^5.0.0",
         "vite": "^8.3.0"

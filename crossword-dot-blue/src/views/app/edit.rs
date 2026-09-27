@@ -35,7 +35,7 @@ pub fn page(model: &puzzle::Model, author: &user::Model, editor: &user::Model, v
     let action = model.edit_path();
 
     shell(
-        head(format!("{heading} — Crossword Dot Blue")).htmx().entry("editor").css("edit"),
+        head(format!("{heading} — Crossword Dot Blue")).htmx().css("edit"),
         viewer,
         html! {
             main.edit {
