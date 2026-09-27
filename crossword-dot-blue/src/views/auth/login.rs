@@ -3,10 +3,10 @@ use maud::{Markup, html};
 
 use crate::views::{layouts::{HeadExt, head, shell}, viewer::Viewer};
 
-pub fn page() -> Markup {
+pub fn page(viewer: &Viewer) -> Markup {
     shell(
         head("Log in").htmx().css("auth"),
-        &Viewer::guest(),
+        viewer,
         html! {
             main.auth {
                 div.auth-form {

@@ -8,6 +8,7 @@ use ts_rs::TS;
 pub enum UiAction {
     Start,
     Dismiss,
+    Options,
     Reset,
     Hint,
     PrevClue,
@@ -27,6 +28,7 @@ impl UiAction {
         match self {
             UiAction::Start => "start",
             UiAction::Dismiss => "dismiss",
+            UiAction::Options => "options",
             UiAction::Reset => "reset",
             UiAction::Hint => "hint",
             UiAction::PrevClue => "prev-clue",
@@ -50,5 +52,5 @@ impl Render for UiAction {
 }
 
 pub fn actions(list: &[UiAction]) -> String {
-    list.iter().map(|a| a.as_str()).collect::<Vec<_>>().join(" ")
+    list.iter().map(|action| action.as_str()).collect::<Vec<_>>().join(" ")
 }

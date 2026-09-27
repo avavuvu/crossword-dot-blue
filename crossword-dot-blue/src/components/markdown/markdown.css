@@ -39,7 +39,7 @@ cw-markdown {
 
         & .marker {
             text-decoration: none;
-            color: color-mix(in srgb, var(--color-dark) 40%, transparent);
+            color: color-mix(in srgb, var(--color-text) 40%, transparent);
         }
     }
 
@@ -70,7 +70,7 @@ cw-markdown {
 
 cw-markdown[bordered] {
     & .editor > * {
-        border-color: var(--color-dark);
+        border-color: var(--color-border);
     }
 
     & .editor > .backdrop {

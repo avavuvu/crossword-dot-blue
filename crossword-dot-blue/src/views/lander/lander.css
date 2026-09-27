@@ -11,7 +11,7 @@ main.lander {
 
 section.hero {
     padding: 0 1em 1em;
-    background-color: var(--color-dark);
+    background-color: var(--color-contrast);
 
     & .intro {
         display: contents;
@@ -90,7 +90,7 @@ section.hero .intro {
 
     .buzzword {
         fill: var(--color-4);
-        font-family: "Heal The Web";
+        font-family: var(--font-display-family);
         font-size: 166.43px;
         letter-spacing: -0.04em;
 

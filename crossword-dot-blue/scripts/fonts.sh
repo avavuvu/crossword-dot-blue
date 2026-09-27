@@ -16,5 +16,9 @@ subset() {
 }
 
 subset HealTheWebA-Regular.otf heal-the-web-a-regular
+subset Cabin-Regular.ttf cabin-regular
+subset Cabin-Italic.ttf cabin-italic
+subset Cabin-Bold.ttf cabin-bold
+subset Cabin-BoldItalic.ttf cabin-bold-italic
 
 ls -la "$OUT"

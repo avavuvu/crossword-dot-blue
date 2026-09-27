@@ -1,33 +1,10 @@
 @import "reset.css";
 @import "fonts.css";
+@import "themes.css";
 @import "components/button.css";
 @import "components/input.css";
 
 :root {
-    --color-1: #0e94dd;
-    --color-1-light: #cfe8ff;
-    --color-2: #fab81d;
-    --color-2-light: gold;
-    --color-3: #a0cc40;
-    --color-4: #ea5498;
-    --color-dark: #222222;
-    --color-surface: #fefefe;
-    --color-wrong: #cc2222;
-
-    --color-big: var(--color-1);
-    --color-midi: var(--color-4);
-    --color-mini: var(--color-3);
-
-    --color-correct: var(--color-1);
-    --color-text: var(--color-dark);
-    --color-active: var(--color-2-light);
-    --color-secondary-active: var(--color-1-light);
-    --color-focus: var(--color-1);
-
-    --color-board-block: var(--color-1);
-    --color-board-border: var(--color-dark);
-    --color-board-text: var(--color-text);
-
     --xs: 30em;
     --sm: 640px;
     --md: 768px;

@@ -67,8 +67,20 @@ cw-crossword {
         z-index: 1;
     }
 
+    & .options {
+        grid-row: board-start / board-end;
+        grid-column: 1 / -1;
+        z-index: 2;
+        overflow-y: auto;
+
+        & cw-options {
+            width: min(100%, var(--xs));
+        }
+    }
+
     & .intro,
-    & .completion {
+    & .completion,
+    & .options {
         display: flex;
         flex-direction: column;
         padding-top: 10%;
@@ -110,6 +122,12 @@ cw-crossword {
             min-width: 4em;
         }
 
+        & > .options-button {
+            min-width: 0;
+            margin-left: auto;
+            font-weight: bold;
+        }
+
         & > .grouped {
             display: none;
         }
@@ -128,8 +146,8 @@ cw-crossword {
     & .clue-banner,
     & .across-header,
     & .down-header {
-        border-top: 1px solid var(--color-dark);
-        border-bottom: 1px solid var(--color-dark);
+        border-top: 1px solid var(--color-border);
+        border-bottom: 1px solid var(--color-border);
     }
 
     & .clue-header {
@@ -224,7 +242,8 @@ cw-crossword {
             display: none;
         }
 
-        & .completion {
+        & .completion,
+        & .options {
             grid-row: board-start / keyboard-end;
             grid-column: 1 / -1;
         }

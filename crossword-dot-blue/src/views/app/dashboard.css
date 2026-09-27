@@ -12,11 +12,11 @@ main.dashboard {
         justify-content: space-between;
         gap: 1em;
         background-color: var(--color-1);
-        color: var(--color-surface);
+        color: var(--color-on-brand);
         padding: 2em 1em;
 
         & h1 {
-            font-family: "Heal The Web";
+            font-family: var(--font-display-family);
             font-size: 3em;
             letter-spacing: -0.03em;
             line-height: 1;
@@ -42,7 +42,7 @@ main.dashboard {
         gap: 1em;
         padding: 1em;
         margin-bottom: 1em;
-        color: var(--color-surface);
+        color: var(--color-on-brand);
 
         & h2 {
             font-weight: bold;
@@ -61,7 +61,7 @@ main.dashboard {
     & .empty-state {
         padding: 2em;
         text-align: center;
-        border: 1px dashed var(--color-dark);
+        border: 1px dashed var(--color-border);
         opacity: 0.7;
 
         & a {
@@ -108,7 +108,7 @@ main.dashboard {
             align-items: center;
             gap: 0.25em;
             padding: 1.25em 1em;
-            border: 1px dashed var(--color-dark);
+            border: 1px dashed var(--color-border);
             text-align: center;
             cursor: pointer;
             position: relative;

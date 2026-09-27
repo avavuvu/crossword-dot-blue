@@ -7,15 +7,11 @@ header.top {
     z-index: 10;
     height: var(--header-height);
     padding: 1em 2em;
-    background-color: var(--color-dark);
+    background-color: var(--color-contrast);
 
     & a.logo {
         display: block;
         height: 100%;
-
-        & img {
-            height: 100%;
-        }
     }
 
     & nav {
@@ -23,15 +19,15 @@ header.top {
         gap: 0.5em;
 
         & .button.ghost {
-            color: var(--color-surface);
+            color: var(--color-on-contrast);
 
             &:hover {
-                background-color: color-mix(in srgb, var(--color-surface) 15%, transparent);
+                background-color: color-mix(in srgb, var(--color-on-contrast) 15%, transparent);
             }
         }
 
         & .button.primary {
-            border-color: var(--color-surface);
+            border-color: var(--color-on-contrast);
         }
     }
 }

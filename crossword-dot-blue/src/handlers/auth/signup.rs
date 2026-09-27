@@ -1,18 +1,16 @@
-use axum::{Extension, Form, extract::State, response::{IntoResponse, Redirect}};
-use boutique::{UserContext, htmx, session};
+use axum::{Form, extract::State, response::{IntoResponse, Redirect}};
+use boutique::{htmx, session};
 use boutique::validator::{Validate, ValidationError};
-use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter};
+use sea_orm::{ActiveModelTrait, ColumnTrait, DbErr, EntityTrait, QueryFilter, SqlErr, TransactionTrait};
 use serde::Deserialize;
 
-use crate::{AppState, error::{AppError, AppResult}, models::user, views};
+use crate::{AppState, config, error::{AppError, AppResult}, models::{progress, user}, player::{Player, SetPlayer}, views::{self, viewer::Viewer}};
 
-fn alphanumeric(value: &str) -> Result<(), ValidationError> {
-    if value.chars().all(|c| c.is_alphanumeric()) {
+fn ascii_alphanumeric(value: &str) -> Result<(), ValidationError> {
+    if value.bytes().all(|byte| byte.is_ascii_alphanumeric()) {
         Ok(())
     } else {
-        let mut e = ValidationError::new("alphanumeric");
-        e.message = Some("Username can only contain letters and numbers".into());
-        Err(e)
+        Err(ValidationError::new("ascii_alphanumeric"))
     }
 }
 
@@ -21,7 +19,7 @@ pub struct SignupForm {
     #[validate(email(message = "Enter a valid email address"))]
     pub email: String,
     #[validate(
-        custom(function = "alphanumeric", message = "Username can only contain letters and numbers"),
+        custom(function = "ascii_alphanumeric", message = "Username can only contain letters and numbers"),
         length(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
     )]
     pub username: String,
@@ -29,28 +27,25 @@ pub struct SignupForm {
     pub password: String,
 }
 
-pub async fn show(Extension(ctx): Extension<UserContext>) -> AppResult {
-    if ctx.is_authenticated() {
+pub async fn show(viewer: Viewer) -> AppResult {
+    if viewer.is_authenticated() {
         return Ok(Redirect::to("/app").into_response());
     }
 
-    Ok(views::auth::signup::page().into_response())
+    Ok(views::auth::signup::page(&viewer).into_response())
 }
 
-pub async fn create(State(state): State<AppState>, Form(form): Form<SignupForm>) -> AppResult {
+pub async fn create(State(state): State<AppState>, player: Player, Form(form): Form<SignupForm>) -> AppResult {
     form.validate()?;
+    let email = config::normalize_email(&form.email);
+    let username = form.username.trim();
 
     let email_taken = user::Entity::find()
-        .filter(user::Column::Email.eq(&form.email))
+        .filter(user::Column::Email.eq(&email))
         .one(&state.db)
         .await?
         .is_some();
-
-    let username_taken = user::Entity::find()
-        .filter(user::Column::Username.eq(&form.username))
-        .one(&state.db)
-        .await?
-        .is_some();
+    let username_taken = user::find_by_username(&state.db, username).await?.is_some();
 
     if email_taken || username_taken {
         let mut fields = Vec::new();
@@ -63,14 +58,27 @@ pub async fn create(State(state): State<AppState>, Form(form): Form<SignupForm>)
         return Err(AppError::Fields(fields));
     }
 
-    let is_admin = crate::is_admin_email(&form.email);
-    let new_user = user::new(&form.email, &form.username, &form.password, is_admin)
-        .map_err(|e| AppError::internal("password hash", e))?;
-    let saved = new_user.insert(&state.db).await?;
+    let new_user = user::new(&email, username, &form.password, config::is_admin_email(&email))
+        .map_err(|error| AppError::internal("password hash", error))?;
+
+    let transaction = state.db.begin().await?;
+    let saved = new_user.insert(&transaction).await.map_err(taken)?;
+    progress::claim(&transaction, &player.id, &saved.id).await?;
+    transaction.commit().await?;
 
     let session = session::issue(&state, &saved)
         .await
-        .map_err(|e| AppError::internal("session", format!("{e:?}")))?;
+        .map_err(|error| AppError::internal("session", error))?;
 
-    Ok((session, htmx::redirect("/app")).into_response())
+    Ok((session, SetPlayer(Some(player.rotate())), htmx::redirect("/app")).into_response())
+}
+
+fn taken(error: DbErr) -> AppError {
+    match error.sql_err() {
+        Some(SqlErr::UniqueConstraintViolation(detail)) if detail.contains("email") => {
+            AppError::field("email", "An account with this email already exists")
+        }
+        Some(SqlErr::UniqueConstraintViolation(_)) => AppError::field("username", "This username is already taken"),
+        _ => error.into(),
+    }
 }

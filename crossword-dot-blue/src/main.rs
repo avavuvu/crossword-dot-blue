@@ -1,37 +1,24 @@
 mod assets;
 mod cloudinary;
 mod components;
+mod config;
 mod error;
 mod handlers;
-mod migrations;
+mod ids;
 mod models;
+mod player;
 mod router;
+mod theme;
 mod views;
 
-use boutique::sea_orm_migration::MigratorTrait;
+use migration::{Migrator, MigratorTrait};
 use boutique::server::Server;
 use sea_orm::Database;
 use std::env;
 
-use migrations::Migrator;
 use router::create_router;
 
 pub type AppState = boutique::AuthState<models::user::Model>;
-
-static SITE_URL: std::sync::OnceLock<String> = std::sync::OnceLock::new();
-
-pub fn site_url() -> &'static str {
-    SITE_URL.get().map(String::as_str).unwrap_or("")
-}
-
-static ADMIN_EMAILS: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
-
-pub fn is_admin_email(email: &str) -> bool {
-    let email = email.trim().to_ascii_lowercase();
-    ADMIN_EMAILS
-        .get()
-        .is_some_and(|emails| emails.iter().any(|admin| *admin == email))
-}
 
 async fn serve((state, port): (AppState, String)) {
     Server::new(state.clone())
@@ -57,17 +44,7 @@ async fn main() {
     load_env();
 
     let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET must be set");
-    let site_url = env::var("SITE_URL").expect("SITE_URL must be set");
-    SITE_URL.set(site_url.trim_end_matches('/').to_string()).ok();
-
-    let admin_emails = env::var("ADMIN_EMAILS")
-        .unwrap_or_default()
-        .split(',')
-        .map(|email| email.trim().to_ascii_lowercase())
-        .filter(|email| !email.is_empty())
-        .collect();
-    ADMIN_EMAILS.set(admin_emails).ok();
-
+    config::init();
     cloudinary::init();
     assets::init();
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");

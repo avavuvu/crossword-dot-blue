@@ -8,15 +8,23 @@ use maud::{Markup, PreEscaped, html};
 use action::{UiAction, actions};
 
 use crate::{
-    components::{Icon, grid::{self, Fill}},
-    models::puzzle::{self, Category, get_category},
+    components::{Icon, grid::{self, Fill}, options_panel},
+    models::{category::Category, puzzle::{self, get_category}},
+    theme::Theme,
     views::markdown,
 };
 
 #[component]
-pub fn crossword(#[builder(start_fn)] model: &puzzle::Model, #[builder(start_fn)] puzzle: &Puzzle) -> Markup {
+pub fn crossword(
+    #[builder(start_fn)]
+    model: &puzzle::Model,
+    #[builder(start_fn)]
+    puzzle: &Puzzle,
+    tagline: Option<Markup>,
+    options: Option<Theme>,
+    ) -> Markup {
     html! {
-        cw-crossword key=(model.key()) style=(format!("--cols: {}; --rows: {}", puzzle.width, puzzle.height)) {
+        cw-crossword key=(model.key) style=(format!("--cols: {}; --rows: {}", puzzle.width, puzzle.height)) {
             script type="application/json" data-puzzle { (json_script(puzzle)) }
 
             section.info {
@@ -24,13 +32,20 @@ pub fn crossword(#[builder(start_fn)] model: &puzzle::Model, #[builder(start_fn)
                 p data-entry-preview {}
             }
 
-            (assist_bar(puzzle))
+            (assist_bar(puzzle, options.is_some()))
             (clue_banner())
             (keyboard(puzzle))
 
             section.board {
-                div.frame tabindex="0" {
-                    (grid::grid_svg(puzzle, Fill::Empty))
+                div.stage {
+                    div.frame tabindex="0" {
+                        (grid::grid_svg(puzzle, Fill::Empty))
+                    }
+                }
+                @if let Some(tagline) = tagline {
+                    div.tagline {
+                        (tagline)
+                    }
                 }
             }
 
@@ -40,6 +55,21 @@ pub fn crossword(#[builder(start_fn)] model: &puzzle::Model, #[builder(start_fn)
             (intro(model, puzzle))
             (won())
             (almost())
+            @if let Some(theme) = options {
+                (options_screen(theme))
+            }
+        }
+    }
+}
+
+fn options_screen(theme: Theme) -> Markup {
+    html! {
+        section.options hidden data-options aria-labelledby="options-title" {
+            h2 id="options-title" tabindex="-1" { "Options" }
+            (options_panel(theme))
+            div.actions {
+                (Button::button(html! { "Back to puzzle" }).action(UiAction::Dismiss.as_str()).primary())
+            }
         }
     }
 }
@@ -149,7 +179,7 @@ fn clue_banner() -> Markup {
     }
 }
 
-fn assist_bar(puzzle: &Puzzle) -> Markup {
+fn assist_bar(puzzle: &Puzzle, has_options: bool) -> Markup {
     let has_hints = puzzle.clues.values().any(|clue| clue.hint.is_some());
     let has_rebus = has_rebus(puzzle);
 
@@ -187,6 +217,10 @@ fn assist_bar(puzzle: &Puzzle) -> Markup {
 
             @if has_rebus {
                 button.rebus type="button" data-action=(UiAction::ToggleRebus) aria-pressed="false" { "Rebus" }
+            }
+
+            @if has_options {
+                button.options-button type="button" data-action=(UiAction::Options) aria-label="Options" title="Options" { "O" }
             }
         }
     }

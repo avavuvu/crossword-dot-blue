@@ -4,7 +4,7 @@ svg.grid {
     height: 100%;
 
     & .cell {
-        fill: var(--color-surface);
+        fill: var(--color-board-surface);
         stroke: var(--color-board-border);
         stroke-width: 0.02;
     }
@@ -14,7 +14,7 @@ svg.grid {
     }
 
     & .cell.shaded {
-        fill: color-mix(in srgb, var(--color-dark) 20%, var(--color-surface));
+        fill: var(--color-board-shaded);
     }
 
     & .cell.empty {
@@ -33,6 +33,7 @@ svg.grid {
     & text {
         pointer-events: none;
         fill: var(--color-board-text);
+        font-family: var(--font-board-family);
     }
 
     & .circle {
@@ -77,14 +78,14 @@ svg.grid {
     }
 
     &.thumbnail {
-        background-color: var(--color-surface);
+        background-color: var(--color-board-surface);
 
         & .blocks {
             fill: var(--color-board-block);
         }
 
         & .shaded {
-            fill: color-mix(in srgb, var(--color-dark) 20%, var(--color-surface));
+            fill: var(--color-board-shaded);
         }
 
         & .lines {

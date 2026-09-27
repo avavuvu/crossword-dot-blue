@@ -4,6 +4,7 @@ import { actionsFromAttribute } from "./action-map";
 export type ActionsUi = {
     start(): void;
     dismiss(): void;
+    options(): void;
 };
 
 export function attachActions(game: Game, root: HTMLElement, ui: ActionsUi): void {
@@ -21,6 +22,9 @@ export function attachActions(game: Game, root: HTMLElement, ui: ActionsUi): voi
                     return;
                 case "dismiss":
                     ui.dismiss();
+                    return;
+                case "options":
+                    ui.options();
                     return;
                 default:
                     game.dispatch(action);

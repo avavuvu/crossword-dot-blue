@@ -7,6 +7,8 @@ function fromUiAction(name: UiAction): Action {
             return { type: "start" };
         case "dismiss":
             return { type: "dismiss" };
+        case "options":
+            return { type: "options" };
         case "reset":
             return { type: "reset" };
         case "hint":

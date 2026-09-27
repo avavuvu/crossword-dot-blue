@@ -49,10 +49,10 @@ pub fn avatar_block(user: &user::Model) -> Markup {
     })
 }
 
-pub fn page(user: &user::Model) -> Markup {
+pub fn page(user: &user::Model, viewer: &Viewer) -> Markup {
     shell(
         head("Account — Crossword Dot Blue").htmx().entry("editor").css("account"),
-        &Viewer::from(user),
+        viewer,
         html! {
             main.account {
                 header.account-header {

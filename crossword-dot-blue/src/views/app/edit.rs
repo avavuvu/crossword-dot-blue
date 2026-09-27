@@ -28,18 +28,18 @@ pub fn save_response(model: &puzzle::Model, author: &user::Model, viewer: &user:
     }
 }
 
-pub fn page(model: &puzzle::Model, author: &user::Model, viewer: &user::Model, puzzle: &Puzzle) -> Markup {
+pub fn page(model: &puzzle::Model, author: &user::Model, editor: &user::Model, viewer: &Viewer, puzzle: &Puzzle) -> Markup {
     let heading = model.display_title();
-    let key = model.key();
+    let key = model.key.as_str();
     let action = model.edit_path();
 
     shell(
         head(format!("{heading} — Crossword Dot Blue")).htmx().entry("editor").css("edit"),
-        &Viewer::from(viewer),
+        viewer,
         html! {
             main.edit {
                 section.editing {
-                    (form::meta_form(model, author, viewer, puzzle))
+                    (form::meta_form(model, author, editor, puzzle))
 
                     p.actions {
                         (Button::link(html! { "View puzzle" }, model.path(&author.username)).secondary().attr("data-leave", ""))
@@ -48,7 +48,7 @@ pub fn page(model: &puzzle::Model, author: &user::Model, viewer: &user::Model, p
 
                     (share_block(model, author))
 
-                    @if viewer.is_admin {
+                    @if editor.is_admin {
                         (feature_block(model))
                     }
 

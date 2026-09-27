@@ -1,7 +1,7 @@
 use boutique::components::Button;
 use maud::{Markup, html};
 
-use crate::models::{listing::Filter, puzzle::Region};
+use crate::models::{listing::Filter, region::Region};
 
 pub fn filter_form(action: &str, filter: &Filter, regions: &[Region]) -> Markup {
     let current = filter.region();

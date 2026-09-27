@@ -5,7 +5,7 @@ main.auth {
     padding: 2em 1em;
 
     & h1 {
-        font-family: "Heal The Web";
+        font-family: var(--font-display-family);
         font-size: 3em;
         letter-spacing: -0.03em;
         line-height: 1;

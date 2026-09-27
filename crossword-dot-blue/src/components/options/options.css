@@ -1,0 +1,37 @@
+cw-options {
+    display: block;
+
+    & form.options {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+
+    & .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25em;
+
+        & label {
+            font-weight: bold;
+            font-size: 0.875em;
+        }
+
+        & select {
+            padding: 0.5em 0.75em;
+            border: 1px solid var(--color-border);
+            background: var(--color-surface);
+            color: var(--color-text);
+            font: inherit;
+
+            &:focus-visible {
+                outline: 2px solid var(--color-focus);
+                outline-offset: 1px;
+            }
+        }
+    }
+}
+
+.options-link {
+    font-weight: bold;
+}

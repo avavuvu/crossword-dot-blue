@@ -4,7 +4,7 @@ use serde::Deserialize;
 
 pub const ROUTE: &str = "/build";
 pub const DIR: &str = "public/build";
-const MANIFEST: &str = "public/build/.vite/manifest.json";
+const MANIFEST: &str = env!("VITE_MANIFEST");
 
 #[derive(Deserialize)]
 struct Chunk {

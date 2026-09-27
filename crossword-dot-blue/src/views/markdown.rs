@@ -68,7 +68,7 @@ fn render(node: &Node) -> Markup {
         Node::Paragraph(p) => children(&p.children),
         Node::Text(t) => html! { (t.value) },
         Node::Strong(s) => html! { strong { (children(&s.children)) } },
-        Node::Emphasis(e) => html! { em { (children(&e.children)) } },
+        Node::Emphasis(emphasis) => html! { em { (children(&emphasis.children)) } },
         Node::Link(link) if safe_href(&link.url) => html! {
             a href=(link.url) { (children(&link.children)) }
         },

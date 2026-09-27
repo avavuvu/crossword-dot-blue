@@ -5,7 +5,9 @@ pub mod footer;
 pub mod grid;
 pub mod header;
 pub mod icon;
+pub mod logo;
 pub mod markdown;
+pub mod options;
 
 pub use card::{Actions, Layout, card};
 pub use crossword::crossword;
@@ -14,3 +16,4 @@ pub use footer::footer;
 pub use header::header;
 pub use icon::Icon;
 pub use markdown::markdown;
+pub use options::options_panel;

@@ -1,0 +1,19 @@
+[package]
+name = "migration"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[lib]
+name = "migration"
+path = "src/lib.rs"
+
+[[bin]]
+name = "migration"
+path = "src/main.rs"
+
+[dependencies]
+boutique = { git = "https://github.com/avavuvu/showroom.git", rev = "88c49884505fd57da762968f087a3f43de354f8e", features = ["migration"] }
+dotenvy = "0.15"
+sea-orm-migration = { version = "1", features = ["sqlx-postgres", "runtime-tokio-rustls"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

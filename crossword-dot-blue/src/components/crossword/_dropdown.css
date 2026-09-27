@@ -9,7 +9,7 @@
         inset: auto;
         margin-top: 0.6em;
         min-inline-size: 10em;
-        border: 1px solid var(--color-dark);
+        border: 1px solid var(--color-border);
         background-color: var(--color-surface);
         color: var(--color-text);
 
@@ -32,7 +32,7 @@
         & hr {
             margin: 0.25em 0;
             border: 0;
-            border-top: 1px solid var(--color-dark);
+            border-top: 1px solid var(--color-border);
             opacity: 0.2;
         }
     }

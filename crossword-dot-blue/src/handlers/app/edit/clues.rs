@@ -66,7 +66,7 @@ async fn save_clue(
     form: ClueForm,
     action: Action,
 ) -> AppResult {
-    let model = find_puzzle(state, user, key).await?;
+    let (model, _) = find_puzzle(state, user, key).await?;
     let mut puzzle = model.puzzle()?;
 
     if !puzzle.clues.contains_key(clue_id) {
@@ -89,11 +89,11 @@ async fn save_clue(
     match action {
         Action::Save => {}
         Action::ToggleSplit(position) => {
-            let clue = puzzle.clues.get_mut(clue_id).unwrap();
+            let clue = puzzle.clues.get_mut(clue_id).ok_or(AppError::NotFound)?;
             if position == 0 || position >= clue.indexes.len() {
                 return Err(AppError::BadRequest);
             }
-            match clue.splits.iter().position(|&p| p == position) {
+            match clue.splits.iter().position(|&split| split == position) {
                 Some(existing) => {
                     clue.splits.remove(existing);
                 }
@@ -123,15 +123,15 @@ async fn save_clue(
         linked = Some(ref_id);
     }
 
-    puzzle.clues.get_mut(clue_id).unwrap().body = body.to_string();
+    puzzle.clues.get_mut(clue_id).ok_or(AppError::NotFound)?.body = body.to_string();
 
     let mut active: ActiveModel = model.into();
     active.content = Set(serde_json::to_value(&puzzle)?);
     active.xd = Set(xd::write::write_xd(&puzzle));
     active.updated_at = Set(chrono::Utc::now().fixed_offset());
 
-    if let Err(e) = active.update(&state.db).await {
-        eprintln!("[clues] {e}");
+    if let Err(error) = active.update(&state.db).await {
+        eprintln!("[clues] {error}");
         return Ok(error_row(&puzzle, "Something went wrong saving the clue"));
     }
 
@@ -150,19 +150,19 @@ async fn save_clue(
 }
 
 fn link(puzzle: &mut Puzzle, from: &str, to: &str) {
-    for (a, b) in [(from, to), (to, from)] {
-        if let Some(clue) = puzzle.clues.get_mut(a) {
-            if !clue.refs.iter().any(|r| r == b) {
-                clue.refs.push(b.to_string());
+    for (source, target) in [(from, to), (to, from)] {
+        if let Some(clue) = puzzle.clues.get_mut(source) {
+            if !clue.refs.iter().any(|reference| reference == target) {
+                clue.refs.push(target.to_string());
             }
         }
     }
 }
 
 fn unlink(puzzle: &mut Puzzle, from: &str, to: &str) {
-    for (a, b) in [(from, to), (to, from)] {
-        if let Some(clue) = puzzle.clues.get_mut(a) {
-            clue.refs.retain(|r| r != b);
+    for (source, target) in [(from, to), (to, from)] {
+        if let Some(clue) = puzzle.clues.get_mut(source) {
+            clue.refs.retain(|reference| reference != target);
         }
     }
 }
@@ -171,12 +171,12 @@ fn parse_ref(text: &str) -> Option<String> {
     let text = text.trim().to_ascii_uppercase();
 
     if let Some(number) = text.strip_prefix('A').or_else(|| text.strip_prefix('D')) {
-        if !number.is_empty() && number.chars().all(|c| c.is_ascii_digit()) {
+        if !number.is_empty() && number.chars().all(|character| character.is_ascii_digit()) {
             return Some(text);
         }
     }
 
-    let digits: String = text.chars().take_while(|c| c.is_ascii_digit()).collect();
+    let digits: String = text.chars().take_while(|character| character.is_ascii_digit()).collect();
     if digits.is_empty() {
         return None;
     }

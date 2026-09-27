@@ -4,7 +4,7 @@
     justify-content: center;
     gap: 0.5em;
     padding: 0.5em 1em;
-    border: 1px solid var(--color-dark);
+    border: 1px solid var(--color-border);
     background-color: var(--color-surface);
     color: var(--color-text);
     font: inherit;
@@ -37,13 +37,14 @@
     }
 
     &.primary {
-        background-color: var(--color-dark);
-        border-color: var(--color-dark);
-        color: var(--color-surface);
+        background-color: var(--color-contrast);
+        border-color: var(--color-border);
+        color: var(--color-on-contrast);
 
         &:hover {
             background-color: var(--color-1);
             border-color: var(--color-1);
+            color: var(--color-on-brand);
         }
     }
 
@@ -53,7 +54,7 @@
 
         &:hover {
             background-color: var(--color-1);
-            color: var(--color-surface);
+            color: var(--color-on-brand);
         }
     }
 
@@ -63,7 +64,7 @@
 
         &:hover {
             background-color: var(--color-wrong);
-            color: var(--color-surface);
+            color: var(--color-on-brand);
         }
     }
 
@@ -73,7 +74,7 @@
         font-weight: normal;
 
         &:hover {
-            background-color: color-mix(in srgb, var(--color-dark) 8%, transparent);
+            background-color: color-mix(in srgb, var(--color-text) 8%, transparent);
         }
     }
 

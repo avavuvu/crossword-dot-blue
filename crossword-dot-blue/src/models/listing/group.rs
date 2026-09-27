@@ -14,6 +14,6 @@ pub fn regions(entries: &[Entry]) -> Vec<Region> {
             }
         }
     }
-    regions.sort_by(|a, b| a.as_str().cmp(b.as_str()));
+    regions.sort_by(|left, right| left.as_str().cmp(right.as_str()));
     regions
 }

@@ -1,10 +1,7 @@
 use axum::{
-    Extension,
     extract::{Path, Query, State},
-    response::IntoResponse,
+    response::{IntoResponse, Redirect},
 };
-use boutique::UserContext;
-use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 
 use crate::{
     AppState,
@@ -15,19 +12,18 @@ use crate::{
 
 pub async fn show(
     State(state): State<AppState>,
-    Extension(ctx): Extension<UserContext>,
+    viewer: Viewer,
     Path(username): Path<String>,
     Query(filter): Query<Filter>,
 ) -> AppResult {
-    let profile = user::Entity::find()
-        .filter(user::Column::Username.eq(&username))
-        .one(&state.db)
-        .await?
-        .ok_or(AppError::NotFound)?;
+    let profile = user::find_by_username(&state.db, &username).await?.ok_or(AppError::NotFound)?;
+    if profile.username != username {
+        return Ok(Redirect::permanent(&profile.path()).into_response());
+    }
 
     let all = listing::by_author(&state.db, &profile.id).await?;
     let regions = listing::regions(&all);
     let entries = filter.apply(all);
 
-    Ok(views::profile::page(&Viewer::from(&ctx), &profile, &filter, &regions, &entries).into_response())
+    Ok(views::profile::page(&viewer, &profile, &filter, &regions, &entries).into_response())
 }

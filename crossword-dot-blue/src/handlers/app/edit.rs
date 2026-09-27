@@ -7,15 +7,16 @@ use axum::{
     response::{IntoResponse, Redirect},
 };
 use boutique::{AuthenticatedUser, htmx, validator::Validate};
-use sea_orm::{ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, ModelTrait, QueryFilter};
+use sea_orm::{ActiveModelTrait, ActiveValue::Set, ModelTrait};
 use serde::Deserialize;
 
 use crate::{
     AppState,
     error::{AppError, AppResult},
     handlers::form::blank_to_none,
-    models::{puzzle::{self, Region}, user},
-    views,
+    ids,
+    models::{puzzle, region::{self, Region}, user},
+    views::{self, viewer::Viewer},
 };
 
 #[derive(Deserialize, Validate)]
@@ -24,7 +25,6 @@ pub struct EditForm {
     pub title: String,
     pub notes: String,
     pub difficulty: String,
-    #[validate(length(max = 16, message = "Region must be 16 characters or fewer"))]
     pub region: String,
     #[serde(default)]
     pub themed: Option<String>,
@@ -34,40 +34,24 @@ pub struct EditForm {
     pub is_public: Option<String>,
 }
 
-pub(super) async fn find_puzzle(state: &AppState, user: &user::Model, key: &str) -> AppResult<puzzle::Model> {
-    if !puzzle::is_key(key) {
+pub(super) async fn find_puzzle(state: &AppState, user: &user::Model, key: &str) -> AppResult<(puzzle::Model, user::Model)> {
+    let (model, author) = puzzle::find_with_author(&state.db, key).await?;
+    if !user.is_admin && author.id != user.id {
         return Err(AppError::NotFound);
     }
 
-    let mut query = puzzle::Entity::find().filter(puzzle::Column::Id.starts_with(key));
-    if !user.is_admin {
-        query = query.filter(puzzle::Column::AuthorId.eq(&user.id));
-    }
-
-    query.one(&state.db).await?.ok_or(AppError::NotFound)
-}
-
-pub(super) async fn find_author(state: &AppState, user: &user::Model, model: &puzzle::Model) -> AppResult<user::Model> {
-    if model.author_id == user.id {
-        return Ok(user.clone());
-    }
-
-    model
-        .find_related(user::Entity)
-        .one(&state.db)
-        .await?
-        .ok_or(AppError::NotFound)
+    Ok((model, author))
 }
 
 pub async fn show(
     AuthenticatedUser(user): AuthenticatedUser<user::Model>,
     State(state): State<AppState>,
+    viewer: Viewer,
     Path(key): Path<String>,
 ) -> AppResult {
-    let model = find_puzzle(&state, &user, &key).await?;
-    let author = find_author(&state, &user, &model).await?;
+    let (model, author) = find_puzzle(&state, &user, &key).await?;
     let puzzle = model.puzzle()?;
-    Ok(views::app::edit::page(&model, &author, &user, &puzzle).into_response())
+    Ok(views::app::edit::page(&model, &author, &user, &viewer, &puzzle).into_response())
 }
 
 pub async fn update(
@@ -86,8 +70,11 @@ pub async fn update(
         },
     };
 
-    let model = find_puzzle(&state, &user, &key).await?;
-    let author = find_author(&state, &user, &model).await?;
+    if form.region.trim().chars().count() > region::MAX_LEN {
+        return Err(AppError::field("region", format!("Region must be {} characters or fewer", region::MAX_LEN)));
+    }
+
+    let (model, author) = find_puzzle(&state, &user, &key).await?;
     let now = chrono::Utc::now().fixed_offset();
     let is_public = form.is_public.is_some();
 
@@ -121,12 +108,8 @@ pub async fn toggle_feature(
         return Err(AppError::NotFound);
     }
 
-    let model = find_puzzle(&state, &user, &key).await?;
-    let featured_at = match (model.is_public, model.featured_at) {
-        (false, _) => None,
-        (true, Some(_)) => None,
-        (true, None) => Some(chrono::Utc::now().fixed_offset()),
-    };
+    let (model, _) = find_puzzle(&state, &user, &key).await?;
+    let featured_at = (model.is_public && model.featured_at.is_none()).then(|| chrono::Utc::now().fixed_offset());
 
     let mut active: puzzle::ActiveModel = model.into();
     active.featured_at = Set(featured_at);
@@ -140,7 +123,7 @@ pub async fn reset_share(
     State(state): State<AppState>,
     Path(key): Path<String>,
 ) -> AppResult {
-    set_share(&state, &user, &key, Some(puzzle::new_share_token())).await
+    set_share(&state, &user, &key, Some(ids::new())).await
 }
 
 pub async fn remove_share(
@@ -152,8 +135,7 @@ pub async fn remove_share(
 }
 
 async fn set_share(state: &AppState, user: &user::Model, key: &str, token: Option<String>) -> AppResult {
-    let model = find_puzzle(state, user, key).await?;
-    let author = find_author(state, user, &model).await?;
+    let (model, author) = find_puzzle(state, user, key).await?;
 
     let mut active: puzzle::ActiveModel = model.into();
     active.share_token = Set(token);
@@ -168,7 +150,7 @@ pub async fn delete(
     Path(key): Path<String>,
     headers: HeaderMap,
 ) -> AppResult {
-    let model = find_puzzle(&state, &user, &key).await?;
+    let (model, _) = find_puzzle(&state, &user, &key).await?;
     model.delete(&state.db).await?;
 
     Ok(if htmx::is_htmx(&headers) {

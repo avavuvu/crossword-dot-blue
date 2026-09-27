@@ -1,13 +1,13 @@
 use boutique::components::Button;
 use maud::{Markup, html};
 
-use crate::views::viewer::Viewer;
+use crate::{components::logo::{Layout, logo}, views::viewer::Viewer};
 
-pub fn header(viewer: &Viewer) -> Markup {
+pub fn header(viewer: &Viewer, options_link: bool) -> Markup {
     html! {
         header.top {
             a.logo href="/" {
-                img src="/assets/images/small.svg" alt="Crossword.blue";
+                (logo(Layout::Small))
             }
             nav {
                 @if viewer.is_authenticated() {
@@ -17,6 +17,9 @@ pub fn header(viewer: &Viewer) -> Markup {
                 } @else {
                     (Button::link(html! { "Log in" }, "/login").ghost().small())
                     (Button::link(html! { "Sign up" }, "/signup").primary().small())
+                }
+                @if options_link {
+                    a.button.ghost.small.options-link href="/options" aria-label="Options" title="Options" { "O" }
                 }
             }
         }

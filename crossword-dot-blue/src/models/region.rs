@@ -5,7 +5,7 @@ use sea_orm::{
     sea_query::{ArrayType, ColumnType, Nullable, StringLen, ValueType, ValueTypeErr},
 };
 
-pub const MAX_LEN: u32 = 16;
+pub const MAX_LEN: usize = 16;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Region {
@@ -55,8 +55,8 @@ impl From<Region> for Value {
 }
 
 impl TryGetable for Region {
-    fn try_get_by<I: ColIdx>(res: &QueryResult, index: I) -> Result<Self, TryGetError> {
-        let value: Option<String> = res.try_get_by(index)?;
+    fn try_get_by<I: ColIdx>(result: &QueryResult, index: I) -> Result<Self, TryGetError> {
+        let value: Option<String> = result.try_get_by(index)?;
         value
             .as_deref()
             .and_then(Region::parse)
@@ -81,7 +81,7 @@ impl ValueType for Region {
     }
 
     fn column_type() -> ColumnType {
-        ColumnType::String(StringLen::N(MAX_LEN))
+        ColumnType::String(StringLen::N(MAX_LEN as u32))
     }
 }
 

@@ -43,7 +43,7 @@ pub fn card(
     #[builder(default)] layout: Layout,
     #[builder(default)] tinted: bool,
 ) -> Markup {
-    let key = model.key();
+    let key = model.key.as_str();
     let path = model.path(&author.username);
     let is_author = viewer
         .and_then(|viewer| viewer.user_id.as_deref())

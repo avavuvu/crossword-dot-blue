@@ -3,7 +3,7 @@ use maud::{Markup, html};
 
 use crate::{
     components::markdown,
-    models::{puzzle::{self, Region}, user},
+    models::{puzzle, region::Region, user},
 };
 
 pub fn save_status(model: &puzzle::Model) -> Markup {
@@ -28,7 +28,7 @@ fn toggle(name: &str, label: &str, checked: bool) -> Markup {
 pub fn meta_form(model: &puzzle::Model, author: &user::Model, viewer: &user::Model, puzzle: &Puzzle) -> Markup {
     let heading = model.display_title();
     let action = model.edit_path();
-    let difficulty = model.difficulty.map(|d| d.to_string()).unwrap_or_default();
+    let difficulty = model.difficulty.map(|difficulty| difficulty.to_string()).unwrap_or_default();
 
     html! {
         form.meta

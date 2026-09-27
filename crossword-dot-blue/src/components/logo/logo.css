@@ -1,0 +1,20 @@
+svg.logo {
+    display: block;
+    height: 100%;
+
+    & .cross {
+        fill: var(--color-1);
+    }
+
+    & .word {
+        fill: var(--color-2);
+    }
+
+    & .dot {
+        fill: var(--color-3);
+    }
+
+    & .blue {
+        fill: var(--color-4);
+    }
+}

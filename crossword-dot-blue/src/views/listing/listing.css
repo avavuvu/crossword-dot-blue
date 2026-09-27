@@ -21,7 +21,7 @@ main.listing {
         gap: 1em;
 
         & h1 {
-            font-family: "Heal The Web";
+            font-family: var(--font-display-family);
             font-size: 3em;
             letter-spacing: -0.03em;
             line-height: 1;
@@ -34,7 +34,7 @@ main.listing {
 
         & .tab {
             padding: 0.4em 0.9em;
-            border: 1px solid var(--color-dark);
+            border: 1px solid var(--color-border);
             font-weight: bold;
 
             &:hover {
@@ -42,8 +42,8 @@ main.listing {
             }
 
             &.active {
-                background-color: var(--color-dark);
-                color: var(--color-surface);
+                background-color: var(--color-contrast);
+                color: var(--color-on-contrast);
             }
         }
     }
@@ -54,7 +54,7 @@ main.listing {
         align-items: center;
         gap: 1em;
         padding: 1em;
-        border: 1px solid var(--color-dark);
+        border: 1px solid var(--color-border);
 
         & label {
             display: flex;
@@ -64,7 +64,7 @@ main.listing {
 
         & select {
             padding: 0.4em 0.6em;
-            border: 1px solid var(--color-dark);
+            border: 1px solid var(--color-border);
             background-color: var(--color-surface);
             font: inherit;
         }
@@ -82,7 +82,7 @@ main.listing {
             justify-content: space-between;
             gap: 1em;
             padding: 1em;
-            color: var(--color-surface);
+            color: var(--color-on-brand);
             background-color: var(--color-1);
         }
 
@@ -93,7 +93,7 @@ main.listing {
 
         &.featured > h2 {
             background-color: var(--color-2);
-            color: var(--color-dark);
+            color: var(--color-on-brand);
         }
 
         & .section-header .button.ghost {
@@ -105,7 +105,7 @@ main.listing {
     & .empty-state {
         padding: 2em;
         text-align: center;
-        border: 1px dashed var(--color-dark);
+        border: 1px dashed var(--color-border);
         opacity: 0.7;
     }
 }
@@ -115,7 +115,7 @@ main.profile .profile-header {
     align-items: flex-start;
     gap: 1.5em;
     padding: 2em 1em;
-    color: var(--color-surface);
+    color: var(--color-on-brand);
     background-color: var(--color-1);
 
     & .identity {
@@ -126,7 +126,7 @@ main.profile .profile-header {
     }
 
     & h1 {
-        font-family: "Heal The Web";
+        font-family: var(--font-display-family);
         font-size: 3em;
         letter-spacing: -0.03em;
         line-height: 1;
@@ -149,7 +149,7 @@ main.profile .profile-header {
     flex-shrink: 0;
     width: 8em;
     height: 8em;
-    border: 1px solid var(--color-dark);
+    border: 1px solid var(--color-border);
     object-fit: cover;
     background-color: var(--color-surface);
 
@@ -157,11 +157,11 @@ main.profile .profile-header {
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: "Heal The Web";
+        font-family: var(--font-display-family);
         font-size: 4em;
         width: 2em;
         height: 2em;
-        color: var(--color-dark);
+        color: var(--color-text);
     }
 }
 

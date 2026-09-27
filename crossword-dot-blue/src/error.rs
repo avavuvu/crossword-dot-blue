@@ -25,20 +25,20 @@ impl AppError {
         AppError::Message(message.into())
     }
 
-    pub fn internal(context: &str, error: impl std::fmt::Display) -> Self {
-        AppError::Internal(format!("{context}: {error}"))
+    pub fn internal(context: &str, error: impl std::fmt::Debug) -> Self {
+        AppError::Internal(format!("{context}: {error:?}"))
     }
 }
 
 impl From<DbErr> for AppError {
-    fn from(e: DbErr) -> Self {
-        AppError::internal("database", e)
+    fn from(error: DbErr) -> Self {
+        AppError::internal("database", error)
     }
 }
 
 impl From<serde_json::Error> for AppError {
-    fn from(e: serde_json::Error) -> Self {
-        AppError::internal("json", e)
+    fn from(error: serde_json::Error) -> Self {
+        AppError::internal("json", error)
     }
 }
 

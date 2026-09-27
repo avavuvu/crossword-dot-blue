@@ -8,11 +8,11 @@ main.account {
 
     & .account-header {
         padding: 2em 1em;
-        color: var(--color-surface);
+        color: var(--color-on-brand);
         background-color: var(--color-1);
 
         & h1 {
-            font-family: "Heal The Web";
+            font-family: var(--font-display-family);
             font-size: 3em;
             letter-spacing: -0.03em;
             line-height: 1;
@@ -69,7 +69,7 @@ main.account {
         align-items: center;
         gap: 0.25em;
         padding: 1.25em 1em;
-        border: 1px dashed var(--color-dark);
+        border: 1px dashed var(--color-border);
         text-align: center;
         cursor: pointer;
         position: relative;

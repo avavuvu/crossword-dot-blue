@@ -16,7 +16,8 @@ export type Action =
     | { type: "hint" }
     | { type: "reset" }
     | { type: "restore"; state: GameState }
-    | { type: "start"; }
-    | { type: "dismiss"; };
+    | { type: "start" }
+    | { type: "dismiss" }
+    | { type: "options" };
 
 export type ActionType = Action["type"];

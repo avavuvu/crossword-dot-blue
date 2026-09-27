@@ -5,18 +5,18 @@ use maud::{Markup, html};
 use crate::{
     components::{crossword, footer, header, share_button},
     models::{puzzle, user},
-    views::{layouts::{HeadExt, head}, viewer::Viewer},
+    views::{layouts::{HeadExt, head, themed}, viewer::Viewer},
 };
 
 pub fn page(model: &puzzle::Model, author: &user::Model, puzzle: &Puzzle, viewer: &Viewer) -> Markup {
     let title = model.display_title();
 
     base(
-        &head(format!("{title} — Crossword Dot Blue")).css("play"),
+        &themed(head(format!("{title} — Crossword Dot Blue")).css("play"), viewer),
         html! {
             article.crossword {
                 div.above {
-                    (header(viewer))
+                    (header(viewer, false))
                     hgroup {
                         h1 { (title) }
                         p.byline {
@@ -28,7 +28,7 @@ pub fn page(model: &puzzle::Model, author: &user::Model, puzzle: &Puzzle, viewer
                         }
                     }
                 }
-                (crossword(model, puzzle))
+                (crossword(model, puzzle).options(viewer.theme))
             }
             (footer())
         }

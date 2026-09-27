@@ -4,7 +4,7 @@ use maud::{Markup, html};
 pub fn form() -> Markup {
     let accept = crossword_tools::EXTENSIONS
         .iter()
-        .map(|ext| format!(".{ext}"))
+        .map(|extension| format!(".{extension}"))
         .collect::<Vec<_>>()
         .join(",");
 

@@ -1,20 +1,18 @@
 use axum::{
-    Extension,
     extract::{Path, Query, State},
     response::IntoResponse,
 };
-use boutique::UserContext;
 
 use crate::{
     AppState,
     error::{AppError, AppResult},
-    models::{listing::{self, Filter}, puzzle::Category},
+    models::{category::Category, listing::{self, Filter}},
     views::{self, viewer::Viewer},
 };
 
 pub async fn index(
     State(state): State<AppState>,
-    Extension(ctx): Extension<UserContext>,
+    viewer: Viewer,
     category: Option<Path<String>>,
     Query(filter): Query<Filter>,
 ) -> AppResult {
@@ -31,5 +29,5 @@ pub async fn index(
     let regions = listing::regions(&all);
     let entries = filter.apply(all);
 
-    Ok(views::browse::page(&Viewer::from(&ctx), category, &filter, &regions, &entries).into_response())
+    Ok(views::browse::page(&viewer, category, &filter, &regions, &entries).into_response())
 }

@@ -36,3 +36,7 @@ todo
 - [ ] promotion
 - [ ] sitemap / seo
     - [ ] og image per crossword
+- [ ] add maximum width and height to the crosswords
+- [ ] add htmx swapping to editor titles
+- [ ] comments
+- [ ] docs

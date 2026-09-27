@@ -21,7 +21,7 @@ article.crossword {
         padding: 1em;
 
         & h1 {
-            font-family: "Heal The Web";
+            font-family: var(--font-display-family);
             font-size: clamp(2.5rem, 12vw, 5rem);
             line-height: 1;
             letter-spacing: -0.03em;
@@ -39,7 +39,7 @@ article.crossword {
     @media (width < 768px) {
         & .assist,
         & .info {
-            border-top: 1px solid var(--color-dark);
+            border-top: 1px solid var(--color-border);
         }
 
         & .assist {

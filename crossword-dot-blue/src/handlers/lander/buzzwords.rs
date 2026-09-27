@@ -12,11 +12,11 @@ static WORDS: LazyLock<Vec<&'static str>> = LazyLock::new(|| {
 
 pub fn pick(count: usize) -> Vec<&'static str> {
     let count = count.min(WORDS.len());
-    let mut rng = WyRand::new();
+    let mut random = WyRand::new();
     let mut chosen: Vec<usize> = Vec::with_capacity(count);
 
     while chosen.len() < count {
-        let index = rng.generate_range(0..WORDS.len());
+        let index = random.generate_range(0..WORDS.len());
         if !chosen.contains(&index) {
             chosen.push(index);
         }

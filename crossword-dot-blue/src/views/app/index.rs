@@ -7,13 +7,12 @@ use crate::{
     views::{self, layouts::{HeadExt, dashboard_shell, head}, viewer::Viewer},
 };
 
-pub fn page(user: &user::Model, puzzles: Vec<puzzle::Model>) -> Markup {
-    let (public, private): (Vec<_>, Vec<_>) = puzzles.into_iter().partition(|p| p.is_public);
-    let viewer = Viewer::from(user);
+pub fn page(user: &user::Model, viewer: &Viewer, puzzles: Vec<puzzle::Model>) -> Markup {
+    let (public, private): (Vec<_>, Vec<_>) = puzzles.into_iter().partition(|puzzle| puzzle.is_public);
 
     dashboard_shell(
         head("Dashboard — Crossword Dot Blue").htmx().css("dashboard"),
-        &viewer,
+        viewer,
         html! {
             main.dashboard {
                 div {
@@ -36,14 +35,14 @@ pub fn page(user: &user::Model, puzzles: Vec<puzzle::Model>) -> Markup {
                     header.section-header {
                         h2 { "Private" }
                     }
-                    (puzzle_list(user, &viewer, &private))
+                    (puzzle_list(user, viewer, &private))
                 }
 
                 section.puzzle-section.public {
                     header.section-header {
                         h2 { "Public" }
                     }
-                    (puzzle_list(user, &viewer, &public))
+                    (puzzle_list(user, viewer, &public))
                 }
             }
         }

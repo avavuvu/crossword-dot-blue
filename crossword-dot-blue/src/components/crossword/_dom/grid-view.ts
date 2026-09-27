@@ -3,13 +3,13 @@ import { clueAt } from "../_game/puzzle";
 
 export function attachGrid(game: Game, svg: SVGSVGElement): void {
     const cells = new Map<number, SVGElement>();
-    for (const el of svg.querySelectorAll<SVGElement>("[data-index]")) {
-        cells.set(Number(el.dataset.index), el);
+    for (const element of svg.querySelectorAll<SVGElement>("[data-index]")) {
+        cells.set(Number(element.dataset.index), element);
     }
 
     const entries = new Map<number, SVGElement>();
-    for (const el of svg.querySelectorAll<SVGElement>("[data-entry]")) {
-        entries.set(Number(el.dataset.entry), el);
+    for (const element of svg.querySelectorAll<SVGElement>("[data-entry]")) {
+        entries.set(Number(element.dataset.entry), element);
     }
 
     let word: readonly number[] = [];
@@ -25,16 +25,16 @@ export function attachGrid(game: Game, svg: SVGSVGElement): void {
     };
 
     const paintEntry = (index: number) => {
-        const el = entries.get(index);
-        if (!el) return;
+        const element = entries.get(index);
+        if (!element) return;
 
         const value = game.state.entries[index] ?? "";
         const checked = game.state.checked.get(index);
 
-        el.textContent = value;
-        el.classList.toggle("rebus", value.length > 1);
-        el.classList.toggle("correct", checked === true);
-        el.classList.toggle("wrong", checked === false);
+        element.textContent = value;
+        element.classList.toggle("rebus", value.length > 1);
+        element.classList.toggle("correct", checked === true);
+        element.classList.toggle("wrong", checked === false);
     };
 
     game.on("cursor", paintCursor);

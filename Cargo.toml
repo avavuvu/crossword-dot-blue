@@ -1,7 +1,10 @@
 [workspace]
 resolver = "3"
-members = ["crossword-dot-blue", "crossword-macros", "crossword-tools"]
+members = ["crossword-dot-blue", "crossword-macros", "crossword-tools", "migration"]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
+
+[patch."https://github.com/avavuvu/showroom.git"]
+boutique = { path = "../../showroom/showroom-rs/boutique" }

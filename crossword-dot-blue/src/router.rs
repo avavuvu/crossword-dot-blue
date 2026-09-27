@@ -1,14 +1,14 @@
 use axum::{Router, extract::DefaultBodyLimit, routing::{get, post}};
-use crate::{AppState, handlers::{app, auth, browse, crossword, lander, profile, account, text}};
+use crate::{AppState, handlers::{account, app, auth, browse, crossword, embed, lander, options, profile, progress, text}};
 
 pub fn create_router(state: AppState) -> Router {
     let router = Router::new()
         .route("/",
             get(lander::show))
         .route("/about",
-            get(text::show))
+            get(text::about))
         .route("/privacy",
-            get(text::show))
+            get(text::privacy))
         .route("/login",
             get(auth::session::show)
             .post(auth::session::create))
@@ -19,6 +19,15 @@ pub fn create_router(state: AppState) -> Router {
             .post(auth::signup::create))
         .route("/crossword/{slug}",
             get(crossword::show))
+        .route("/embed/{slug}",
+            get(embed::show))
+        .route("/progress/{key}",
+            get(progress::show)
+            .put(progress::save)
+            .delete(progress::delete))
+        .route("/options",
+            get(options::show)
+            .post(options::update))
         .route("/browse",
             get(browse::index))
         .route("/browse/{category}",
@@ -30,7 +39,7 @@ pub fn create_router(state: AppState) -> Router {
             .post(account::update))
         .route("/account/avatar",
             post(account::upload_avatar)
-            .layer(DefaultBodyLimit::max(account::AVATAR_MAX_BYTES + 64 * 1024)))
+            .layer(DefaultBodyLimit::max(account::AVATAR_BODY_LIMIT)))
         .route("/app",
             get(app::index::show))
         .route("/app/upload",

@@ -35,10 +35,10 @@ export function attach(root: HTMLElement): Game | null {
             timer.start();
         },
         dismiss: () => screens.dismiss(),
+        options: () => screens.options(),
     });
 
-    const restored = key ? attachPersistence(game, key, timer) : false;
-    if (restored) screens.markResumed();
+    if (key) attachPersistence(game, key, timer);
 
     return game;
 }

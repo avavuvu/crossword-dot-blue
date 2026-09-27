@@ -2,14 +2,14 @@ cw-card {
     display: flex;
     flex-direction: column;
     height: 100%;
-    border: 1px solid var(--color-dark);
+    border: 1px solid var(--color-border);
     background-color: var(--color-surface);
 
     & .thumbnail {
         display: grid;
         place-items: center;
         aspect-ratio: 1;
-        border-bottom: 1px solid var(--color-dark);
+        border-bottom: 1px solid var(--color-border);
 
         & svg {
             display: block;
@@ -68,8 +68,8 @@ cw-card {
         font-weight: bold;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        color: var(--color-surface);
-        background-color: var(--color-dark);
+        color: var(--color-on-contrast);
+        background-color: var(--color-contrast);
 
         &.cryptic {
             background-color: var(--color-4);
@@ -77,7 +77,7 @@ cw-card {
 
         &.featured {
             background-color: var(--color-2);
-            color: var(--color-dark);
+            color: var(--color-on-brand);
         }
     }
 
@@ -99,7 +99,7 @@ cw-card[layout="row-reverse"] {
     & .thumbnail {
         flex: 0 0 12em;
         border-bottom: 0;
-        border-right: 1px solid var(--color-dark);
+        border-right: 1px solid var(--color-border);
     }
 
     & .body {
@@ -113,12 +113,12 @@ cw-card[layout="row-reverse"] {
 
     & .thumbnail {
         border-right: 0;
-        border-left: 1px solid var(--color-dark);
+        border-left: 1px solid var(--color-border);
     }
 }
 
 cw-card[tinted] .body {
-    color: var(--color-surface);
+    color: var(--color-on-brand);
 
     &.category-big {
         background-color: var(--color-big);
@@ -134,7 +134,7 @@ cw-card[tinted] .body {
 
     & .badge {
         background-color: var(--color-surface);
-        color: var(--color-dark);
+        color: var(--color-text);
     }
 }
 
@@ -153,7 +153,7 @@ cw-card[tinted] .body {
             aspect-ratio: 1;
             border-right: 0;
             border-left: 0;
-            border-bottom: 1px solid var(--color-dark);
+            border-bottom: 1px solid var(--color-border);
         }
     }
 }

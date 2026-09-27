@@ -1,18 +1,23 @@
 use crossword_tools::puzzle::Puzzle;
-use sea_orm::entity::prelude::*;
+use sea_orm::{ActiveValue::Set, SqlErr, entity::prelude::*};
+use serde::Deserialize;
 
-pub use super::category::Category;
-pub use super::region::Region;
+use crate::{config, error::{AppError, AppResult}, ids};
+
+use super::{category::Category, region::Region, user};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
 #[sea_orm(table_name = "puzzles")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: String,
+    #[sea_orm(unique)]
+    pub key: String,
     pub author_id: String,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
 
+    #[sea_orm(column_type = "JsonBinary")]
     pub content: Json,
     #[sea_orm(column_type = "Text")]
     pub xd: String,
@@ -20,7 +25,6 @@ pub struct Model {
     pub title: Option<String>,
     pub notes: Option<String>,
     pub difficulty: Option<i16>,
-    #[sea_orm(column_type = "String(StringLen::N(16))", nullable)]
     pub region: Option<Region>,
     pub themed: bool,
     pub is_cryptic: bool,
@@ -31,29 +35,18 @@ pub struct Model {
     pub share_token: Option<String>,
 }
 
-pub const MINI_MAX: usize = 7;
-pub const MIDI_MAX: usize = 13;
+pub const KEY_LEN: usize = 8;
 
 pub fn get_category(width: usize, height: usize) -> Category {
     match width.max(height) {
-        0..=MINI_MAX => Category::Mini,
-        ..=MIDI_MAX => Category::Midi,
+        0..=7 => Category::Mini,
+        ..=13 => Category::Midi,
         _ => Category::Big,
     }
 }
 
-pub const KEY_LEN: usize = 8;
-
-pub fn new_id() -> String {
-    boutique::uuid::Uuid::new_v4().simple().to_string()
-}
-
-pub fn new_share_token() -> String {
-    boutique::uuid::Uuid::new_v4().simple().to_string()
-}
-
 pub fn is_key(text: &str) -> bool {
-    text.len() == KEY_LEN && text.chars().all(|c| c.is_ascii_hexdigit())
+    ids::is_hex(text, KEY_LEN)
 }
 
 pub fn key_from_slug(slug: &str) -> Option<&str> {
@@ -66,7 +59,7 @@ fn kind(themed: bool) -> &'static str {
 }
 
 pub fn display_title(title: Option<&str>, themed: bool, width: usize, height: usize) -> String {
-    match title.map(str::trim).filter(|t| !t.is_empty()) {
+    match title.map(str::trim).filter(|title| !title.is_empty()) {
         Some(title) => title.to_string(),
         None => format!("{} {width}×{height}", kind(themed)),
     }
@@ -74,8 +67,8 @@ pub fn display_title(title: Option<&str>, themed: bool, width: usize, height: us
 
 pub fn slug_for(title: Option<&str>, themed: bool, width: usize, height: usize, username: &str, key: &str) -> String {
     let title = title
-        .map(|t| slugify::slugify(t, "", "-", None))
-        .filter(|t| !t.is_empty());
+        .map(|title| slugify::slugify(title, "", "-", None))
+        .filter(|title| !title.is_empty());
 
     match title {
         Some(title) => format!("{title}-{key}"),
@@ -83,11 +76,42 @@ pub fn slug_for(title: Option<&str>, themed: bool, width: usize, height: usize, 
     }
 }
 
-impl Model {
-    pub fn key(&self) -> &str {
-        &self.id[..KEY_LEN]
+pub async fn create(db: &DatabaseConnection, author_id: &str, parsed: &Puzzle) -> AppResult<Model> {
+    loop {
+        match new(author_id, parsed)?.insert(db).await {
+            Ok(model) => return Ok(model),
+            Err(error) if matches!(error.sql_err(), Some(SqlErr::UniqueConstraintViolation(_))) => continue,
+            Err(error) => return Err(error.into()),
+        }
     }
+}
 
+fn new(author_id: &str, parsed: &Puzzle) -> Result<ActiveModel, serde_json::Error> {
+    let now = chrono::Utc::now().fixed_offset();
+    let id = ids::new();
+
+    Ok(ActiveModel {
+        key: Set(id[..KEY_LEN].to_string()),
+        id: Set(id),
+        author_id: Set(author_id.to_string()),
+        created_at: Set(now),
+        updated_at: Set(now),
+        content: Set(serde_json::to_value(parsed)?),
+        xd: Set(crossword_tools::xd::write::write_xd(parsed)),
+        title: Set(parsed.meta.title.clone()),
+        notes: Set(parsed.meta.notes.clone()),
+        share_token: Set(Some(ids::new())),
+        ..Default::default()
+    })
+}
+
+#[derive(Deserialize)]
+struct Dimensions {
+    width: usize,
+    height: usize,
+}
+
+impl Model {
     pub fn display_title(&self) -> String {
         let (width, height) = self.dimensions();
         display_title(self.title.as_deref(), self.themed, width, height)
@@ -95,7 +119,7 @@ impl Model {
 
     pub fn slug(&self, username: &str) -> String {
         let (width, height) = self.dimensions();
-        slug_for(self.title.as_deref(), self.themed, width, height, username, self.key())
+        slug_for(self.title.as_deref(), self.themed, width, height, username, &self.key)
     }
 
     pub fn path(&self, username: &str) -> String {
@@ -103,11 +127,11 @@ impl Model {
     }
 
     pub fn edit_path(&self) -> String {
-        format!("/app/edit/{}", self.key())
+        format!("/app/edit/{}", self.key)
     }
 
     pub fn url(&self, username: &str) -> String {
-        format!("{}{}", crate::site_url(), self.path(username))
+        format!("{}{}", config::get().site_url, self.path(username))
     }
 
     pub fn share_url(&self, username: &str) -> Option<String> {
@@ -132,13 +156,47 @@ impl Model {
     }
 
     pub fn dimensions(&self) -> (usize, usize) {
-        let read = |field: &str| self.content.get(field).and_then(|v| v.as_u64()).unwrap_or(0) as usize;
-        (read("width"), read("height"))
+        match serde_json::from_value::<Dimensions>(self.content.clone()) {
+            Ok(dimensions) => (dimensions.width, dimensions.height),
+            Err(error) => {
+                eprintln!("[puzzle] {} has no dimensions: {error}", self.key);
+                (0, 0)
+            }
+        }
     }
 
     pub fn puzzle(&self) -> Result<Puzzle, serde_json::Error> {
         serde_json::from_value(self.content.clone())
     }
+
+    pub fn is_playable_by(&self, viewer_id: Option<&str>, share: Option<&str>) -> bool {
+        self.is_public || viewer_id == Some(self.author_id.as_str()) || self.accepts_share(share)
+    }
+}
+
+pub async fn find_with_author(db: &DatabaseConnection, key: &str) -> AppResult<(Model, user::Model)> {
+    if !is_key(key) {
+        return Err(AppError::NotFound);
+    }
+
+    match Entity::find().filter(Column::Key.eq(key)).find_also_related(user::Entity).one(db).await? {
+        Some((model, Some(author))) => Ok((model, author)),
+        _ => Err(AppError::NotFound),
+    }
+}
+
+pub async fn load_playable(
+    db: &DatabaseConnection,
+    key: &str,
+    viewer_id: Option<&str>,
+    share: Option<&str>,
+) -> AppResult<(Model, user::Model)> {
+    let (model, author) = find_with_author(db, key).await?;
+    if !model.is_playable_by(viewer_id, share) {
+        return Err(AppError::NotFound);
+    }
+
+    Ok((model, author))
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -149,11 +207,19 @@ pub enum Relation {
         to = "super::user::Column::Id"
     )]
     User,
+    #[sea_orm(has_many = "super::progress::Entity")]
+    Progress,
 }
 
 impl Related<super::user::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::User.def()
+    }
+}
+
+impl Related<super::progress::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Progress.def()
     }
 }
 

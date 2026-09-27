@@ -1,6 +1,6 @@
 use maud::{Markup, html};
 
-use crate::models::{listing::Filter, puzzle::Category};
+use crate::models::{category::Category, listing::Filter};
 
 fn tabs(current: Option<Category>, href: impl Fn(Option<Category>) -> String) -> Markup {
     html! {

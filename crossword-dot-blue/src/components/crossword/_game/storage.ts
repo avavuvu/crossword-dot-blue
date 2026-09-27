@@ -1,22 +1,17 @@
-import type { Direction } from "@bindings/Direction";
 import type { Puzzle } from "@bindings/Puzzle";
-import type { CompletionState } from "./events";
 import { isBlock } from "./puzzle";
 import { completionOf } from "./reduce/entry";
 import type { GameState } from "./state";
-import { STORAGE_VERSION, type StoredGame, storageKey } from "./stored";
+import { STORAGE_VERSION, type StoredGame } from "./stored";
 
-export { type StoredGame, storageKey };
+const COMPLETIONS = new Set(["incomplete", "complete-but-wrong", "won"]);
 
 export function serialize(puzzleKey: string, state: GameState, elapsedMs: number, previous?: StoredGame | null): StoredGame {
-    const now = Date.now();
-    const solvedAt = state.completion === "won" ? (previous?.solvedAt ?? now) : null;
-
     return {
         version: STORAGE_VERSION,
         puzzleKey,
-        savedAt: now,
-        solvedAt,
+        savedAt: previous?.savedAt ?? 0,
+        solvedAt: state.completion === "won" ? (previous?.solvedAt ?? null) : null,
         entries: [...state.entries],
         checked: [...state.checked.entries()],
         cursor: state.cursor,
@@ -47,20 +42,24 @@ export function isEmpty(state: GameState): boolean {
     return state.entries.every((entry) => entry === "") && state.checked.size === 0;
 }
 
-function isStoredGame(value: unknown): value is StoredGame {
+export function isStoredGame(value: unknown): value is StoredGame {
     if (typeof value !== "object" || value === null) return false;
-    const v = value as Record<string, unknown>;
+    const record = value as Record<string, unknown>;
 
     return (
-        v.version === STORAGE_VERSION &&
-        typeof v.puzzleKey === "string" &&
-        typeof v.cursor === "number" &&
-        typeof v.elapsedMs === "number" &&
-        (v.direction === "across" || v.direction === "down") &&
-        Array.isArray(v.entries) &&
-        v.entries.every((e) => typeof e === "string") &&
-        Array.isArray(v.checked) &&
-        v.checked.every(
+        record.version === STORAGE_VERSION &&
+        typeof record.puzzleKey === "string" &&
+        typeof record.savedAt === "number" &&
+        (record.solvedAt === null || typeof record.solvedAt === "number") &&
+        typeof record.cursor === "number" &&
+        typeof record.elapsedMs === "number" &&
+        (record.direction === "across" || record.direction === "down") &&
+        typeof record.completion === "string" &&
+        COMPLETIONS.has(record.completion) &&
+        Array.isArray(record.entries) &&
+        record.entries.every((entry) => typeof entry === "string") &&
+        Array.isArray(record.checked) &&
+        record.checked.every(
             (pair) => Array.isArray(pair) && pair.length === 2 && typeof pair[0] === "number" && typeof pair[1] === "boolean",
         )
     );

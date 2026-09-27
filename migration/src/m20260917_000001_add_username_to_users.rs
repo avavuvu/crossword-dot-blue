@@ -1,12 +1,7 @@
-use boutique::sea_orm_migration::prelude::*;
+use sea_orm_migration::prelude::*;
 
+#[derive(DeriveMigrationName)]
 pub struct Migration;
-
-impl MigrationName for Migration {
-    fn name(&self) -> &str {
-        "m20260917_000001_add_username_to_users"
-    }
-}
 
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {

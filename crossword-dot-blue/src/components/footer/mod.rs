@@ -1,11 +1,13 @@
 use maud::{Markup, html};
 
+use crate::components::logo::{Layout, logo};
+
 pub fn footer() -> Markup {
     html! {
         footer.bottom {
-            picture.logo {
-                source media="(width < 768px)" srcset="/assets/images/stacked.svg";
-                img src="/assets/images/small.svg" alt="Crossword.blue";
+            div.logo {
+                (logo(Layout::Small))
+                (logo(Layout::Stacked))
             }
 
             div.info {

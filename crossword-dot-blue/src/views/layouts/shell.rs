@@ -6,11 +6,18 @@ use crate::{
     views::viewer::Viewer,
 };
 
+pub fn themed(head: Head, viewer: &Viewer) -> Head {
+    match viewer.theme.attribute() {
+        Some(name) => head.theme(name),
+        None => head,
+    }
+}
+
 pub fn shell(head: Head, viewer: &Viewer, content: Markup) -> Markup {
     base(
-        &head,
+        &themed(head, viewer),
         html! {
-            (header(viewer))
+            (header(viewer, true))
             (content)
             (footer())
         }

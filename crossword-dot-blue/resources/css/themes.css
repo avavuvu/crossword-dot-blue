@@ -1,0 +1,181 @@
+:root {
+    color-scheme: light;
+
+    --font-family: "Cabin", "Gill Sans", system-ui, sans-serif;
+    --font-display-family: "Heal The Web", var(--font-family);
+    --font-board-family: var(--font-family);
+
+    --color-1: #0e94dd;
+    --color-1-light: #cfe8ff;
+    --color-2: #fab81d;
+    --color-2-light: gold;
+    --color-3: #a0cc40;
+    --color-4: #ea5498;
+
+    --color-surface: #fefefe;
+    --color-text: #222222;
+    --color-border: #222222;
+    --color-contrast: #222222;
+    --color-on-contrast: var(--color-surface);
+    --color-on-brand: var(--color-surface);
+    --color-wrong: #cc2222;
+
+    --color-big: var(--color-1);
+    --color-midi: var(--color-4);
+    --color-mini: var(--color-3);
+
+    --color-correct: var(--color-1);
+    --color-active: var(--color-2-light);
+    --color-secondary-active: var(--color-1-light);
+    --color-focus: var(--color-1);
+
+    --color-board-surface: var(--color-surface);
+    --color-board-block: var(--color-1);
+    --color-board-border: var(--color-border);
+    --color-board-text: var(--color-text);
+    --color-board-shaded: color-mix(in srgb, var(--color-border) 20%, var(--color-board-surface));
+}
+
+[data-theme="green"] {
+    color-scheme: light;
+
+    --color-1: #a0cc40;
+    --color-1-light: #e3f1c4;
+    --color-2: #0e94dd;
+    --color-2-light: #8fcdf7;
+    --color-3: #fab81d;
+
+    --color-big: #0e94dd;
+    --color-midi: #ea5498;
+    --color-mini: #a0cc40;
+}
+
+[data-theme="yellow"] {
+    color-scheme: light;
+
+    --color-1: #fab81d;
+    --color-1-light: #fdebb8;
+    --color-2: #0e94dd;
+    --color-2-light: #8fcdf7;
+    --color-3: #a0cc40;
+    --color-4: #ea5498;
+
+    --color-big: #0e94dd;
+    --color-midi: #ea5498;
+    --color-mini: #a0cc40;
+}
+
+[data-theme="pink"] {
+    color-scheme: light;
+
+    --color-1: #ea5498;
+    --color-1-light: #fbd3e4;
+    --color-2: #0e94dd;
+    --color-2-light: #8fcdf7;
+    --color-3: #a0cc40;
+    --color-4: #fab81d;
+
+    --color-big: #0e94dd;
+    --color-midi: #ea5498;
+    --color-mini: #a0cc40;
+}
+
+[data-theme="dark"] {
+    color-scheme: dark;
+
+    --color-1: #1b59a7;
+    --color-1-light: #163a52;
+    --color-2-light: #5c4a10;
+
+    --color-surface: #15181c;
+    --color-text: #e8e8e8;
+    --color-border: #4a5058;
+    --color-contrast: #1d2126;
+    --color-on-contrast: var(--color-text);
+    --color-on-brand: #fefefe;
+    --color-wrong: #ff5c5c;
+
+    --color-correct: #4fb3f0;
+    --color-focus: #4fb3f0;
+
+    --color-board-surface: #1d2126;
+    --color-board-text: var(--color-text);
+}
+
+[data-theme="showroom"] {
+    --font-family: "Times", "Times New Roman", serif;
+    --font-board-family: "Helvetica", "Arial", sans-serif;
+
+    --paper: #fff;
+    --ink: #000;
+    --pear: #92ca3a;
+
+    --color-1: var(--pear);
+    --color-1-light: #ddd;
+    --color-2: var(--pear);
+    --color-2-light: color-mix(in srgb, var(--ink) 35%, var(--paper));
+    --color-3: var(--pear);
+    --color-4: var(--pear);
+
+    --color-board-block: var(--pear);
+    --color-correct: var(--pear);
+
+    --color-surface: var(--paper);
+    --color-text: var(--ink);
+    --color-border: var(--ink);
+    --color-contrast: var(--paper);
+    --color-on-contrast: var(--ink);
+    --color-on-brand: var(--paper);
+    --color-focus: var(--ink);
+
+}
+
+[data-theme="boggle"], [data-theme="times"], [data-theme="boggle-dark"] {
+    --color-1: var(--ink);
+    --color-1-light: color-mix(in srgb, var(--ink) 15%, var(--paper));
+    --color-2: var(--ink);
+    --color-2-light: color-mix(in srgb, var(--ink) 35%, var(--paper));
+    --color-3: var(--ink);
+    --color-4: var(--ink);
+
+    --color-surface: var(--paper);
+    --color-text: var(--ink);
+    --color-border: var(--ink);
+    --color-contrast: var(--paper);
+    --color-on-contrast: var(--ink);
+    --color-on-brand: var(--paper);
+    --color-focus: var(--ink);
+}
+
+[data-theme="boggle"] {
+    color-scheme: light;
+    --ink: #366c94;
+    --paper: #faf3ea;
+    --color-correct: #7aa57c;
+    --color-wrong: #c8442c;
+}
+
+[data-theme="boggle-dark"] {
+    color-scheme: dark;
+    --ink: #d6d6d6;
+    --paper: #315178;
+    --color-secondary-active: #4a6e82;
+
+    --color-correct: #7aa57c;
+    --color-wrong: #c8442c;
+}
+
+[data-theme="times"] {
+    --font-board-family: "Helvetica", "Arial", sans-serif;
+
+    color-scheme: light;
+    --ink: #000;
+    --paper: #fff;
+
+    --color-secondary-active: #a7d8ff;
+
+    --color-active: #ffda00;
+    --color-correct: #2860d8;
+
+    --color-wrong: #c8442c;
+}

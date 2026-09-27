@@ -12,11 +12,12 @@ use crate::{
     error::{AppError, AppResult},
     handlers::form::{UploadError, blank_to_none, single_file},
     models::user,
-    views,
+    views::{self, viewer::Viewer},
 };
 
-pub const AVATAR_MAX_BYTES: usize = 5 * 1024 * 1024;
-const AVATAR_TYPES: [&str; 3] = ["image/jpeg", "image/png", "image/webp"];
+const AVATAR_MAX_BYTES: usize = 5 * 1024 * 1024;
+const MULTIPART_OVERHEAD: usize = 64 * 1024;
+pub const AVATAR_BODY_LIMIT: usize = AVATAR_MAX_BYTES + MULTIPART_OVERHEAD;
 
 #[derive(Deserialize, Validate)]
 pub struct AccountSettingsForm {
@@ -26,8 +27,8 @@ pub struct AccountSettingsForm {
     pub bio: String,
 }
 
-pub async fn show(AuthenticatedUser(user): AuthenticatedUser<user::Model>) -> AppResult {
-    Ok(views::account::page(&user).into_response())
+pub async fn show(AuthenticatedUser(user): AuthenticatedUser<user::Model>, viewer: Viewer) -> AppResult {
+    Ok(views::account::page(&user, &viewer).into_response())
 }
 
 pub async fn update(
@@ -55,29 +56,23 @@ pub async fn upload_avatar(
         return Err(AppError::field("avatar", "Image uploads are not available right now"));
     }
 
-    let file = single_file(&mut multipart, "avatar").await.map_err(|e| match e {
+    let file = single_file(&mut multipart, "avatar").await.map_err(|error| match error {
         UploadError::Missing => AppError::field("avatar", "Choose an image to upload"),
         UploadError::Unreadable => AppError::field("avatar", "The image is too large or could not be read"),
     })?;
-
-    let content_type = file.content_type.unwrap_or_default();
-    if !AVATAR_TYPES.contains(&content_type.as_str()) {
-        return Err(AppError::field("avatar", "The image needs to be a JPEG, PNG or WebP"));
-    }
 
     let bytes = file.bytes;
     if bytes.len() > AVATAR_MAX_BYTES {
         return Err(AppError::field("avatar", "The image needs to be 5 MB or smaller"));
     }
 
-    if !looks_like_image(&bytes) {
-        return Err(AppError::field("avatar", "The file does not look like an image"));
-    }
+    let content_type =
+        image_type(&bytes).ok_or_else(|| AppError::field("avatar", "The image needs to be a JPEG, PNG or WebP"))?;
 
-    let public_id = cloudinary::upload(bytes.to_vec(), &user.avatar_public_id(), &content_type)
+    let public_id = cloudinary::upload(bytes.to_vec(), &user.avatar_upload_id(), content_type)
         .await
-        .map_err(|e| {
-            eprintln!("[avatar] {e}");
+        .map_err(|error| {
+            eprintln!("[avatar] {error}");
             AppError::field("avatar", "Something went wrong uploading the image")
         })?;
 
@@ -89,8 +84,14 @@ pub async fn upload_avatar(
     Ok(views::account::avatar_block(&saved).into_response())
 }
 
-fn looks_like_image(bytes: &[u8]) -> bool {
-    bytes.starts_with(&[0xFF, 0xD8, 0xFF])
-        || bytes.starts_with(&[0x89, b'P', b'N', b'G'])
-        || (bytes.starts_with(b"RIFF") && bytes.get(8..12) == Some(b"WEBP"))
+fn image_type(bytes: &[u8]) -> Option<&'static str> {
+    if bytes.starts_with(&[0xFF, 0xD8, 0xFF]) {
+        Some("image/jpeg")
+    } else if bytes.starts_with(&[0x89, b'P', b'N', b'G']) {
+        Some("image/png")
+    } else if bytes.starts_with(b"RIFF") && bytes.get(8..12) == Some(b"WEBP") {
+        Some("image/webp")
+    } else {
+        None
+    }
 }

@@ -3,14 +3,14 @@ use maud::{Markup, html};
 
 use crate::{
     components::{footer, header},
-    views::viewer::Viewer,
+    views::{layouts::themed, viewer::Viewer},
 };
 
 pub fn dashboard_shell(head: Head, viewer: &Viewer, content: Markup) -> Markup {
     base(
-        &head,
+        &themed(head, viewer),
         html! {
-            (header(viewer))
+            (header(viewer, true))
             (content)
             (footer())
         }

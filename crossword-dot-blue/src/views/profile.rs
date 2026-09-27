@@ -1,16 +1,16 @@
 use maud::{Markup, html};
 
 use crate::{
-    models::{listing::{Entry, Filter}, puzzle::Region, user},
+    models::{listing::{Entry, Filter}, region::Region, user},
     views::{layouts::{HeadExt, head, shell}, listing, markdown, viewer::Viewer},
 };
 
 pub fn avatar(user: &user::Model) -> Markup {
     html! {
         @match user.avatar_url() {
-            Some(url) => img.avatar src=(url) alt=(format!("{}'s avatar", user.display_name())) width="128" height="128";,
+            Some(url) => img.avatar src=(url) alt=(format!("{}'s avatar", user.name())) width="128" height="128";,
             None => div.avatar.placeholder aria-hidden="true" {
-                (user.username.chars().next().map(|c| c.to_ascii_uppercase()).unwrap_or('?'))
+                (user.username.chars().next().map(|character| character.to_ascii_uppercase()).unwrap_or('?'))
             },
         }
     }
@@ -34,7 +34,7 @@ pub fn page(
                 header.profile-header {
                     (avatar(profile))
                     div.identity {
-                        h1 { (profile.display_name()) }
+                        h1 { (profile.name()) }
                         p.username { "@" (profile.username) }
                         @if let Some(bio) = profile.bio.as_deref() {
                             div.bio { (markdown::block(bio)) }
