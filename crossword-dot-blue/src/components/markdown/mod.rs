@@ -1,4 +1,4 @@
-use crossword_macros::component;
+use bq_components::component;
 use maud::{Markup, html};
 
 #[component]

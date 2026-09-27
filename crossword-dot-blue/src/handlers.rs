@@ -2,7 +2,6 @@ pub mod app;
 pub mod auth;
 pub mod browse;
 pub mod crossword;
-mod form;
 pub mod lander;
 pub mod options;
 pub mod profile;

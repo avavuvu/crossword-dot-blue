@@ -1,8 +1,9 @@
 use crossword_tools::puzzle::Puzzle;
+use boutique::{AppError, AppResult, ids};
 use sea_orm::{ActiveValue::Set, SqlErr, entity::prelude::*};
 use serde::Deserialize;
 
-use crate::{config, error::{AppError, AppResult}, ids};
+use crate::config;
 
 use super::{category::Category, region::Region, user};
 

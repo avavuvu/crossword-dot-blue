@@ -2,11 +2,11 @@ use axum::{
     extract::{Path, Query, State},
     response::{IntoResponse, Redirect},
 };
+use boutique::{AppError, AppResult};
 use serde::Deserialize;
 
 use crate::{
     AppState,
-    error::{AppError, AppResult},
     models::puzzle,
     player::{Player, SetPlayer},
     views::{self, viewer::Viewer},

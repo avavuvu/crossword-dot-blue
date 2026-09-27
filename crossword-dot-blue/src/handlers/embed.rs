@@ -1,6 +1,8 @@
 use axum::{extract::{Path, Query, State}, response::IntoResponse};
 
-use crate::{AppState, error::{AppError, AppResult}, handlers::crossword::ShareQuery, models::puzzle, player::{Player, SetPlayer}, views::{self, viewer::Viewer}};
+use boutique::{AppError, AppResult};
+
+use crate::{AppState, handlers::crossword::ShareQuery, models::puzzle, player::{Player, SetPlayer}, views::{self, viewer::Viewer}};
 
 pub async fn show(
     State(state): State<AppState>,

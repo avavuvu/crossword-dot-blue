@@ -4,10 +4,10 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use boutique::{AppError, AppResult};
 
 use crate::{
     AppState,
-    error::{AppError, AppResult},
     handlers::crossword::ShareQuery,
     models::{progress::{self, Owner, Saved, Stored}, puzzle},
     player::{Player, SetPlayer},

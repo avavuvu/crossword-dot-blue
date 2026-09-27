@@ -1,6 +1,6 @@
 use maud::{Markup, PreEscaped, html};
 
-use crate::views::{layouts::{HeadExt, head, shell}, viewer::Viewer};
+use crate::views::{layouts::{head, shell}, viewer::Viewer};
 
 pub struct TextPage {
     pub title: &'static str,

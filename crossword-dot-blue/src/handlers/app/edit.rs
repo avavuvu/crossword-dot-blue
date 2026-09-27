@@ -6,15 +6,12 @@ use axum::{
     http::{HeaderMap, StatusCode},
     response::{IntoResponse, Redirect},
 };
-use boutique::{AuthenticatedUser, htmx, validator::Validate};
+use boutique::{AppError, AppResult, AuthenticatedUser, form::blank_to_none, htmx, ids, validator::Validate};
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, ModelTrait};
 use serde::Deserialize;
 
 use crate::{
     AppState,
-    error::{AppError, AppResult},
-    handlers::form::blank_to_none,
-    ids,
     models::{puzzle, region::{self, Region}, user},
     views::{self, viewer::Viewer},
 };

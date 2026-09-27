@@ -7,7 +7,7 @@ use maud::{Markup, html};
 use crate::{
     components::{Layout, card, footer, header},
     models::{category::Category, listing::{self, Entry, Featured}},
-    views::{layouts::{HeadExt, head, themed}, listing as listing_view, viewer::Viewer},
+    views::{layouts::{head, themed}, listing as listing_view, viewer::Viewer},
 };
 
 const PER_CATEGORY: usize = 6;

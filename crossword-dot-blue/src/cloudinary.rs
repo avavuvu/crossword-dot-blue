@@ -1,124 +1,41 @@
-use std::{env, fmt, sync::LazyLock};
+use std::sync::LazyLock;
 
-use serde::Deserialize;
-use sha1::{Digest, Sha1};
+use boutique::cloudinary::Cloudinary;
+pub use boutique::cloudinary::Error;
 
-pub struct Config {
-    cloud_name: String,
-    api_key: String,
-    api_secret: String,
-}
-
-static CONFIG: LazyLock<Option<Config>> = LazyLock::new(|| {
-    match (
-        env::var("CLOUDINARY_CLOUD_NAME"),
-        env::var("CLOUDINARY_API_KEY"),
-        env::var("CLOUDINARY_API_SECRET"),
-    ) {
-        (Ok(cloud_name), Ok(api_key), Ok(api_secret)) => Some(Config { cloud_name, api_key, api_secret }),
-        _ => None,
-    }
-});
+static CLIENT: LazyLock<Option<Cloudinary>> = LazyLock::new(Cloudinary::from_env);
 
 pub fn init() {
-    LazyLock::force(&CONFIG);
-}
-
-fn config() -> Option<&'static Config> {
-    CONFIG.as_ref()
+    LazyLock::force(&CLIENT);
 }
 
 pub fn is_configured() -> bool {
-    config().is_some()
+    CLIENT.is_some()
 }
 
 pub fn url(public_id: &str, transform: &str) -> String {
-    let cloud_name = config().map(|config| config.cloud_name.as_str()).unwrap_or("demo");
-    format!("https://res.cloudinary.com/{cloud_name}/image/upload/{transform}/{public_id}")
+    match CLIENT.as_ref() {
+        Some(client) => client.url(public_id, transform),
+        None => format!("https://res.cloudinary.com/demo/image/upload/{transform}/{public_id}"),
+    }
+}
+
+pub async fn upload(bytes: Vec<u8>, public_id: &str, content_type: &str) -> Result<String, UploadError> {
+    let client = CLIENT.as_ref().ok_or(UploadError::NotConfigured)?;
+    client.upload(bytes, public_id, content_type).await.map_err(UploadError::Cloudinary)
 }
 
 #[derive(Debug)]
-pub enum Error {
+pub enum UploadError {
     NotConfigured,
-    Request(reqwest::Error),
-    Rejected(String),
+    Cloudinary(Error),
 }
 
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+impl std::fmt::Display for UploadError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Error::NotConfigured => f.write_str("cloudinary is not configured"),
-            Error::Request(error) => write!(f, "cloudinary request: {error}"),
-            Error::Rejected(message) => write!(f, "cloudinary rejected the upload: {message}"),
+            UploadError::NotConfigured => f.write_str("cloudinary is not configured"),
+            UploadError::Cloudinary(error) => error.fmt(f),
         }
-    }
-}
-
-impl From<reqwest::Error> for Error {
-    fn from(error: reqwest::Error) -> Self {
-        Error::Request(error)
-    }
-}
-
-#[derive(Deserialize)]
-struct UploadResponse {
-    public_id: Option<String>,
-    error: Option<UploadError>,
-}
-
-#[derive(Deserialize)]
-struct UploadError {
-    message: String,
-}
-
-fn sign(parameters: &[(&str, &str)], secret: &str) -> String {
-    let mut sorted: Vec<&(&str, &str)> = parameters.iter().collect();
-    sorted.sort_by(|left, right| left.0.cmp(right.0));
-    let joined = sorted
-        .iter()
-        .map(|(name, value)| format!("{name}={value}"))
-        .collect::<Vec<_>>()
-        .join("&");
-    let digest = Sha1::digest(format!("{joined}{secret}").as_bytes());
-    format!("{digest:x}")
-}
-
-pub async fn upload(bytes: Vec<u8>, public_id: &str, content_type: &str) -> Result<String, Error> {
-    let config = config().ok_or(Error::NotConfigured)?;
-    let timestamp = chrono::Utc::now().timestamp().to_string();
-
-    let parameters = [
-        ("invalidate", "true"),
-        ("overwrite", "true"),
-        ("public_id", public_id),
-        ("timestamp", timestamp.as_str()),
-    ];
-    let signature = sign(&parameters, &config.api_secret);
-
-    let file = reqwest::multipart::Part::bytes(bytes)
-        .file_name("avatar")
-        .mime_str(content_type)?;
-
-    let mut form = reqwest::multipart::Form::new()
-        .text("api_key", config.api_key.clone())
-        .text("signature", signature)
-        .part("file", file);
-    for (name, value) in parameters {
-        form = form.text(name, value.to_string());
-    }
-
-    let endpoint = format!("https://api.cloudinary.com/v1_1/{}/image/upload", config.cloud_name);
-    let response: UploadResponse = reqwest::Client::new()
-        .post(endpoint)
-        .multipart(form)
-        .send()
-        .await?
-        .json()
-        .await?;
-
-    match (response.public_id, response.error) {
-        (Some(public_id), _) => Ok(public_id),
-        (None, Some(error)) => Err(Error::Rejected(error.message)),
-        (None, None) => Err(Error::Rejected("no public_id in response".to_string())),
     }
 }

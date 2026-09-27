@@ -4,7 +4,7 @@ use crate::{
     components::{Actions, Layout, card},
     models::{puzzle, user},
     components::grid::Fill,
-    views::{self, layouts::{HeadExt, dashboard_shell, head}, viewer::Viewer},
+    views::{self, layouts::{dashboard_shell, head}, viewer::Viewer},
 };
 
 pub fn page(user: &user::Model, viewer: &Viewer, puzzles: Vec<puzzle::Model>) -> Markup {

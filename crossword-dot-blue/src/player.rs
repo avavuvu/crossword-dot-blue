@@ -4,9 +4,9 @@ use axum::{
     response::{IntoResponseParts, ResponseParts},
 };
 use axum_extra::extract::cookie::{Cookie, SameSite};
-use boutique::{UserContext, session::CookieJar};
+use boutique::{UserContext, ids, session::CookieJar};
 
-use crate::{AppState, ids};
+use crate::AppState;
 
 pub const COOKIE: &str = "cw_player";
 

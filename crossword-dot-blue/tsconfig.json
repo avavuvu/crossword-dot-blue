@@ -29,7 +29,7 @@
     "baseUrl": ".",
     "paths": {
       "@bindings/*": ["../crossword-tools/bindings/*"],
-      "@bq/*": ["../../boutique/bq_components/src/*"]
+      "@bq/*": ["../../boutique/bq_components/src/*", "node_modules/boutique/bq_components/src/*"]
     }
   },
   "include": ["resources/js", "src", "tests", "../crossword-tools/bindings", "../../boutique/bq_components/src"]

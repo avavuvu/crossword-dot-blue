@@ -5,7 +5,7 @@ use maud::{Markup, html};
 use crate::{
     components::{crossword, footer, header, share_button},
     models::{puzzle, user},
-    views::{layouts::{HeadExt, head, themed}, viewer::Viewer},
+    views::{layouts::{head, themed}, viewer::Viewer},
 };
 
 pub fn page(model: &puzzle::Model, author: &user::Model, puzzle: &Puzzle, viewer: &Viewer) -> Markup {

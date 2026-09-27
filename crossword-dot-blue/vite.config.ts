@@ -1,6 +1,11 @@
 import { defineConfig } from "vite";
 import { fileURLToPath } from "node:url";
-import { globSync } from "node:fs";
+import { existsSync, globSync } from "node:fs";
+
+const localBoutique = fileURLToPath(new URL("../../boutique/bq_components/src", import.meta.url));
+const boutique = existsSync(localBoutique)
+    ? localBoutique
+    : fileURLToPath(new URL("./node_modules/boutique/bq_components/src", import.meta.url));
 
 const viewStyles = Object.fromEntries(
     globSync("src/views/**/*.css")
@@ -13,7 +18,7 @@ export default defineConfig({
     resolve: {
         alias: {
             "@bindings": fileURLToPath(new URL("../crossword-tools/bindings", import.meta.url)),
-            "@bq": fileURLToPath(new URL("../../boutique/bq_components/src", import.meta.url)),
+            "@bq": boutique,
         },
     },
     build: {

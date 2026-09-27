@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crossword-dot-blue", "crossword-macros", "crossword-tools", "migration"]
+members = ["crossword-dot-blue", "crossword-tools", "migration"]
 
 [workspace.package]
 version = "0.1.0"

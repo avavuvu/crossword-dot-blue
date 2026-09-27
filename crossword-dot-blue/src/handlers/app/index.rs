@@ -1,8 +1,8 @@
 use axum::{extract::State, response::IntoResponse};
-use boutique::AuthenticatedUser;
+use boutique::{AppResult, AuthenticatedUser};
 use sea_orm::{ModelTrait, QueryOrder};
 
-use crate::{AppState, error::AppResult, models::{puzzle, user}, views::{self, viewer::Viewer}};
+use crate::{AppState, models::{puzzle, user}, views::{self, viewer::Viewer}};
 
 pub async fn show(
     AuthenticatedUser(user): AuthenticatedUser<user::Model>,

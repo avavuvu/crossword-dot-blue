@@ -1,10 +1,10 @@
 use axum::{Form, extract::State, response::{IntoResponse, Redirect}};
-use boutique::{htmx, session::{self, CookieJar, LoginError}};
+use boutique::{AppError, AppResult, htmx, session::{self, CookieJar, LoginError}};
 use boutique::validator::Validate;
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, TransactionTrait};
 use serde::Deserialize;
 
-use crate::{AppState, config, error::{AppError, AppResult}, models::{progress, user}, player::{self, Player, SetPlayer}, views::{self, viewer::Viewer}};
+use crate::{AppState, config, models::{progress, user}, player::{self, Player, SetPlayer}, views::{self, viewer::Viewer}};
 
 #[derive(Deserialize, Validate)]
 pub struct LoginForm {

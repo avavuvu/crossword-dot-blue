@@ -1,10 +1,8 @@
 use axum::extract::{Multipart, State};
-use boutique::{AuthenticatedUser, htmx};
+use boutique::{AppError, AppResult, AuthenticatedUser, form::{UploadError, single_file}, htmx};
 
 use crate::{
     AppState,
-    error::{AppError, AppResult},
-    handlers::form::{UploadError, single_file},
     models::{puzzle, user},
 };
 

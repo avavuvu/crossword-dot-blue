@@ -16,7 +16,7 @@ pub use share::share_block;
 
 use crate::{
     models::{puzzle, user},
-    views::{layouts::{HeadExt, head, shell}, viewer::Viewer},
+    views::{layouts::{head, shell}, viewer::Viewer},
 };
 
 pub fn save_response(model: &puzzle::Model, author: &user::Model, viewer: &user::Model) -> Markup {

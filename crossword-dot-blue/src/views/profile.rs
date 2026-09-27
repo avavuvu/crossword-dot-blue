@@ -2,7 +2,7 @@ use maud::{Markup, html};
 
 use crate::{
     models::{listing::{Entry, Filter}, region::Region, user},
-    views::{layouts::{HeadExt, head, shell}, listing, markdown, viewer::Viewer},
+    views::{layouts::{head, shell}, listing, markdown, viewer::Viewer},
 };
 
 pub fn avatar(user: &user::Model) -> Markup {

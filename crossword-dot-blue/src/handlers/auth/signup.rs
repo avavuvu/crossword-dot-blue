@@ -1,10 +1,10 @@
 use axum::{Form, extract::State, response::{IntoResponse, Redirect}};
-use boutique::{htmx, session};
+use boutique::{AppError, AppResult, htmx, session};
 use boutique::validator::{Validate, ValidationError};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DbErr, EntityTrait, QueryFilter, SqlErr, TransactionTrait};
 use serde::Deserialize;
 
-use crate::{AppState, config, error::{AppError, AppResult}, models::{progress, user}, player::{Player, SetPlayer}, views::{self, viewer::Viewer}};
+use crate::{AppState, config, models::{progress, user}, player::{Player, SetPlayer}, views::{self, viewer::Viewer}};
 
 fn ascii_alphanumeric(value: &str) -> Result<(), ValidationError> {
     if value.bytes().all(|byte| byte.is_ascii_alphanumeric()) {

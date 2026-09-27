@@ -1,7 +1,7 @@
 mod action;
 
 use bq_components::Button;
-use crossword_macros::component;
+use bq_components::component;
 use crossword_tools::puzzle::{Cell, Clue, Direction, Puzzle};
 use maud::{Markup, PreEscaped, html};
 

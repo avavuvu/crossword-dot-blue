@@ -6,7 +6,9 @@ use axum::{
 };
 use serde::Deserialize;
 
-use crate::{AppState, error::{AppError, AppResult}, theme::Theme, views::{self, viewer::Viewer}};
+use boutique::{AppError, AppResult};
+
+use crate::{AppState, theme::Theme, views::{self, viewer::Viewer}};
 
 #[derive(Deserialize)]
 pub struct OptionsForm {

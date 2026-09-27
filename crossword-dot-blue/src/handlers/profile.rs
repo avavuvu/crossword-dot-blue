@@ -2,10 +2,10 @@ use axum::{
     extract::{Path, Query, State},
     response::{IntoResponse, Redirect},
 };
+use boutique::{AppError, AppResult};
 
 use crate::{
     AppState,
-    error::{AppError, AppResult},
     models::{listing::{self, Filter}, user},
     views::{self, viewer::Viewer},
 };

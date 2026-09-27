@@ -3,14 +3,12 @@ use axum::{
     extract::{Multipart, State},
     response::IntoResponse,
 };
-use boutique::{AuthenticatedUser, validator::Validate};
+use boutique::{AppError, AppResult, AuthenticatedUser, form::{UploadError, blank_to_none, single_file}, validator::Validate};
 use sea_orm::{ActiveModelTrait, ActiveValue::Set};
 use serde::Deserialize;
 
 use crate::{
     AppState, cloudinary,
-    error::{AppError, AppResult},
-    handlers::form::{UploadError, blank_to_none, single_file},
     models::user,
     views::{self, viewer::Viewer},
 };

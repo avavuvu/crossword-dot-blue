@@ -2,7 +2,7 @@ use maud::{Markup, html};
 
 use crate::{
     models::{category::Category, listing::{Entry, Filter}, region::Region},
-    views::{layouts::{HeadExt, head, shell}, listing, viewer::Viewer},
+    views::{layouts::{head, shell}, listing, viewer::Viewer},
 };
 
 pub fn page(

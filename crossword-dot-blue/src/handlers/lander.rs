@@ -1,8 +1,9 @@
 mod buzzwords;
 
 use axum::{extract::State, response::IntoResponse};
+use boutique::AppResult;
 
-use crate::{AppState, error::AppResult, models::listing, views::{self, viewer::Viewer}};
+use crate::{AppState, models::listing, views::{self, viewer::Viewer}};
 
 
 pub async fn show(

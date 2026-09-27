@@ -3,7 +3,7 @@ use axum::{
     extract::{Path, State},
     response::{IntoResponse, Response},
 };
-use boutique::AuthenticatedUser;
+use boutique::{AppError, AppResult, AuthenticatedUser};
 use crossword_tools::{puzzle::Puzzle, xd};
 use maud::html;
 use sea_orm::{ActiveModelTrait, ActiveValue::Set};
@@ -11,7 +11,6 @@ use serde::Deserialize;
 
 use crate::{
     AppState,
-    error::{AppError, AppResult},
     models::{puzzle::ActiveModel, user},
     views::app::edit::{clues::{clue_row, ref_label}, grid_preview},
 };

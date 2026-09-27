@@ -347,13 +347,17 @@ dependencies = [
  "dioxus-devtools",
  "jsonwebtoken",
  "maud",
+ "reqwest",
  "sea-orm",
  "sea-orm-migration",
  "serde",
+ "serde_json",
+ "sha1",
  "time",
  "tokio",
  "tower",
  "tower-http",
+ "url",
  "uuid",
  "validator",
 ]
@@ -362,7 +366,19 @@ dependencies = [
 name = "bq_components"
 version = "0.2.0"
 dependencies = [
+ "bon",
+ "bq_macros",
  "maud",
+]
+
+[[package]]
+name = "bq_macros"
+version = "0.2.0"
+dependencies = [
+ "heck 0.5.0",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.119",
 ]
 
 [[package]]
@@ -580,37 +596,23 @@ version = "0.1.0"
 dependencies = [
  "axum",
  "axum-extra",
- "bon",
  "boutique",
  "bq_components",
  "chrono",
- "crossword-macros",
  "crossword-tools",
  "dotenvy",
  "markdown",
  "maud",
  "migration",
  "nanorand",
- "reqwest",
  "sea-orm",
  "serde",
  "serde_json",
- "sha1",
  "slugify",
  "time",
  "tokio",
  "ts-rs",
  "validator",
-]
-
-[[package]]
-name = "crossword-macros"
-version = "0.1.0"
-dependencies = [
- "heck 0.5.0",
- "proc-macro2",
- "quote",
- "syn 2.0.119",
 ]
 
 [[package]]

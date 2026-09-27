@@ -6,7 +6,7 @@ use crate::{
     cloudinary,
     components::markdown,
     models::user,
-    views::{layouts::{HeadExt, head, shell}, profile::avatar, viewer::Viewer},
+    views::{layouts::{head, shell}, profile::avatar, viewer::Viewer},
 };
 
 pub fn save_status(user: &user::Model) -> Markup {

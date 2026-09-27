@@ -1,5 +1,5 @@
 use bq_components::Button;
-use crossword_macros::component;
+use bq_components::component;
 use maud::{Markup, html};
 
 use crate::{
