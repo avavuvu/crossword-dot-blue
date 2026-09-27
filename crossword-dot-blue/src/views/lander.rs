@@ -1,6 +1,7 @@
 mod intro;
 
-use boutique::{components::Button, views::base};
+use boutique::views::base;
+use bq_components::Button;
 use maud::{Markup, html};
 
 use crate::{

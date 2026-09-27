@@ -1,4 +1,4 @@
-use boutique::components::Button;
+use bq_components::Button;
 use maud::{Markup, html};
 
 use crate::{components::copy_button, models::{puzzle, user}};

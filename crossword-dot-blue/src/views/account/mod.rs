@@ -1,4 +1,5 @@
-use boutique::{components::Button, htmx::partial};
+use boutique::htmx::partial;
+use bq_components::Button;
 use maud::{Markup, html};
 
 use crate::{

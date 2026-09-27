@@ -1,4 +1,4 @@
-use boutique::components::Button;
+use bq_components::Button;
 use crossword_macros::component;
 use maud::{Markup, html};
 

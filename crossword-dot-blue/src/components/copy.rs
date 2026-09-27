@@ -1,4 +1,4 @@
-use boutique::components::Button;
+use bq_components::Button;
 use maud::{Markup, Render, html};
 
 pub fn copy_button(url: &str, label: &str) -> Markup {

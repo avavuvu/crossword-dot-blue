@@ -338,7 +338,7 @@ dependencies = [
 
 [[package]]
 name = "boutique"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "argon2",
  "axum",
@@ -356,6 +356,13 @@ dependencies = [
  "tower-http",
  "uuid",
  "validator",
+]
+
+[[package]]
+name = "bq_components"
+version = "0.2.0"
+dependencies = [
+ "maud",
 ]
 
 [[package]]
@@ -575,6 +582,7 @@ dependencies = [
  "axum-extra",
  "bon",
  "boutique",
+ "bq_components",
  "chrono",
  "crossword-macros",
  "crossword-tools",

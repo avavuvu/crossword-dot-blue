@@ -1,4 +1,4 @@
-use boutique::components::{Button, Input};
+use bq_components::{Button, Input};
 use maud::{Markup, html};
 
 use crate::views::{layouts::{HeadExt, head, shell}, viewer::Viewer};

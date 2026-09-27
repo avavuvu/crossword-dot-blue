@@ -28,8 +28,9 @@
     "types": ["bun", "vite/client"],
     "baseUrl": ".",
     "paths": {
-      "@bindings/*": ["../crossword-tools/bindings/*"]
+      "@bindings/*": ["../crossword-tools/bindings/*"],
+      "@bq/*": ["../../boutique/bq_components/src/*"]
     }
   },
-  "include": ["resources/js", "src", "tests", "../crossword-tools/bindings"]
+  "include": ["resources/js", "src", "tests", "../crossword-tools/bindings", "../../boutique/bq_components/src"]
 }

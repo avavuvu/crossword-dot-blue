@@ -1,8 +1,6 @@
 @import "reset.css";
 @import "fonts.css";
 @import "themes.css";
-@import "components/button.css";
-@import "components/input.css";
 
 :root {
     --xs: 30em;

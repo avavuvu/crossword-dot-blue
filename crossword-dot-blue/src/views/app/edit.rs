@@ -4,7 +4,8 @@ mod form;
 mod preview;
 mod share;
 
-use boutique::{components::Button, htmx::partial};
+use boutique::htmx::partial;
+use bq_components::Button;
 use crossword_tools::puzzle::Puzzle;
 use maud::{Markup, html};
 

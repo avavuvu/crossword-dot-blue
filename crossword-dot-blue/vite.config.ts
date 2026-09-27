@@ -13,6 +13,7 @@ export default defineConfig({
     resolve: {
         alias: {
             "@bindings": fileURLToPath(new URL("../crossword-tools/bindings", import.meta.url)),
+            "@bq": fileURLToPath(new URL("../../boutique/bq_components/src", import.meta.url)),
         },
     },
     build: {
