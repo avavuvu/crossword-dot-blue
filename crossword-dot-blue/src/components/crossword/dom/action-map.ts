@@ -1,5 +1,5 @@
 import type { UiAction } from "@bindings/UiAction";
-import type { Action } from "../_game/actions";
+import type { Action } from "../game/actions";
 
 function fromUiAction(name: UiAction): Action {
     switch (name) {

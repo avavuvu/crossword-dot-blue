@@ -1,5 +1,5 @@
-import type { Game } from "../_game/game";
-import { formatDuration, isoDuration } from "../_game/time";
+import type { Game } from "../game/game";
+import { formatDuration, isoDuration } from "../game/time";
 
 export type Timer = {
     elapsed(): number;
@@ -7,9 +7,7 @@ export type Timer = {
     start(): void;
 };
 
-export function attachTimer(game: Game, root: HTMLElement): Timer {
-    const display = root.querySelector<HTMLElement>("[data-timer]");
-    const finalDisplay = root.querySelector<HTMLElement>("[data-completion-time]");
+export function attachTimer(game: Game, display: HTMLElement, finalDisplay: HTMLElement): Timer {
 
     let base = 0;
     let runningSince: number | null = null;
@@ -22,11 +20,9 @@ export function attachTimer(game: Game, root: HTMLElement): Timer {
     const paint = () => {
         const ms = elapsed();
         const text = formatDuration(ms);
-        if (display) {
-            display.textContent = text;
-            display.setAttribute("datetime", isoDuration(ms));
-        }
-        if (finalDisplay && finished) {
+        display.textContent = text;
+        display.setAttribute("datetime", isoDuration(ms));
+        if (finished) {
             finalDisplay.textContent = text;
             finalDisplay.setAttribute("datetime", isoDuration(ms));
         }

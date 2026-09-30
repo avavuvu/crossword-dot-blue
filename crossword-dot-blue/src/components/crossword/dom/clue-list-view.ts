@@ -1,11 +1,7 @@
-import type { Game } from "../_game/game";
-import { clueIdAt, opposite } from "../_game/puzzle";
+import type { Game } from "../game/game";
+import { clueIdAt, opposite } from "../game/puzzle";
 
-export function attachClueList(game: Game, root: HTMLElement): void {
-    const buttons = new Map<string, HTMLButtonElement>();
-    for (const button of root.querySelectorAll<HTMLButtonElement>("button[data-clue]")) {
-        buttons.set(button.dataset.clue!, button);
-    }
+export function attachClueList(game: Game, root: HTMLElement, buttons: Map<string, HTMLButtonElement>): void {
 
     let active: HTMLButtonElement | undefined;
     let crossing: HTMLButtonElement | undefined;

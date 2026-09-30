@@ -1,40 +1,41 @@
-import type { Game } from "../_game/game";
-import { clueAt } from "../_game/puzzle";
+import type { Game } from "../game/game";
+import { clueAt } from "../game/puzzle";
 
-export function attachClueBanner(game: Game, host: HTMLElement): void {
-    const label = host.querySelector<HTMLElement>("[data-clue-label]");
-    const text = host.querySelector<HTMLElement>("[data-clue-text]");
-    const rebus = host.querySelector<HTMLElement>('[data-action="toggle-rebus"]');
-    const entryPreview = host.querySelector<HTMLElement>("[data-entry-preview]");
-    const hintButton = host.querySelector<HTMLElement>("[data-hint-button]");
+export type ClueBannerParts = {
+    label: HTMLElement;
+    text: HTMLElement;
+    preview: HTMLElement;
+    hint: HTMLElement | undefined;
+    rebus: HTMLElement | undefined;
+    menus: HTMLElement[];
+    clues: Map<string, HTMLButtonElement>;
+};
 
-    const renderedBody = (id: string) =>
-        host.querySelector<HTMLElement>(`button[data-clue="${id}"] .body`)?.innerHTML;
+export function attachClueBanner(game: Game, parts: ClueBannerParts): void {
+    const { label, text, preview, hint, rebus, menus, clues } = parts;
+
+    const renderedBody = (id: string) => clues.get(id)?.querySelector<HTMLElement>(".body")?.innerHTML;
 
     const paintClue = () => {
         const { cursor, direction } = game.state;
         const clue = clueAt(game.puzzle, cursor, direction);
-        if (label) label.textContent = clue ? `${clue.number}${clue.direction === "across" ? "A" : "D"}` : "";
-        if (text) {
-            const html = clue ? renderedBody(clue.id) : undefined;
-            if (html !== undefined) text.innerHTML = html;
-            else text.textContent = clue?.body ?? "";
-        }
-        if (hintButton) hintButton.hidden = !clue?.hint;
+        label.textContent = clue ? `${clue.number}${clue.direction === "across" ? "A" : "D"}` : "";
+        const html = clue ? renderedBody(clue.id) : undefined;
+        if (html !== undefined) text.innerHTML = html;
+        else text.textContent = clue?.body ?? "";
+        if (hint) hint.hidden = !clue?.hint;
     };
 
     const paintPreview = () => {
-        if (!entryPreview) return;
-
         const { cursor, direction, entries } = game.state;
         const clue = clueAt(game.puzzle, cursor, direction);
 
-        const preview = clue?.indexes.map((clueIndex, arrayIndex) => {
+        const letters = clue?.indexes.map((clueIndex, arrayIndex) => {
             const letter = entries[clueIndex] || "_";
             return clue.splits.includes(arrayIndex + 1) ? `${letter} ` : letter;
         }) ?? [];
 
-        entryPreview.textContent = preview.join("");
+        preview.textContent = letters.join("");
     };
 
     game.on("cursor", () => {
@@ -50,7 +51,7 @@ export function attachClueBanner(game: Game, host: HTMLElement): void {
     game.on("mode", ({ rebus: on }) => rebus?.setAttribute("aria-pressed", String(on)));
 
     if (!CSS.supports("position-area", "bottom")) {
-        for (const menu of host.querySelectorAll<HTMLElement>(".dropdown > [popover]")) {
+        for (const menu of menus) {
             menu.addEventListener("beforetoggle", (event) => {
                 if ((event as ToggleEvent).newState !== "open") return;
                 const trigger = menu.previousElementSibling;

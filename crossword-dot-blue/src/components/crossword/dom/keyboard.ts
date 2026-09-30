@@ -1,4 +1,4 @@
-import type { Game } from "../_game/game";
+import type { Game } from "../game/game";
 import { actionFromKey, actionFromKeyboardEvent } from "./action-map";
 
 const INTERACTIVE = "button, a, input, select, textarea, [popover]";
@@ -7,7 +7,7 @@ const NATIVE_KEYS = new Set(["Enter", " ", "Tab", "Escape"]);
 const REPEAT_DELAY_MS = 400;
 const REPEAT_INTERVAL_MS = 60;
 
-function attachOnscreen(game: Game, keyboard: HTMLElement): void {
+function attachOnscreen(game: Game, keyboard: HTMLElement, rebus: HTMLElement | undefined): void {
     let repeat: ReturnType<typeof setTimeout> | undefined;
 
     const stopRepeat = () => {
@@ -37,20 +37,24 @@ function attachOnscreen(game: Game, keyboard: HTMLElement): void {
         keyboard.addEventListener(name, stopRepeat);
     }
 
-    const rebus = keyboard.querySelector<HTMLElement>('[data-key="Rebus"]');
     game.on("mode", ({ rebus: on }) => rebus?.setAttribute("aria-pressed", String(on)));
     game.on("restore", () => rebus?.setAttribute("aria-pressed", String(game.state.rebus)));
 }
 
-export function attachKeyboard(game: Game, root: HTMLElement, board: HTMLElement): void {
+export function attachKeyboard(
+    game: Game,
+    root: HTMLElement,
+    board: HTMLElement,
+    intro: HTMLElement,
+    onscreen: HTMLElement,
+    rebusKey: HTMLElement | undefined,
+): void {
     if (!board.hasAttribute("tabindex")) board.tabIndex = 0;
 
-    const intro = root.querySelector<HTMLElement>(".intro");
-    const onscreen = root.querySelector<HTMLElement>(".keyboard");
-    if (onscreen) attachOnscreen(game, onscreen);
+    attachOnscreen(game, onscreen, rebusKey);
 
     root.addEventListener("keydown", (event) => {
-        if (intro && !intro.hidden) return;
+        if (!intro.hidden) return;
 
         const target = event.target as Element;
         const onControl = target !== board && target.closest(INTERACTIVE);

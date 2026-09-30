@@ -1,4 +1,9 @@
-function watchHero(header: HTMLElement, hero: HTMLElement): void {
+import type { HeroWatch } from "@setups";
+
+export const heroWatch: HeroWatch = (header, { signal }) => {
+    const hero = header.nextElementSibling;
+    if (!(hero instanceof HTMLElement) || !hero.matches("section.hero")) return;
+
     const observer = new IntersectionObserver(
         ([entry]) => {
             if (!entry) return;
@@ -10,8 +15,5 @@ function watchHero(header: HTMLElement, hero: HTMLElement): void {
     );
 
     observer.observe(hero);
-}
-
-const header = document.querySelector<HTMLElement>("header.top");
-const hero = header?.nextElementSibling;
-if (header && hero instanceof HTMLElement && hero.matches("section.hero")) watchHero(header, hero);
+    signal.addEventListener("abort", () => observer.disconnect());
+};

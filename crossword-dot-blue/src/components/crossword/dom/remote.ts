@@ -1,5 +1,5 @@
-import { isStoredGame } from "../_game/storage";
-import type { StoredGame } from "../_game/stored";
+import { isStoredGame } from "../game/storage";
+import type { StoredGame } from "../game/stored";
 
 export type SaveResult =
     | { kind: "saved"; savedAt: number; solvedAt: number | null }

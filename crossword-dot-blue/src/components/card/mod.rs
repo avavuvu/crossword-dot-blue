@@ -1,5 +1,5 @@
 use bq_components::Button;
-use bq_components::component;
+use bq_components::{component, setup};
 use maud::{Markup, html};
 
 use crate::{
@@ -7,6 +7,8 @@ use crate::{
     models::{puzzle, user},
     views::viewer::Viewer,
 };
+
+setup!(CardProgress, eager);
 
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum Actions {
@@ -54,6 +56,7 @@ pub fn card(
             key=(key)
             layout=(layout.as_str())
             tinted[tinted]
+            bq-setup=(CardProgress)
         {
             (thumbnail(model, &path, fill))
             (body(model, author, &path, is_author, actions))
@@ -84,7 +87,7 @@ fn body(model: &puzzle::Model, author: &user::Model, path: &str, is_author: bool
             .(format!("category-{}", model.category()))
             {
             h3 { a href=(path) { (model.display_title()) } }
-            p.progress data-progress hidden {}
+            p.progress hidden bq-ref="progress" {}
             @if actions == Actions::Browse {
                 p.byline {
                     "by "

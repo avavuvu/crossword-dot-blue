@@ -1,6 +1,6 @@
-import type { Game } from "../_game/game";
-import { deserialize, isEmpty, serialize } from "../_game/storage";
-import { storageKey, type StoredGame } from "../_game/stored";
+import type { Game } from "../game/game";
+import { deserialize, isEmpty, serialize } from "../game/storage";
+import { storageKey, type StoredGame } from "../game/stored";
 import { remoteStore } from "./remote";
 import type { Timer } from "./timer";
 

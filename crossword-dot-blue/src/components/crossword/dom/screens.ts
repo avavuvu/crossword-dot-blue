@@ -1,5 +1,5 @@
-import type { CompletionState } from "../_game/events";
-import type { Game } from "../_game/game";
+import type { CompletionState } from "../game/events";
+import type { Game } from "../game/game";
 
 export type Screens = {
     start(): void;
@@ -7,14 +7,16 @@ export type Screens = {
     options(): void;
 };
 
-export function attachScreens(game: Game, root: HTMLElement, board: HTMLElement): Screens {
-    const intro = root.querySelector<HTMLElement>(".intro");
-    const startButton = intro?.querySelector<HTMLElement>('[data-action="start"]');
-    const options = root.querySelector<HTMLElement>("[data-options]");
-    const screens = Array.from(root.querySelectorAll<HTMLElement>("[data-completion]"));
+export function attachScreens(
+    game: Game,
+    board: HTMLElement,
+    intro: HTMLElement,
+    options: HTMLElement | undefined,
+    screens: HTMLElement[],
+): Screens {
+    const startButton = intro.querySelector<HTMLElement>('[data-action="start"]');
 
     const start = () => {
-        if (!intro) return;
         intro.hidden = true;
         board.focus();
     };

@@ -31,3 +31,7 @@ header.top {
         }
     }
 }
+
+.options-link {
+    font-weight: bold;
+}

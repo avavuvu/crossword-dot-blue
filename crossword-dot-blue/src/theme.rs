@@ -2,7 +2,17 @@ use axum::http::HeaderMap;
 use axum_extra::extract::cookie::{Cookie, SameSite};
 use boutique::session::CookieJar;
 
-include!(concat!(env!("OUT_DIR"), "/themes.rs"));
+pub const THEMES: &[(&str, &str)] = &[
+    ("", "💙 Default"),
+    ("green", "🍏 Green"),
+    ("yellow", "🔆 Yellow"),
+    ("pink", "🌷 Pink"),
+    ("dark", "🌙 Dark"),
+    ("showroom", "🍐 Showroom"),
+    ("boggle", "🌀 Beat Me at Boggle"),
+    ("boggle-dark", "😈 Boggle After Dark"),
+    ("times", "🧩 Times"),
+];
 
 pub const COOKIE: &str = "theme";
 

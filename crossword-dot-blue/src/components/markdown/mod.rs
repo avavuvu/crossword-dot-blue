@@ -1,5 +1,7 @@
-use bq_components::component;
+use bq_components::{component, setup};
 use maud::{Markup, html};
+
+setup!(MarkdownHighlight);
 
 #[component]
 pub fn markdown(
@@ -8,9 +10,9 @@ pub fn markdown(
     #[builder(default)] bordered: bool,
 ) -> Markup {
     html! {
-        cw-markdown bordered[bordered] {
+        cw-markdown bordered[bordered] bq-setup=(MarkdownHighlight) {
             div.editor {
-                pre.backdrop aria-hidden="true" hx-morph-skip {}
+                pre.backdrop aria-hidden="true" hx-morph-skip bq-ref="backdrop" {}
                 (textarea)
             }
             @if hint {

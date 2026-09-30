@@ -1,7 +1,6 @@
 use std::{env, fs, path::Path};
 
 const CONTENT_DIR: &str = "resources/content";
-const THEMES: &str = "resources/css/themes.css";
 const MANIFEST: &str = "public/build/.vite/manifest.json";
 
 fn main() {
@@ -10,11 +9,12 @@ fn main() {
         panic!("{MANIFEST} not found: run `bun run build` before a release build");
     }
 
+    bq_setups::Generator::new("bindings").source("src").boutique().write();
+
     let out_dir = env::var("OUT_DIR").expect("OUT_DIR is set by cargo");
     let out = Path::new(&out_dir);
 
     render_content(&out.join("content"));
-    write_themes(&out.join("themes.rs"));
 }
 
 fn render_content(out: &Path) {
@@ -36,39 +36,4 @@ fn render_content(out: &Path) {
         let name = path.file_stem().and_then(|stem| stem.to_str()).expect("markdown file name");
         fs::write(out.join(format!("{name}.html")), html).expect("write rendered html");
     }
-}
-
-fn write_themes(out: &Path) {
-    println!("cargo:rerun-if-changed={THEMES}");
-    let css = fs::read_to_string(THEMES).expect("read themes.css");
-
-    let mut names: Vec<&str> = Vec::new();
-    for rest in css.split("[data-theme=\"").skip(1) {
-        let Some(end) = rest.find('"') else { continue };
-        let name = &rest[..end];
-        if !name.is_empty() && !names.contains(&name) {
-            names.push(name);
-        }
-    }
-
-    let mut source = String::from("pub const THEMES: &[(&str, &str)] = &[\n    (\"\", \"Default\"),\n");
-    for name in names {
-        source.push_str(&format!("    ({name:?}, {:?}),\n", label(name)));
-    }
-    source.push_str("];\n");
-
-    fs::write(out, source).expect("write themes.rs");
-}
-
-fn label(name: &str) -> String {
-    name.split('-')
-        .map(|word| {
-            let mut characters = word.chars();
-            match characters.next() {
-                Some(first) => first.to_uppercase().chain(characters).collect(),
-                None => String::new(),
-            }
-        })
-        .collect::<Vec<String>>()
-        .join(" ")
 }

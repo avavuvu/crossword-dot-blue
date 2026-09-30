@@ -1,11 +1,13 @@
-use bq_components::Button;
+use bq_components::{Button, setup};
 use maud::{Markup, html};
 
 use crate::{components::logo::{Layout, logo}, views::viewer::Viewer};
 
+setup!(HeroWatch);
+
 pub fn header(viewer: &Viewer, options_link: bool) -> Markup {
     html! {
-        header.top {
+        header.top bq-setup=(HeroWatch) {
             a.logo href="/" {
                 (logo(Layout::Small))
             }

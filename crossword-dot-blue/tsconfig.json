@@ -29,8 +29,9 @@
     "baseUrl": ".",
     "paths": {
       "@bindings/*": ["../crossword-tools/bindings/*"],
-      "@bq/*": ["../../boutique/*", "node_modules/boutique/*"]
+      "@bq/*": ["../../boutique/*", "node_modules/boutique/*"],
+      "@setups": ["bindings/setups.ts"]
     }
   },
-  "include": ["resources/js", "src", "tests", "../crossword-tools/bindings", "../../boutique/components/src"]
+  "include": ["resources/js", "src", "tests", "bindings", "../crossword-tools/bindings", "../../boutique/components/src"]
 }

@@ -1,7 +1,7 @@
 mod action;
 
 use bq_components::Button;
-use bq_components::component;
+use bq_components::{component, setup};
 use crossword_tools::puzzle::{Cell, Clue, Direction, Puzzle};
 use maud::{Markup, PreEscaped, html};
 
@@ -14,6 +14,8 @@ use crate::{
     views::markdown,
 };
 
+setup!(Crossword);
+
 #[component]
 pub fn crossword(
     #[builder(start_fn)]
@@ -24,12 +26,12 @@ pub fn crossword(
     options: Option<Theme>,
     ) -> Markup {
     html! {
-        cw-crossword key=(model.key) style=(format!("--cols: {}; --rows: {}", puzzle.width, puzzle.height)) {
-            script type="application/json" data-puzzle { (json_script(puzzle)) }
+        cw-crossword key=(model.key) style=(format!("--cols: {}; --rows: {}", puzzle.width, puzzle.height)) bq-setup=(Crossword) {
+            script type="application/json" bq-ref="puzzle-json" { (json_script(puzzle)) }
 
             section.info {
-                time data-timer datetime="PT0S" { "0:00" }
-                p data-entry-preview {}
+                time datetime="PT0S" bq-ref="timer" { "0:00" }
+                p data-entry-preview bq-ref="entry-preview" {}
             }
 
             (assist_bar(puzzle, options.is_some()))
@@ -38,7 +40,7 @@ pub fn crossword(
 
             section.board {
                 div.stage {
-                    div.frame tabindex="0" {
+                    div.frame tabindex="0" bq-ref="board" {
                         (grid::grid_svg(puzzle, Fill::Empty))
                     }
                 }
@@ -64,7 +66,7 @@ pub fn crossword(
 
 fn options_screen(theme: Theme) -> Markup {
     html! {
-        section.options hidden data-options aria-labelledby="options-title" {
+        section.options hidden aria-labelledby="options-title" bq-ref="options" {
             h2 id="options-title" tabindex="-1" { "Options" }
             (options_panel(theme))
             div.actions {
@@ -81,7 +83,7 @@ fn json_script(puzzle: &Puzzle) -> Markup {
 
 fn intro(model: &puzzle::Model, puzzle: &Puzzle) -> Markup {
     html! {
-        section.intro {
+        section.intro bq-ref="intro" {
             @match get_category(puzzle.width, puzzle.height) {
                 Category::Mini => (Icon::CrosswordMini),
                 Category::Midi => (Icon::CrosswordMidi),
@@ -102,8 +104,8 @@ fn intro(model: &puzzle::Model, puzzle: &Puzzle) -> Markup {
 
 fn won() -> Markup {
     html! {
-        section.completion.won hidden data-completion="won" aria-labelledby="won-title" role="status" {
-            h2 id="won-title" tabindex="-1" { "Solved in " time data-completion-time {} "!" }
+        section.completion.won hidden data-completion="won" aria-labelledby="won-title" role="status" bq-ref="completion" {
+            h2 id="won-title" tabindex="-1" { "Solved in " time bq-ref="completion-time" {} "!" }
             (Icon::CrosswordSolved)
             div.actions {
                 (Button::button(html! { "View Puzzle" }).action(UiAction::Dismiss.as_str()).primary())
@@ -115,7 +117,7 @@ fn won() -> Markup {
 
 fn almost() -> Markup {
     html! {
-        section.completion.almost hidden data-completion="complete-but-wrong" aria-labelledby="almost-title" role="status" {
+        section.completion.almost hidden data-completion="complete-but-wrong" aria-labelledby="almost-title" role="status" bq-ref="completion" {
             h2 id="almost-title" tabindex="-1" { "Almost" }
             p.message { "The grid is full, but something is not right yet." }
             div.actions {
@@ -132,12 +134,12 @@ fn keyboard(puzzle: &Puzzle) -> Markup {
     let has_rebus = has_rebus(puzzle);
 
     html! {
-        section.keyboard aria-label="Keyboard" {
+        section.keyboard aria-label="Keyboard" bq-ref="keyboard" {
             @for (row, letters) in KEY_ROWS.iter().enumerate() {
                 div.row {
                     @if row == 2 {
                         @if has_rebus {
-                            button.key.special type="button" data-key="Rebus" aria-pressed="false" { "Rebus" }
+                            button.key.special type="button" data-key="Rebus" aria-pressed="false" bq-ref="rebus-key" { "Rebus" }
                         } @else {
                             button.key.special type="button" data-key="Direction" aria-label="Switch direction" {
                                 (Icon::ArrowLeftRight)
@@ -170,9 +172,9 @@ fn clue_banner() -> Markup {
         section.clue-banner {
             button.prev type="button" data-action=(UiAction::PrevClue) aria-label="Previous clue" { "‹" }
             button.current-clue type="button" data-action=(UiAction::ToggleDirection) aria-label="Switch direction" {
-                span.clue-label data-clue-label {}
+                span.clue-label bq-ref="clue-label" {}
                 " "
-                span.clue-text data-clue-text {}
+                span.clue-text bq-ref="clue-text" {}
             }
             button.next type="button" data-action=(UiAction::NextClue) aria-label="Next clue" { "›" }
         }
@@ -212,11 +214,11 @@ fn assist_bar(puzzle: &Puzzle, has_options: bool) -> Markup {
             }))
 
             @if has_hints {
-                button.hint type="button" data-action=(UiAction::Hint) data-hint-button hidden { "Hint" }
+                button.hint type="button" data-action=(UiAction::Hint) hidden bq-ref="hint-button" { "Hint" }
             }
 
             @if has_rebus {
-                button.rebus type="button" data-action=(UiAction::ToggleRebus) aria-pressed="false" { "Rebus" }
+                button.rebus type="button" data-action=(UiAction::ToggleRebus) aria-pressed="false" bq-ref="rebus" { "Rebus" }
             }
 
             @if has_options {
@@ -232,7 +234,7 @@ fn dropdown(id: &str, label: &str, class: &str, items: Markup) -> Markup {
     html! {
         div.dropdown.(class) {
             button type="button" popovertarget=(id) aria-haspopup="menu" style=(format!("anchor-name: {anchor}")) { (label) }
-            div.menu id=(id) popover role="menu" style=(format!("position-anchor: {anchor}")) { (items) }
+            div.menu id=(id) popover role="menu" style=(format!("position-anchor: {anchor}")) bq-ref="menu" { (items) }
         }
     }
 }
@@ -267,7 +269,7 @@ fn clue_group(puzzle: &Puzzle, direction: Direction, heading: &str) -> Markup {
 fn clue_item(clue: &Clue) -> Markup {
     html! {
         li.clue id={ "clue-" (clue.id) } value=(clue.number) {
-            button type="button" data-clue=(clue.id) {
+            button type="button" data-clue=(clue.id) bq-ref="clue" {
                 span.number { (clue.number) }
                 span.body { (markdown::inline(&clue.body)) }
             }
