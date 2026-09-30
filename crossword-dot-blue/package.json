@@ -14,7 +14,7 @@
     },
     "devDependencies": {
         "@types/bun": "latest",
-        "boutique": "github:avavuvu/boutique#ed4b8940acaad762ee7514d374d3f9a2d8e279ec",
+        "boutique": "github:avavuvu/boutique#8868412b0d872abd3fa6aa77642dead926cb9f10",
         "concurrently": "^10.0.5",
         "typescript": "^5.0.0",
         "vite": "^8.3.0"
