@@ -30,6 +30,8 @@ pub enum Relation {
     Puzzles,
     #[sea_orm(has_many = "super::progress::Entity")]
     Progress,
+    #[sea_orm(has_many = "super::session::Entity")]
+    Session,
 }
 
 impl Related<super::puzzle::Entity> for Entity {
@@ -44,16 +46,16 @@ impl Related<super::progress::Entity> for Entity {
     }
 }
 
+impl Related<super::session::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Session.def()
+    }
+}
+
 impl ActiveModelBehavior for ActiveModel {}
 
 impl AuthUser for Model {
-    type UserEntity = Entity;
-    type UserColumn = Column;
-    type Active = ActiveModel;
-
-    const ID: Column = Column::Id;
-    const EMAIL: Column = Column::Email;
-    const PASSWORD: Column = Column::Password;
+    type Store = crate::auth::Store;
 
     fn id(&self) -> &str { &self.id }
     fn email(&self) -> &str { &self.email }

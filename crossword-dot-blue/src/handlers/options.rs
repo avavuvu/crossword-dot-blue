@@ -21,7 +21,7 @@ pub async fn show(viewer: Viewer) -> AppResult {
 
 pub async fn update(State(state): State<AppState>, headers: HeaderMap, Form(form): Form<OptionsForm>) -> AppResult {
     let theme = Theme::parse(&form.theme).ok_or(AppError::BadRequest)?;
-    let cookie = theme.cookie(state.config.secure_cookies);
+    let cookie = theme.cookie(state.auth.config.secure_cookies);
 
     let wants_json = headers
         .get(header::ACCEPT)

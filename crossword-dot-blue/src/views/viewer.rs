@@ -1,7 +1,7 @@
 use axum::{extract::FromRequestParts, http::request::Parts};
-use boutique::UserContext;
+use boutique::{AppError, AuthenticatedUser};
 
-use crate::{AppState, theme::Theme};
+use crate::{AppState, models::user, theme::Theme};
 
 #[derive(Clone, Debug, Default)]
 pub struct Viewer {
@@ -16,10 +16,10 @@ impl Viewer {
 }
 
 impl FromRequestParts<AppState> for Viewer {
-    type Rejection = std::convert::Infallible;
+    type Rejection = AppError;
 
-    async fn from_request_parts(parts: &mut Parts, _state: &AppState) -> Result<Self, Self::Rejection> {
-        let user_id = parts.extensions.get::<UserContext>().and_then(|context| context.user_id.clone());
-        Ok(Viewer { user_id, theme: Theme::from_headers(&parts.headers) })
+    async fn from_request_parts(parts: &mut Parts, state: &AppState) -> Result<Self, Self::Rejection> {
+        let user = Option::<AuthenticatedUser<user::Model>>::from_request_parts(parts, state).await?;
+        Ok(Viewer { user_id: user.map(|AuthenticatedUser(user)| user.id), theme: Theme::from_headers(&parts.headers) })
     }
 }

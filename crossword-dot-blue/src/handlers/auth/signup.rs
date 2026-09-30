@@ -66,7 +66,7 @@ pub async fn create(State(state): State<AppState>, player: Player, Form(form): F
     progress::claim(&transaction, &player.id, &saved.id).await?;
     transaction.commit().await?;
 
-    let session = session::issue(&state, &saved)
+    let session = session::issue(&state.auth, &saved)
         .await
         .map_err(|error| AppError::internal("session", error))?;
 

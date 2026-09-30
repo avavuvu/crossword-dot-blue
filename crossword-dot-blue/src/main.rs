@@ -1,3 +1,4 @@
+mod auth;
 mod cloudinary;
 mod components;
 mod config;
@@ -8,20 +9,31 @@ mod router;
 mod theme;
 mod views;
 
+use axum::extract::FromRef;
 use migration::{Migrator, MigratorTrait};
-use boutique::{assets::manifest, server::Server};
-use sea_orm::Database;
+use boutique::{AuthState, assets::manifest, server::Server};
+use sea_orm::{Database, DatabaseConnection};
 use std::env;
 
 use router::create_router;
 
-pub type AppState = boutique::AuthState<models::user::Model>;
+#[derive(Clone)]
+pub struct AppState {
+    pub db: DatabaseConnection,
+    pub auth: AuthState<models::user::Model>,
+}
+
+impl FromRef<AppState> for AuthState<models::user::Model> {
+    fn from_ref(state: &AppState) -> Self {
+        state.auth.clone()
+    }
+}
 
 const BUILD_ROUTE: &str = "/build";
 const BUILD_DIR: &str = "public/build";
 
 async fn serve((state, port): (AppState, String)) {
-    Server::new(state.clone())
+    Server::new(state.auth.clone())
         .debug(cfg!(debug_assertions))
         .static_dir("/assets", "public/assets")
         .file("/favicon.ico", "public/assets/favicon.ico")
@@ -43,7 +55,7 @@ fn load_env() {
 async fn main() {
     load_env();
 
-    let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET must be set");
+    let secret = env::var("SECRET_KEY").expect("SECRET_KEY must be set");
     config::init();
     cloudinary::init();
     manifest::init(BUILD_ROUTE, BUILD_DIR);
@@ -59,7 +71,8 @@ async fn main() {
 
     let port = env::var("PORT").unwrap_or("3000".into());
 
-    let state = AppState::new(db, jwt_secret);
+    let auth = AuthState::new(auth::Store::new(db.clone()), secret);
+    let state = AppState { db, auth };
 
     println!("listening on http://localhost:{port}");
     boutique::run((state.clone(), port), serve).await;

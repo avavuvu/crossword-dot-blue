@@ -4,9 +4,9 @@ use axum::{
     response::{IntoResponseParts, ResponseParts},
 };
 use axum_extra::extract::cookie::{Cookie, SameSite};
-use boutique::{UserContext, ids, session::CookieJar};
+use boutique::{AppError, AuthenticatedUser, ids, session::CookieJar};
 
-use crate::AppState;
+use crate::{AppState, models::user};
 
 pub const COOKIE: &str = "cw_player";
 
@@ -55,17 +55,19 @@ impl IntoResponseParts for SetPlayer {
 }
 
 impl FromRequestParts<AppState> for Player {
-    type Rejection = std::convert::Infallible;
+    type Rejection = AppError;
 
     async fn from_request_parts(parts: &mut Parts, state: &AppState) -> Result<Self, Self::Rejection> {
         let jar = CookieJar::from_headers(&parts.headers);
-        let user_id = parts.extensions.get::<UserContext>().and_then(|context| context.user_id.clone());
+        let user_id = Option::<AuthenticatedUser<user::Model>>::from_request_parts(parts, state)
+            .await?
+            .map(|AuthenticatedUser(user)| user.id);
 
         let (id, fresh) = match jar.get(COOKIE).map(|cookie| cookie.value()).filter(|value| ids::is_hex(value, ids::LEN)) {
             Some(existing) => (existing.to_string(), false),
             None => (ids::new(), true),
         };
 
-        Ok(Player { id, user_id, fresh, secure: state.config.secure_cookies })
+        Ok(Player { id, user_id, fresh, secure: state.auth.config.secure_cookies })
     }
 }

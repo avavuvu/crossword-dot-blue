@@ -25,7 +25,7 @@ pub async fn show(viewer: Viewer) -> AppResult {
 pub async fn create(State(state): State<AppState>, player: Player, Form(form): Form<LoginForm>) -> AppResult {
     let email = config::normalize_email(&form.email);
 
-    let (user, session) = match session::login(&state, &email, &form.password).await {
+    let (user, session) = match session::login(&state.auth, &email, &form.password).await {
         Ok(ok) => ok,
         Err(LoginError::InvalidCredentials) => return Err(AppError::message("Incorrect email or password")),
         Err(error) => return Err(AppError::internal("login", error)),
@@ -40,7 +40,7 @@ pub async fn create(State(state): State<AppState>, player: Player, Form(form): F
 }
 
 pub async fn delete(State(state): State<AppState>, jar: CookieJar) -> AppResult {
-    let session = session::revoke(&state, jar).await;
+    let session = session::revoke(&state.auth, jar).await;
     Ok((session, SetPlayer(Some(player::remove())), Redirect::to("/")).into_response())
 }
 
