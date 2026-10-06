@@ -1,4 +1,4 @@
-use bq_components::{Button, Input};
+use bq_components::{button, input, Kind};
 use maud::{Markup, html};
 
 use crate::views::{layouts::{head, shell}, viewer::Viewer};
@@ -18,9 +18,9 @@ pub fn page(viewer: &Viewer) -> Markup {
                         hx-post="/login"
                         hx-target="#login-error"
                     {
-                        (Input::email("email").placeholder("you@example.com").required())
-                        (Input::password("password").label("Password").required())
-                        (Button::submit(html! { "Log in" }).primary())
+                        (input("email").kind(Kind::Email).placeholder("you@example.com").required())
+                        (input("password").kind(Kind::Password).label("Password").required())
+                        (button(html! { "Log in" }).submit().primary())
                     }
                     p {
                         a.link href="/forgot-password" { "Forgot your password?" }

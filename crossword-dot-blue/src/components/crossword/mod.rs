@@ -1,6 +1,6 @@
 mod action;
 
-use bq_components::Button;
+use bq_components::button;
 use bq_components::{component, setup};
 use crossword_tools::puzzle::{Cell, Clue, Direction, Puzzle};
 use maud::{Markup, PreEscaped, html};
@@ -70,7 +70,7 @@ fn options_screen(theme: Theme) -> Markup {
             h2 id="options-title" tabindex="-1" { "Options" }
             (options_panel(theme))
             div.actions {
-                (Button::button(html! { "Back to puzzle" }).action(UiAction::Dismiss.as_str()).primary())
+                (button(html! { "Back to puzzle" }).action(UiAction::Dismiss.as_str()).primary())
             }
         }
     }
@@ -97,7 +97,7 @@ fn intro(model: &puzzle::Model, puzzle: &Puzzle) -> Markup {
             @if let Some(notes) = model.notes.as_deref() {
                 div.notes { (markdown::block(notes)) }
             }
-            (Button::button(html! { "Let's play!" }).primary().action(UiAction::Start.as_str()))
+            (button(html! { "Let's play!" }).primary().action(UiAction::Start.as_str()))
         }
     }
 }
@@ -108,8 +108,8 @@ fn won() -> Markup {
             h2 id="won-title" tabindex="-1" { "Solved in " time bq-ref="completion-time" {} "!" }
             (Icon::CrosswordSolved)
             div.actions {
-                (Button::button(html! { "View Puzzle" }).action(UiAction::Dismiss.as_str()).primary())
-                (Button::button(html! { "Play again" }).action(UiAction::Reset.as_str()).ghost())
+                (button(html! { "View Puzzle" }).action(UiAction::Dismiss.as_str()).primary())
+                (button(html! { "Play again" }).action(UiAction::Reset.as_str()).ghost())
             }
         }
     }
@@ -121,8 +121,8 @@ fn almost() -> Markup {
             h2 id="almost-title" tabindex="-1" { "Almost" }
             p.message { "The grid is full, but something is not right yet." }
             div.actions {
-                (Button::button(html! { "Keep going" }).action(UiAction::Dismiss.as_str()).primary())
-                (Button::button(html! { "Check" }).action(&actions(&[UiAction::CheckPuzzle, UiAction::Dismiss])).ghost())
+                (button(html! { "Keep going" }).action(UiAction::Dismiss.as_str()).primary())
+                (button(html! { "Check" }).action(&actions(&[UiAction::CheckPuzzle, UiAction::Dismiss])).ghost())
             }
         }
     }

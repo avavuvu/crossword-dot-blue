@@ -1,4 +1,4 @@
-use bq_components::Button;
+use bq_components::button;
 use maud::{Markup, html};
 
 pub fn form() -> Markup {
@@ -26,7 +26,7 @@ pub fn form() -> Markup {
             p.error id="file-error" {}
 
             noscript {
-                (Button::submit(html! { "Upload" }))
+                (button(html! { "Upload" }).submit())
             }
         }
     }

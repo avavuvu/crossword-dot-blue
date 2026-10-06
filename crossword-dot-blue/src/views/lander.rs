@@ -1,7 +1,7 @@
 mod intro;
 
 use boutique::views::base;
-use bq_components::Button;
+use bq_components::button;
 use maud::{Markup, html};
 
 use crate::{
@@ -47,7 +47,7 @@ pub fn page(viewer: &Viewer, buzzwords: &[&str], featured: &Featured, public: &[
                         section.category-section {
                             header.section-header {
                                 h2 { (category.label()) }
-                                (Button::link(html! { "See all" }, category.browse_path()).ghost().small())
+                                (button(html! { "See all" }).href(category.browse_path()).ghost().small())
                             }
                             (listing_view::cards(&entries[..entries.len().min(PER_CATEGORY)], viewer))
                         }

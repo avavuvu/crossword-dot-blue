@@ -5,7 +5,7 @@ mod preview;
 mod share;
 
 use boutique::htmx::partial;
-use bq_components::Button;
+use bq_components::{attrs, button};
 use crossword_tools::puzzle::Puzzle;
 use maud::{Markup, html};
 
@@ -43,8 +43,8 @@ pub fn page(model: &puzzle::Model, author: &user::Model, editor: &user::Model, v
                     (form::meta_form(model, author, editor, puzzle))
 
                     p.actions {
-                        (Button::link(html! { "View puzzle" }, model.path(&author.username)).secondary().attr("data-leave", ""))
-                        (Button::link(html! { "Back to dashboard" }, "/app").ghost().attr("data-leave", ""))
+                        (button(html! { "View puzzle" }).href(model.path(&author.username)).secondary().attrs(attrs!(data_leave)))
+                        (button(html! { "Back to dashboard" }).href("/app").ghost().attrs(attrs!(data_leave)))
                     }
 
                     (share_block(model, author))
@@ -58,7 +58,7 @@ pub fn page(model: &puzzle::Model, author: &user::Model, editor: &user::Model, v
                     details.danger-zone {
                         summary { "Delete this puzzle" }
                         p { "This removes the puzzle and its clues for good. Players lose their saved progress." }
-                        (Button::post(html! { "Delete puzzle" }, format!("{action}/delete")).danger())
+                        (button(html! { "Delete puzzle" }).post(format!("{action}/delete")).danger())
                     }
                 }
 

@@ -1,4 +1,4 @@
-use bq_components::Button;
+use bq_components::button;
 use maud::{Markup, html};
 
 use crate::{components::copy_button, models::{puzzle, user}};
@@ -28,17 +28,17 @@ pub fn share_block(model: &puzzle::Model, author: &user::Model) -> Markup {
             @if !model.is_public {
                 div.share-actions {
                     @if link.is_some() {
-                        (Button::button(html! { "Reset link" }).ghost().small()
+                        (button(html! { "Reset link" }).ghost().small()
                             .hx_post(&share_url)
                             .hx_target("#share")
                             .hx_swap("outerHTML")
                             .hx_confirm("Old links stop working. Continue?"))
-                        (Button::button(html! { "Remove link" }).ghost().small()
+                        (button(html! { "Remove link" }).ghost().small()
                             .hx_delete(&share_url)
                             .hx_target("#share")
                             .hx_swap("outerHTML"))
                     } @else {
-                        (Button::button(html! { "Create link" }).secondary().small()
+                        (button(html! { "Create link" }).secondary().small()
                             .hx_post(&share_url)
                             .hx_target("#share")
                             .hx_swap("outerHTML"))

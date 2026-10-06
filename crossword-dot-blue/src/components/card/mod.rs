@@ -1,4 +1,4 @@
-use bq_components::Button;
+use bq_components::button;
 use bq_components::{component, setup};
 use maud::{Markup, html};
 
@@ -112,7 +112,7 @@ fn body(model: &puzzle::Model, author: &user::Model, path: &str, is_author: bool
             @match actions {
                 Actions::Browse => @if is_author {
                     p.actions {
-                        (Button::link(html! { "Edit" }, model.edit_path()).ghost().small())
+                        (button(html! { "Edit" }).href(model.edit_path()).ghost().small())
                     }
                 },
                 Actions::Manage => (manage_actions(model, author, path)),
@@ -126,12 +126,12 @@ fn manage_actions(model: &puzzle::Model, author: &user::Model, path: &str) -> Ma
 
     html! {
         p.actions {
-            (Button::link(html! { "Play" }, path).small())
-            (Button::link(html! { "Edit" }, &edit_path).small())
+            (button(html! { "Play" }).href(path).small())
+            (button(html! { "Edit" }).href(&edit_path).small())
             @if let Some(link) = model.link(&author.username) {
                 (copy_button(&link, "Copy link"))
             }
-            (Button::button(html! { "Delete" })
+            (button(html! { "Delete" })
                 .danger()
                 .small()
                 .hx_post(format!("{edit_path}/delete"))

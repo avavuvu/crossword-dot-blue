@@ -1,4 +1,4 @@
-use bq_components::{Button, setup};
+use bq_components::{button, setup};
 use maud::{Markup, html};
 
 use crate::{components::logo::{Layout, logo}, views::viewer::Viewer};
@@ -13,12 +13,12 @@ pub fn header(viewer: &Viewer, options_link: bool) -> Markup {
             }
             nav {
                 @if viewer.is_authenticated() {
-                    (Button::link(html! { "Dashboard" }, "/app").ghost().small())
-                    (Button::link(html! { "Account" }, "/account").ghost().small())
-                    (Button::post(html! { "Log out" }, "/logout").ghost().small())
+                    (button(html! { "Dashboard" }).href("/app").ghost().small())
+                    (button(html! { "Account" }).href("/account").ghost().small())
+                    (button(html! { "Log out" }).post("/logout").ghost().small())
                 } @else {
-                    (Button::link(html! { "Log in" }, "/login").ghost().small())
-                    (Button::link(html! { "Sign up" }, "/signup").primary().small())
+                    (button(html! { "Log in" }).href("/login").ghost().small())
+                    (button(html! { "Sign up" }).href("/signup").primary().small())
                 }
                 @if options_link {
                     a.button.ghost.small.options-link href="/options" aria-label="Options" title="Options" { "O" }

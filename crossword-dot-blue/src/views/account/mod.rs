@@ -1,5 +1,5 @@
 use boutique::htmx::partial;
-use bq_components::Button;
+use bq_components::button;
 use maud::{Markup, html};
 
 use crate::{
@@ -40,7 +40,7 @@ pub fn avatar_block(user: &user::Model) -> Markup {
                             span.formats { "JPEG, PNG or WebP, up to 5 MB" }
                         }
                         p.error id="avatar-error" {}
-                        noscript { (Button::submit(html! { "Upload" })) }
+                        noscript { (button(html! { "Upload" }).submit()) }
                     }
                 } @else {
                     p.hint { "Image uploads are not available right now." }
@@ -93,7 +93,7 @@ pub fn page(user: &user::Model, viewer: &Viewer) -> Markup {
                         @if user.updated_at.is_some() { (save_status(user)) }
                     }
 
-                    noscript { (Button::submit(html! { "Save" }).primary()) }
+                    noscript { (button(html! { "Save" }).submit().primary()) }
                 }
 
                 (avatar_block(user))
