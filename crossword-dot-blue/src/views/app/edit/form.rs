@@ -3,7 +3,7 @@ use crossword_tools::puzzle::Puzzle;
 use maud::Markup;
 
 use crate::{
-    components::{AutosaveForm, markdown},
+    components::{AutosaveForm, Markdown},
     models::{puzzle, region::Region, user},
 };
 
@@ -58,11 +58,11 @@ pub fn meta_form(model: &puzzle::Model, author: &user::Model, viewer: &user::Mod
 
             div.input-component {
                 label for="notes" { "Notes" }
-                (markdown(html! {
+                Markdown(html! {
                     textarea id="notes" name="notes" rows="4" {
                         (model.notes.as_deref().unwrap_or(""))
                     }
-                }).hint(true).bordered(true))
+                }, hint = true, bordered = true);
                 p.error id="notes-error" {}
             }
 

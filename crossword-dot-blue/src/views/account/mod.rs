@@ -1,10 +1,10 @@
 use boutique::htmx::partial;
-use bq_components::{button, html};
+use bq_components::{Button, html};
 use maud::Markup;
 
 use crate::{
     cloudinary,
-    components::{AutosaveForm, markdown},
+    components::{AutosaveForm, Markdown},
     models::user,
     views::{layouts::{head, shell}, profile::avatar, viewer::Viewer},
 };
@@ -40,7 +40,7 @@ pub fn avatar_block(user: &user::Model) -> Markup {
                             span.formats { "JPEG, PNG or WebP, up to 5 MB" }
                         }
                         p.error id="avatar-error" {}
-                        noscript { (button(html! { "Upload" }).submit()) }
+                        noscript { Button(submit = true) { "Upload" } }
                     }
                 } @else {
                     p.hint { "Image uploads are not available right now." }
@@ -80,11 +80,11 @@ pub fn page(user: &user::Model, viewer: &Viewer) -> Markup {
 
                     div.input-component {
                         label for="bio" { "Bio" }
-                        (markdown(html! {
+                        Markdown(html! {
                             textarea id="bio" name="bio" rows="5" maxlength="1000" {
                                 (user.bio.as_deref().unwrap_or(""))
                             }
-                        }).hint(true).bordered(true))
+                        }, hint = true, bordered = true);
                         p.error id="bio-error" {}
                     }
 
@@ -92,7 +92,7 @@ pub fn page(user: &user::Model, viewer: &Viewer) -> Markup {
                         @if user.updated_at.is_some() { (save_status(user)) }
                     }
 
-                    noscript { (button(html! { "Save" }).submit().primary()) }
+                    noscript { Button(submit = true) .primary { "Save" } }
                 }
 
                 (avatar_block(user))

@@ -1,6 +1,7 @@
-use maud::{Markup, html};
+use bq_components::html;
+use maud::Markup;
 
-use crate::{components::options_panel, views::{layouts::{head, shell}, viewer::Viewer}};
+use crate::{components::OptionsPanel, views::{layouts::{head, shell}, viewer::Viewer}};
 
 pub fn page(viewer: &Viewer) -> Markup {
     shell(
@@ -9,7 +10,7 @@ pub fn page(viewer: &Viewer) -> Markup {
         html! {
             main.options-page {
                 h1 { "Options" }
-                (options_panel(viewer.theme))
+                OptionsPanel(viewer.theme);
             }
         }
     )

@@ -5,7 +5,7 @@ mod preview;
 mod share;
 
 use boutique::htmx::partial;
-use bq_components::{button, html};
+use bq_components::{Button, html};
 use crossword_tools::puzzle::Puzzle;
 use maud::Markup;
 
@@ -59,7 +59,7 @@ pub fn page(model: &puzzle::Model, author: &user::Model, editor: &user::Model, v
                     details.danger-zone {
                         summary { "Delete this puzzle" }
                         p { "This removes the puzzle and its clues for good. Players lose their saved progress." }
-                        (button(html! { "Delete puzzle" }).post(format!("{action}/delete")).danger())
+                        Button(post = &format!("{action}/delete")) .danger { "Delete puzzle" }
                     }
                 }
 

@@ -1,6 +1,7 @@
-use maud::{Markup, html};
+use bq_components::html;
+use maud::Markup;
 
-use crate::{components::card, models::listing::Entry, views::viewer::Viewer};
+use crate::{components::Card, models::listing::Entry, views::viewer::Viewer};
 
 pub fn cards(entries: &[&Entry], viewer: &Viewer) -> Markup {
     html! {
@@ -9,7 +10,7 @@ pub fn cards(entries: &[&Entry], viewer: &Viewer) -> Markup {
         } @else {
             ul.puzzle-cards {
                 @for entry in entries {
-                    li { (card(&entry.model, &entry.author).viewer(viewer)) }
+                    li { Card(&entry.model, &entry.author, viewer = viewer); }
                 }
             }
         }

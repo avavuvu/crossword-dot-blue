@@ -1,8 +1,9 @@
 use boutique::views::{Head, base};
-use maud::{Markup, html};
+use bq_components::html;
+use maud::Markup;
 
 use crate::{
-    components::{footer, header},
+    components::{Header, footer},
     views::viewer::Viewer,
 };
 
@@ -17,7 +18,7 @@ pub fn shell(head: Head, viewer: &Viewer, content: Markup) -> Markup {
     base(
         &themed(head, viewer),
         html! {
-            (header(viewer, true))
+            Header(viewer, true);
             (content)
             (footer())
         }

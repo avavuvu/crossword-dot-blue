@@ -1,5 +1,5 @@
-use bq_components::{button, input, Kind};
-use maud::{Markup, html};
+use bq_components::{Button, Input, Kind, html};
+use maud::Markup;
 
 use crate::views::{layouts::{head, shell}, viewer::Viewer};
 
@@ -18,10 +18,10 @@ pub fn page(viewer: &Viewer) -> Markup {
                         hx-post="/signup"
                         hx-target="#signup-error"
                     {
-                        (input("email").kind(Kind::Email).placeholder("you@example.com").required())
-                        (input("username").prefix("@").placeholder("username").autocomplete("username").required())
-                        (input("password").kind(Kind::Password).label("Password").autocomplete("new-password").required())
-                        (button(html! { "Create account" }).submit().primary())
+                        Input("email", kind = Kind::Email) placeholder="you@example.com" required;
+                        Input("username", prefix = "@") placeholder="username" autocomplete="username" required;
+                        Input("password", kind = Kind::Password, label = "Password") autocomplete="new-password" required;
+                        Button(submit = true) .primary { "Create account" }
 
                         p {
                             "Already have an account? "

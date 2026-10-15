@@ -2,7 +2,7 @@ use bq_components::html;
 use maud::Markup;
 
 use crate::{
-    components::{Actions, DetailsLink, Layout, card},
+    components::{Actions, Card, DetailsLink, Layout},
     models::{puzzle, user},
     components::grid::Fill,
     views::{self, layouts::{dashboard_shell, head}, viewer::Viewer},
@@ -65,11 +65,7 @@ fn puzzle_list(user: &user::Model, viewer: &Viewer, puzzles: &[puzzle::Model]) -
             ul.puzzle-list {
                 @for puzzle in puzzles {
                     li {
-                        (card(puzzle, user)
-                            .viewer(viewer)
-                            .actions(Actions::Manage)
-                            .fill(Fill::Solution)
-                            .layout(Layout::Row))
+                        Card(puzzle, user, viewer = viewer, actions = Actions::Manage, fill = Fill::Solution, layout = Layout::Row);
                     }
                 }
             }

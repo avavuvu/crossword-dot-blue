@@ -12,12 +12,12 @@ pub mod markdown;
 pub mod options;
 
 pub use autosave::{AutosaveForm, LeaveLink};
-pub use card::{Actions, Layout, card};
-pub use crossword::crossword;
+pub use card::{Actions, Card, Layout};
+pub use crossword::Crossword;
 pub use copy::{CopyButton, CopyLink};
 pub use details_link::DetailsLink;
 pub use footer::footer;
-pub use header::header;
+pub use header::Header;
 pub use icon::Icon;
-pub use markdown::{Markdown, markdown};
-pub use options::options_panel;
+pub use markdown::Markdown;
+pub use options::OptionsPanel;

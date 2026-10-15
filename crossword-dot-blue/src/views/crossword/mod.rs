@@ -4,7 +4,7 @@ use crossword_tools::puzzle::Puzzle;
 use maud::Markup;
 
 use crate::{
-    components::{CopyButton, crossword, footer, header},
+    components::{CopyButton, Crossword, Header, footer},
     models::{puzzle, user},
     views::{layouts::{head, themed}, viewer::Viewer},
 };
@@ -17,7 +17,7 @@ pub fn page(model: &puzzle::Model, author: &user::Model, puzzle: &Puzzle, viewer
         html! {
             article.crossword {
                 div.above {
-                    (header(viewer, false))
+                    Header(viewer, false);
                     hgroup {
                         h1 { (title) }
                         p.byline {
@@ -29,7 +29,7 @@ pub fn page(model: &puzzle::Model, author: &user::Model, puzzle: &Puzzle, viewer
                         }
                     }
                 }
-                (crossword(model, puzzle).options(viewer.theme))
+                Crossword(model, puzzle, options = viewer.theme);
             }
             (footer())
         }

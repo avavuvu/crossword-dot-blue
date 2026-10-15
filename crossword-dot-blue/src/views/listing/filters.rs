@@ -1,5 +1,5 @@
-use bq_components::button;
-use maud::{Markup, html};
+use bq_components::{Button, html};
+use maud::Markup;
 
 use crate::models::{listing::Filter, region::Region};
 
@@ -20,9 +20,9 @@ pub fn filter_form(action: &str, filter: &Filter, regions: &[Region]) -> Markup 
                     }
                 }
             }
-            (button(html! { "Filter" }).submit().secondary().small())
+            Button(submit = true) .secondary .small { "Filter" }
             @if current.is_some() || filter.cryptic() {
-                (button(html! { "Clear" }).href(action).ghost().small())
+                Button(href = action) .ghost .small { "Clear" }
             }
         }
     }

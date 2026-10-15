@@ -1,14 +1,13 @@
 mod action;
 
-use bq_components::button;
-use bq_components::{component, html};
+use bq_components::{Button, component, html};
 use crossword_tools::puzzle::{Cell, Clue, Direction, Puzzle};
 use maud::{Markup, PreEscaped};
 
 use action::{UiAction, actions};
 
 use crate::{
-    components::{Icon, grid::{self, Fill}, options_panel},
+    components::{Icon, OptionsPanel, grid::{self, Fill}},
     models::{category::Category, puzzle::{self, get_category}},
     theme::Theme,
     views::markdown,
@@ -66,9 +65,9 @@ fn options_screen(theme: Theme) -> Markup {
     html! {
         section.options hidden aria-labelledby="options-title" bq-ref="options" {
             h2 id="options-title" tabindex="-1" { "Options" }
-            (options_panel(theme))
+            OptionsPanel(theme);
             div.actions {
-                (button(html! { "Back to puzzle" }).action(UiAction::Dismiss.as_str()).primary())
+                Button .primary data-action=(UiAction::Dismiss) { "Back to puzzle" }
             }
         }
     }
@@ -95,7 +94,7 @@ fn intro(model: &puzzle::Model, puzzle: &Puzzle) -> Markup {
             @if let Some(notes) = model.notes.as_deref() {
                 div.notes { (markdown::block(notes)) }
             }
-            (button(html! { "Let's play!" }).primary().action(UiAction::Start.as_str()))
+            Button .primary data-action=(UiAction::Start) { "Let's play!" }
         }
     }
 }
@@ -106,8 +105,8 @@ fn won() -> Markup {
             h2 id="won-title" tabindex="-1" { "Solved in " time bq-ref="completion-time" {} "!" }
             (Icon::CrosswordSolved)
             div.actions {
-                (button(html! { "View Puzzle" }).action(UiAction::Dismiss.as_str()).primary())
-                (button(html! { "Play again" }).action(UiAction::Reset.as_str()).ghost())
+                Button .primary data-action=(UiAction::Dismiss) { "View Puzzle" }
+                Button .ghost data-action=(UiAction::Reset) { "Play again" }
             }
         }
     }
@@ -119,8 +118,8 @@ fn almost() -> Markup {
             h2 id="almost-title" tabindex="-1" { "Almost" }
             p.message { "The grid is full, but something is not right yet." }
             div.actions {
-                (button(html! { "Keep going" }).action(UiAction::Dismiss.as_str()).primary())
-                (button(html! { "Check" }).action(&actions(&[UiAction::CheckPuzzle, UiAction::Dismiss])).ghost())
+                Button .primary data-action=(UiAction::Dismiss) { "Keep going" }
+                Button .ghost data-action=(actions(&[UiAction::CheckPuzzle, UiAction::Dismiss])) { "Check" }
             }
         }
     }

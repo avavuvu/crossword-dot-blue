@@ -1,5 +1,4 @@
-use bq_components::button;
-use bq_components::{component, html};
+use bq_components::{Button, component, html};
 use maud::Markup;
 
 use crate::{
@@ -35,13 +34,13 @@ impl Layout {
 
 #[component(eager, setup = "card-progress")]
 pub fn card(
-    #[builder(start_fn)] model: &puzzle::Model,
-    #[builder(start_fn)] author: &user::Model,
+    #[positional] model: &puzzle::Model,
+    #[positional] author: &user::Model,
     viewer: Option<&Viewer>,
-    #[builder(default)] actions: Actions,
-    #[builder(default)] fill: Fill,
-    #[builder(default)] layout: Layout,
-    #[builder(default)] tinted: bool,
+    #[default] actions: Actions,
+    #[default] fill: Fill,
+    #[default] layout: Layout,
+    tinted: bool,
 ) -> Markup {
     let key = model.key.as_str();
     let path = model.path(&author.username);
@@ -111,7 +110,7 @@ fn body(model: &puzzle::Model, author: &user::Model, path: &str, is_author: bool
             @match actions {
                 Actions::Browse => @if is_author {
                     p.actions {
-                        (button(html! { "Edit" }).href(model.edit_path()).ghost().small())
+                        Button(href = &model.edit_path()) .ghost .small { "Edit" }
                     }
                 },
                 Actions::Manage => (manage_actions(model, author, path)),
@@ -125,18 +124,19 @@ fn manage_actions(model: &puzzle::Model, author: &user::Model, path: &str) -> Ma
 
     html! {
         p.actions {
-            (button(html! { "Play" }).href(path).small())
-            (button(html! { "Edit" }).href(&edit_path).small())
+            Button(href = path) .small { "Play" }
+            Button(href = &edit_path) .small { "Edit" }
             @if let Some(link) = model.link(&author.username) {
                 CopyButton(&link) { "Copy link" }
             }
-            (button(html! { "Delete" })
-                .danger()
-                .small()
-                .hx_post(format!("{edit_path}/delete"))
-                .hx_target("closest cw-card")
-                .hx_swap("delete")
-                .hx_confirm("Delete this puzzle? Players lose their progress."))
+            Button .danger .small
+                hx-post={ (edit_path) "/delete" }
+                hx-target="closest cw-card"
+                hx-swap="delete"
+                hx-confirm="Delete this puzzle? Players lose their progress."
+            {
+                "Delete"
+            }
         }
     }
 }

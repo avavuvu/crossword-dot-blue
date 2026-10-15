@@ -1,4 +1,4 @@
-use bq_components::{button, html};
+use bq_components::{Button, html};
 use maud::Markup;
 
 use crate::{components::CopyLink, models::{puzzle, user}};
@@ -25,20 +25,17 @@ pub fn share_block(model: &puzzle::Model, author: &user::Model) -> Markup {
             @if !model.is_public {
                 div.share-actions {
                     @if link.is_some() {
-                        (button(html! { "Reset link" }).ghost().small()
-                            .hx_post(&share_url)
-                            .hx_target("#share")
-                            .hx_swap("outerHTML")
-                            .hx_confirm("Old links stop working. Continue?"))
-                        (button(html! { "Remove link" }).ghost().small()
-                            .hx_delete(&share_url)
-                            .hx_target("#share")
-                            .hx_swap("outerHTML"))
+                        Button .ghost .small
+                            hx-post=(share_url)
+                            hx-target="#share"
+                            hx-swap="outerHTML"
+                            hx-confirm="Old links stop working. Continue?"
+                        {
+                            "Reset link"
+                        }
+                        Button .ghost .small hx-delete=(share_url) hx-target="#share" hx-swap="outerHTML" { "Remove link" }
                     } @else {
-                        (button(html! { "Create link" }).secondary().small()
-                            .hx_post(&share_url)
-                            .hx_target("#share")
-                            .hx_swap("outerHTML"))
+                        Button .secondary .small hx-post=(share_url) hx-target="#share" hx-swap="outerHTML" { "Create link" }
                     }
                 }
             }

@@ -1,5 +1,5 @@
-use bq_components::button;
-use maud::{Markup, html};
+use bq_components::{Button, html};
+use maud::Markup;
 
 pub fn form() -> Markup {
     let accept = crossword_tools::EXTENSIONS
@@ -26,7 +26,7 @@ pub fn form() -> Markup {
             p.error id="file-error" {}
 
             noscript {
-                (button(html! { "Upload" }).submit())
+                Button(submit = true) { "Upload" }
             }
         }
     }

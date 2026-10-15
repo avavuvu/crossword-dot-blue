@@ -1,11 +1,11 @@
 mod intro;
 
 use boutique::views::base;
-use bq_components::button;
-use maud::{Markup, html};
+use bq_components::{Button, html};
+use maud::Markup;
 
 use crate::{
-    components::{Layout, card, footer, header},
+    components::{Card, Header, Layout, footer},
     models::{category::Category, listing::{self, Entry, Featured}},
     views::{layouts::{head, themed}, listing as listing_view, viewer::Viewer},
 };
@@ -16,7 +16,7 @@ pub fn page(viewer: &Viewer, buzzwords: &[&str], featured: &Featured, public: &[
     base(
         &themed(head("Crossword dot blue").css("lander").css("listing"), viewer),
         html! {
-            (header(viewer, true))
+            Header(viewer, true);
             section.hero { (intro::intro(buzzwords)) }
             main.lander.listing {
                 h1.sr-only { "Crossword dot blue" }
@@ -34,7 +34,7 @@ pub fn page(viewer: &Viewer, buzzwords: &[&str], featured: &Featured, public: &[
                             @for category in [Category::Big, Category::Midi, Category::Mini] {
                                 @if let Some(entry) = featured.get(category) {
                                     @let layout = if category == Category::Midi { Layout::RowReverse } else { Layout::Row };
-                                    li { (card(&entry.model, &entry.author).viewer(viewer).layout(layout).tinted(true)) }
+                                    li { Card(&entry.model, &entry.author, viewer = viewer, layout = layout, tinted = true); }
                                 }
                             }
                         }
@@ -47,7 +47,7 @@ pub fn page(viewer: &Viewer, buzzwords: &[&str], featured: &Featured, public: &[
                         section.category-section {
                             header.section-header {
                                 h2 { (category.label()) }
-                                (button(html! { "See all" }).href(category.browse_path()).ghost().small())
+                                Button(href = &category.browse_path()) .ghost .small { "See all" }
                             }
                             (listing_view::cards(&entries[..entries.len().min(PER_CATEGORY)], viewer))
                         }
