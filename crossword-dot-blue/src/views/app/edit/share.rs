@@ -1,7 +1,7 @@
-use bq_components::button;
-use maud::{Markup, html};
+use bq_components::{button, html};
+use maud::Markup;
 
-use crate::{components::copy_button, models::{puzzle, user}};
+use crate::{components::CopyLink, models::{puzzle, user}};
 
 pub fn share_block(model: &puzzle::Model, author: &user::Model) -> Markup {
     let share_url = format!("{}/share", model.edit_path());
@@ -19,10 +19,7 @@ pub fn share_block(model: &puzzle::Model, author: &user::Model) -> Markup {
             }
 
             @if let Some(url) = &link {
-                div.share-link {
-                    input type="text" readonly value=(url) aria-label="Link" data-select-all;
-                    (copy_button(url, "Copy link"))
-                }
+                CopyLink(url) .share-link;
             }
 
             @if !model.is_public {

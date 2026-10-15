@@ -1,8 +1,9 @@
+use bq_components::html;
 use crossword_tools::puzzle::Puzzle;
-use maud::{Markup, html};
+use maud::Markup;
 
 use crate::{
-    components::markdown,
+    components::{AutosaveForm, markdown},
     models::{puzzle, region::Region, user},
 };
 
@@ -31,14 +32,13 @@ pub fn meta_form(model: &puzzle::Model, author: &user::Model, viewer: &user::Mod
     let difficulty = model.difficulty.map(|difficulty| difficulty.to_string()).unwrap_or_default();
 
     html! {
-        form.meta
+        AutosaveForm .meta
             method="POST"
             action=(action)
             hx-post=(action)
             hx-trigger="change delay:500ms, submit"
             hx-sync="this:replace"
             hx-target="#save-status"
-            data-autosave
         {
             div.input-component.title {
                 label for="title" .sr-only { "Title" }

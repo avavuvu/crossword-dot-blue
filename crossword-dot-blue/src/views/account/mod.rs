@@ -1,10 +1,10 @@
 use boutique::htmx::partial;
-use bq_components::button;
-use maud::{Markup, html};
+use bq_components::{button, html};
+use maud::Markup;
 
 use crate::{
     cloudinary,
-    components::markdown,
+    components::{AutosaveForm, markdown},
     models::user,
     views::{layouts::{head, shell}, profile::avatar, viewer::Viewer},
 };
@@ -61,14 +61,13 @@ pub fn page(user: &user::Model, viewer: &Viewer) -> Markup {
                     p.subtitle { a href=(user.path()) { "@" (user.username) } }
                 }
 
-                form.profile-form
+                AutosaveForm .profile-form
                     method="POST"
                     action="/account"
                     hx-post="/account"
                     hx-trigger="change delay:500ms, submit"
                     hx-sync="this:replace"
                     hx-target="#account-status"
-                    data-autosave
                 {
                     div.input-component {
                         label for="display_name" { "Display name" }

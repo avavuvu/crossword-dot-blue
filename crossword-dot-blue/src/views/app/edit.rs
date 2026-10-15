@@ -5,9 +5,9 @@ mod preview;
 mod share;
 
 use boutique::htmx::partial;
-use bq_components::{attrs, button};
+use bq_components::{button, html};
 use crossword_tools::puzzle::Puzzle;
-use maud::{Markup, html};
+use maud::Markup;
 
 pub use feature::feature_block;
 pub use form::save_status;
@@ -15,6 +15,7 @@ pub use preview::grid_preview;
 pub use share::share_block;
 
 use crate::{
+    components::LeaveLink,
     models::{puzzle, user},
     views::{layouts::{head, shell}, viewer::Viewer},
 };
@@ -43,8 +44,8 @@ pub fn page(model: &puzzle::Model, author: &user::Model, editor: &user::Model, v
                     (form::meta_form(model, author, editor, puzzle))
 
                     p.actions {
-                        (button(html! { "View puzzle" }).href(model.path(&author.username)).secondary().attrs(attrs!(data_leave)))
-                        (button(html! { "Back to dashboard" }).href("/app").ghost().attrs(attrs!(data_leave)))
+                        LeaveLink(&model.path(&author.username)) .secondary { "View puzzle" }
+                        LeaveLink("/app") .ghost { "Back to dashboard" }
                     }
 
                     (share_block(model, author))

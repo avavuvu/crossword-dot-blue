@@ -1,7 +1,8 @@
-use maud::{Markup, html};
+use bq_components::html;
+use maud::Markup;
 
 use crate::{
-    components::{Actions, Layout, card},
+    components::{Actions, DetailsLink, Layout, card},
     models::{puzzle, user},
     components::grid::Fill,
     views::{self, layouts::{dashboard_shell, head}, viewer::Viewer},
@@ -55,7 +56,7 @@ fn puzzle_list(user: &user::Model, viewer: &Viewer, puzzles: &[puzzle::Model]) -
             div.empty-viewer {
                 p {
                     "No puzzles yet. "
-                    a href="#upload" data-open="upload" {
+                    DetailsLink("upload") {
                         "Upload a puzzle to get started"
                     }
                 }

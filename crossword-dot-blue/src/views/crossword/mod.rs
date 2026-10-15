@@ -1,9 +1,10 @@
 use boutique::views::base;
+use bq_components::html;
 use crossword_tools::puzzle::Puzzle;
-use maud::{Markup, html};
+use maud::Markup;
 
 use crate::{
-    components::{crossword, footer, header, share_button},
+    components::{CopyButton, crossword, footer, header},
     models::{puzzle, user},
     views::{layouts::{head, themed}, viewer::Viewer},
 };
@@ -24,7 +25,7 @@ pub fn page(model: &puzzle::Model, author: &user::Model, puzzle: &Puzzle, viewer
                             a href=(author.path()) { "@" (author.username) }
                         }
                         @if model.is_public {
-                            (share_button(&model.url(&author.username)))
+                            CopyButton(&model.url(&author.username), share = true, copied = "Link copied") .ghost { "Share" }
                         }
                     }
                 }

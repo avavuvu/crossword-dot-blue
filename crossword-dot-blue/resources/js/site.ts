@@ -3,8 +3,6 @@ import "@bq/style/tokens.css";
 import "@bq/style/roles.css";
 import "../css/app.css";
 
-import "@bq/components/src/autosave/autosave";
-import "@bq/components/src/behaviours/behaviours";
 import { defineSetups } from "@bq/components/src/setups";
 import { registry } from "../../bindings/registry";
 

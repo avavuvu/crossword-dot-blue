@@ -3,7 +3,7 @@ use bq_components::{component, html};
 use maud::Markup;
 
 use crate::{
-    components::{copy_button, grid::{self, Fill}},
+    components::{CopyButton, grid::{self, Fill}},
     models::{puzzle, user},
     views::viewer::Viewer,
 };
@@ -128,7 +128,7 @@ fn manage_actions(model: &puzzle::Model, author: &user::Model, path: &str) -> Ma
             (button(html! { "Play" }).href(path).small())
             (button(html! { "Edit" }).href(&edit_path).small())
             @if let Some(link) = model.link(&author.username) {
-                (copy_button(&link, "Copy link"))
+                CopyButton(&link) { "Copy link" }
             }
             (button(html! { "Delete" })
                 .danger()

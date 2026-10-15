@@ -1,6 +1,8 @@
+pub mod autosave;
 pub mod card;
 pub mod copy;
 pub mod crossword;
+pub mod details_link;
 pub mod footer;
 pub mod grid;
 pub mod header;
@@ -9,11 +11,13 @@ pub mod logo;
 pub mod markdown;
 pub mod options;
 
+pub use autosave::{AutosaveForm, LeaveLink};
 pub use card::{Actions, Layout, card};
 pub use crossword::crossword;
-pub use copy::{copy_button, share_button};
+pub use copy::{CopyButton, CopyLink};
+pub use details_link::DetailsLink;
 pub use footer::footer;
 pub use header::header;
 pub use icon::Icon;
-pub use markdown::markdown;
+pub use markdown::{Markdown, markdown};
 pub use options::options_panel;

@@ -1,8 +1,9 @@
 use boutique::htmx::partial;
+use bq_components::html;
 use crossword_tools::puzzle::{Cell, Clue, Direction, Puzzle};
-use maud::{Markup, html};
+use maud::Markup;
 
-use crate::components::markdown;
+use crate::components::{AutosaveForm, Markdown};
 
 pub fn clue_list(key: &str, puzzle: &Puzzle) -> Markup {
     html! {
@@ -33,18 +34,23 @@ fn clue_group(key: &str, puzzle: &Puzzle, direction: Direction, heading: &str) -
 }
 
 pub fn clue_row(key: &str, puzzle: &Puzzle, clue: &Clue, error: Option<&str>, as_partial: bool) -> Markup {
-    let action = clue_url(key, clue, "");
     let id = format!("clue-{}", clue.id);
+    let row = clue_item(key, puzzle, clue, &id, error);
 
-    let row = html! {
+    if as_partial { partial(&format!("#{id}"), row) } else { row }
+}
+
+fn clue_item(key: &str, puzzle: &Puzzle, clue: &Clue, id: &str, error: Option<&str>) -> Markup {
+    let action = clue_url(key, clue, "");
+
+    html! {
         li.clue-row id=(id) {
-            form
+            AutosaveForm
                 hx-post=(action)
                 hx-trigger="change delay:500ms, submit"
                 hx-sync="this:replace"
                 hx-target="closest li"
                 hx-swap="outerMorph"
-                data-autosave
             {
                 div {
                     span.number {
@@ -57,15 +63,15 @@ pub fn clue_row(key: &str, puzzle: &Puzzle, clue: &Clue, error: Option<&str>, as
                 }
 
                 div {
-                    (markdown(html! {
+                    Markdown(html! {
                         textarea.clue-body
                             name="body"
                             rows="1"
                             aria-label="Clue"
                             placeholder="Clue"
-                            data-submit-on-enter
+                            bq-on:keydown|enter="autosave-form.submit"
                         { (clue.body) }
-                    }))
+                    });
                 }
 
                 (refs(key, puzzle, clue))
@@ -75,9 +81,7 @@ pub fn clue_row(key: &str, puzzle: &Puzzle, clue: &Clue, error: Option<&str>, as
                 }
             }
         }
-    };
-
-    if as_partial { partial(&format!("#{id}"), row) } else { row }
+    }
 }
 
 fn clue_url(key: &str, clue: &Clue, suffix: &str) -> String {
