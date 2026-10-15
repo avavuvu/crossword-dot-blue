@@ -48,6 +48,7 @@ cw-markdown {
         width: 100%;
         resize: none;
         field-sizing: content;
+        min-block-size: auto;
         background: transparent;
         color: var(--color-text);
         caret-color: var(--color-text);
