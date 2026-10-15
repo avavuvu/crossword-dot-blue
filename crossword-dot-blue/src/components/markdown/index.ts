@@ -2,7 +2,7 @@ import type { MarkdownHighlight } from "@setups";
 
 const highlight = () => import("./highlight");
 
-export const markdownHighlight: MarkdownHighlight = async (editor, { backdrop, signal }) => {
+export const markdownHighlight: MarkdownHighlight = async (editor, { backdrop }, { signal }) => {
     const textarea = () => editor.querySelector<HTMLTextAreaElement>(".editor > textarea");
 
     document.addEventListener(

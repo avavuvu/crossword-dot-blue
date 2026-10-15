@@ -1,6 +1,6 @@
 import type { HeroWatch } from "@setups";
 
-export const heroWatch: HeroWatch = (header, { signal }) => {
+export const heroWatch: HeroWatch = (header) => {
     const hero = header.nextElementSibling;
     if (!(hero instanceof HTMLElement) || !hero.matches("section.hero")) return;
 
@@ -15,5 +15,5 @@ export const heroWatch: HeroWatch = (header, { signal }) => {
     );
 
     observer.observe(hero);
-    signal.addEventListener("abort", () => observer.disconnect());
+    return { disconnect: () => observer.disconnect() };
 };

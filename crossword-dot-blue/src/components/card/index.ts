@@ -24,7 +24,7 @@ function statusOf(stored: StoredGame): Status | null {
     return { kind: "in-progress", label: "In progress" };
 }
 
-export const cardProgress: CardProgress = (card, { progress, signal }) => {
+export const cardProgress: CardProgress = (card, { progress }) => {
     const refresh = (): void => {
         const key = card.getAttribute("key");
         if (!key) return;
@@ -43,5 +43,5 @@ export const cardProgress: CardProgress = (card, { progress, signal }) => {
     };
 
     refresh();
-    window.addEventListener("pageshow", refresh, { signal });
+    return { refresh };
 };

@@ -1,7 +1,7 @@
 import type { ThemeSelect } from "@setups";
 
-export const themeSelect: ThemeSelect = (form, { select }) => {
-    select.addEventListener("change", () => {
+export const themeSelect: ThemeSelect = (form) => ({
+    change(_event, select) {
         const theme = select.value;
         if (theme) document.documentElement.dataset.theme = theme;
         else delete document.documentElement.dataset.theme;
@@ -17,5 +17,5 @@ export const themeSelect: ThemeSelect = (form, { select }) => {
             headers: { accept: "application/json" },
             body,
         });
-    });
-};
+    },
+});

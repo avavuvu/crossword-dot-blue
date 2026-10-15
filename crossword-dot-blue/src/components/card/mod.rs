@@ -1,14 +1,12 @@
 use bq_components::button;
-use bq_components::{component, setup};
-use maud::{Markup, html};
+use bq_components::{component, html};
+use maud::Markup;
 
 use crate::{
     components::{copy_button, grid::{self, Fill}},
     models::{puzzle, user},
     views::viewer::Viewer,
 };
-
-setup!(CardProgress, eager);
 
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum Actions {
@@ -35,7 +33,7 @@ impl Layout {
     }
 }
 
-#[component]
+#[component(eager, setup = "card-progress")]
 pub fn card(
     #[builder(start_fn)] model: &puzzle::Model,
     #[builder(start_fn)] author: &user::Model,
@@ -56,7 +54,8 @@ pub fn card(
             key=(key)
             layout=(layout.as_str())
             tinted[tinted]
-            bq-setup=(CardProgress)
+            bq-setup
+            bq-on:pageshow|window="refresh"
         {
             (thumbnail(model, &path, fill))
             (body(model, author, &path, is_author, actions))

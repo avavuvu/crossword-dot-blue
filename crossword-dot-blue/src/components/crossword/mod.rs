@@ -1,9 +1,9 @@
 mod action;
 
 use bq_components::button;
-use bq_components::{component, setup};
+use bq_components::{component, html};
 use crossword_tools::puzzle::{Cell, Clue, Direction, Puzzle};
-use maud::{Markup, PreEscaped, html};
+use maud::{Markup, PreEscaped};
 
 use action::{UiAction, actions};
 
@@ -14,19 +14,17 @@ use crate::{
     views::markdown,
 };
 
-setup!(Crossword);
-
 #[component]
 pub fn crossword(
-    #[builder(start_fn)]
+    #[positional]
     model: &puzzle::Model,
-    #[builder(start_fn)]
+    #[positional]
     puzzle: &Puzzle,
     tagline: Option<Markup>,
     options: Option<Theme>,
     ) -> Markup {
     html! {
-        cw-crossword key=(model.key) style=(format!("--cols: {}; --rows: {}", puzzle.width, puzzle.height)) bq-setup=(Crossword) {
+        cw-crossword key=(model.key) style=(format!("--cols: {}; --rows: {}", puzzle.width, puzzle.height)) bq-setup {
             script type="application/json" bq-ref="puzzle-json" { (json_script(puzzle)) }
 
             section.info {
