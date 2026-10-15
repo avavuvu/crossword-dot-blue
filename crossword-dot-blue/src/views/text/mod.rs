@@ -9,7 +9,7 @@ pub struct TextPage {
 
 pub fn page(text: &TextPage, viewer: &Viewer) -> Markup {
     shell(
-        head(format!("{} — Crossword Dot Blue", text.title)).css("text"),
+        head(format!("{} — Crossword Dot Blue", text.title)),
         viewer,
         html! {
             main.text {

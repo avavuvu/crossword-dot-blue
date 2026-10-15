@@ -12,7 +12,7 @@ pub fn page(user: &user::Model, viewer: &Viewer, puzzles: Vec<puzzle::Model>) ->
     let (public, private): (Vec<_>, Vec<_>) = puzzles.into_iter().partition(|puzzle| puzzle.is_public);
 
     dashboard_shell(
-        head("Dashboard — Crossword Dot Blue").htmx().css("dashboard"),
+        head("Dashboard — Crossword Dot Blue").htmx(),
         viewer,
         html! {
             main.dashboard {

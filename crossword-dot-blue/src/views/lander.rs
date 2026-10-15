@@ -14,7 +14,7 @@ const PER_CATEGORY: usize = 6;
 
 pub fn page(viewer: &Viewer, buzzwords: &[&str], featured: &Featured, public: &[Entry]) -> Markup {
     base(
-        &themed(head("Crossword dot blue").css("lander").css("listing"), viewer),
+        &themed(head("Crossword dot blue"), viewer),
         html! {
             Header(viewer, true);
             section.hero { (intro::intro(buzzwords)) }

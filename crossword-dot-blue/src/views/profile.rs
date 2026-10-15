@@ -27,7 +27,7 @@ pub fn page(
     let is_owner = viewer.user_id.as_deref() == Some(profile.id.as_str());
 
     shell(
-        head(format!("@{} — Crossword Dot Blue", profile.username)).css("listing"),
+        head(format!("@{} — Crossword Dot Blue", profile.username)),
         viewer,
         html! {
             main.profile.listing {

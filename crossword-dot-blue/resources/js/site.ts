@@ -5,6 +5,6 @@ import "../css/app.css";
 import { defineSetups } from "../../bindings/boutique/setups";
 import { registry } from "../../bindings/registry";
 
-import.meta.glob("../../src/components/*/index.css", { eager: true });
+import.meta.glob("../../src/**/*.css", { eager: true });
 
 defineSetups(registry);

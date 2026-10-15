@@ -52,7 +52,7 @@ pub fn avatar_block(user: &user::Model) -> Markup {
 
 pub fn page(user: &user::Model, viewer: &Viewer) -> Markup {
     shell(
-        head("Account — Crossword Dot Blue").htmx().entry("editor").css("account"),
+        head("Account — Crossword Dot Blue").htmx(),
         viewer,
         html! {
             main.account {

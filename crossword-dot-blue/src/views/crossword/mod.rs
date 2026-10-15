@@ -13,7 +13,7 @@ pub fn page(model: &puzzle::Model, author: &user::Model, puzzle: &Puzzle, viewer
     let title = model.display_title();
 
     base(
-        &themed(head(format!("{title} — Crossword Dot Blue")).css("play"), viewer),
+        &themed(head(format!("{title} — Crossword Dot Blue")), viewer),
         html! {
             article.crossword {
                 div.above {

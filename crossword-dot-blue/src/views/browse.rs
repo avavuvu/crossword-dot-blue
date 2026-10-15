@@ -16,7 +16,7 @@ pub fn page(
     let action = category.map(|category| category.browse_path()).unwrap_or_else(|| "/browse".to_string());
 
     shell(
-        head(format!("Browse {heading} — Crossword Dot Blue")).css("listing"),
+        head(format!("Browse {heading} — Crossword Dot Blue")),
         viewer,
         html! {
             main.browse.listing {

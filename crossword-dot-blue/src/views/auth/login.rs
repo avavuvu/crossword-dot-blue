@@ -5,7 +5,7 @@ use crate::views::{layouts::{head, shell}, viewer::Viewer};
 
 pub fn page(viewer: &Viewer) -> Markup {
     shell(
-        head("Log in").htmx().css("auth"),
+        head("Log in").htmx(),
         viewer,
         html! {
             main.auth {
