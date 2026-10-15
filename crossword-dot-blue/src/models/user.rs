@@ -1,4 +1,7 @@
-use boutique::AuthUser;
+use boutique::{
+    AuthUser,
+    store::sea_orm::{SeaOrmStore, UserEntity},
+};
 use sea_orm::entity::prelude::*;
 use sea_orm::ActiveValue::Set;
 use sea_orm::sea_query::{Expr, Func};
@@ -54,8 +57,14 @@ impl Related<super::session::Entity> for Entity {
 
 impl ActiveModelBehavior for ActiveModel {}
 
+impl UserEntity for Entity {
+    const ID: Column = Column::Id;
+    const EMAIL: Column = Column::Email;
+    const PASSWORD_HASH: Column = Column::Password;
+}
+
 impl AuthUser for Model {
-    type Store = crate::auth::Store;
+    type Store = SeaOrmStore<Entity, super::session::Entity>;
 
     fn id(&self) -> &str { &self.id }
     fn email(&self) -> &str { &self.email }

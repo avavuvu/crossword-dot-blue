@@ -1,4 +1,3 @@
-mod auth;
 mod cloudinary;
 mod components;
 mod config;
@@ -11,9 +10,10 @@ mod views;
 
 use axum::extract::FromRef;
 use migration::{Migrator, MigratorTrait};
-use boutique::{AuthState, assets::manifest, server::Server};
+use boutique::{AuthState, server::Server, session, store::sea_orm::SeaOrmStore};
 use sea_orm::{Database, DatabaseConnection};
-use std::env;
+use std::{env, time::Duration};
+use tracing_subscriber::EnvFilter;
 
 use router::create_router;
 
@@ -29,15 +29,12 @@ impl FromRef<AppState> for AuthState<models::user::Model> {
     }
 }
 
-const BUILD_ROUTE: &str = "/build";
-const BUILD_DIR: &str = "public/build";
-
 async fn serve((state, port): (AppState, String)) {
-    Server::new(state.auth.clone())
+    Server::new()
         .debug(cfg!(debug_assertions))
         .static_dir("/assets", "public/assets")
         .file("/favicon.ico", "public/assets/favicon.ico")
-        .static_dir(BUILD_ROUTE, BUILD_DIR)
+        .error_page_with_state(state.clone(), handlers::error::render)
         .serve(create_router(state), &port)
         .await;
 }
@@ -55,10 +52,13 @@ fn load_env() {
 async fn main() {
     load_env();
 
+    tracing_subscriber::fmt()
+        .with_env_filter(EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info,sqlx=warn")))
+        .init();
+
     let secret = env::var("SECRET_KEY").expect("SECRET_KEY must be set");
     config::init();
     cloudinary::init();
-    manifest::init(BUILD_ROUTE, BUILD_DIR);
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
     let db = Database::connect(&database_url)
@@ -71,8 +71,9 @@ async fn main() {
 
     let port = env::var("PORT").unwrap_or("3000".into());
 
-    let auth = AuthState::new(auth::Store::new(db.clone()), secret);
+    let auth = AuthState::new(SeaOrmStore::new(db.clone()), secret);
     let state = AppState { db, auth };
+    let _session_cleanup = session::spawn_cleanup(state.auth.clone(), Duration::from_secs(60 * 60));
 
     println!("listening on http://localhost:{port}");
     boutique::run((state.clone(), port), serve).await;
