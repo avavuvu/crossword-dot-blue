@@ -1,8 +1,7 @@
 import type { Registry } from "./boutique/setups";
 import type * as setups from "./setups";
-import { autosaveForm } from "../src/components/autosave/index";
+import { autosaveForm, leaveLink } from "../src/components/autosave/index";
 import { cardProgress } from "../src/components/card/index";
-import { leaveLink } from "../src/components/autosave/index";
 
 export const registry: Registry = {
     "autosave-form": {
