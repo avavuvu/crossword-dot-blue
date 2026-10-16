@@ -8,7 +8,7 @@ pub fn page(report: &ErrorReport, back: &str, viewer: &Viewer) -> Markup {
         head(format!("{} — Crossword Dot Blue", report.status)),
         viewer,
         html! {
-            main.text {
+            main {
                 article.prose { (error_content(report, back)) }
             }
         }
