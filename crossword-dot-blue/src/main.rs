@@ -10,7 +10,7 @@ mod views;
 
 use axum::extract::FromRef;
 use migration::{Migrator, MigratorTrait};
-use boutique::{AuthState, server::Server, session, store::sea_orm::SeaOrmStore};
+use boutique::{AuthState, server::{Cache, Server}, session, store::sea_orm::SeaOrmStore};
 use sea_orm::{Database, DatabaseConnection};
 use std::{env, time::Duration};
 use tracing_subscriber::EnvFilter;
@@ -29,11 +29,13 @@ impl FromRef<AppState> for AuthState<models::user::Model> {
     }
 }
 
+const ASSETS_MAX_AGE: Duration = Duration::from_secs(7 * 24 * 60 * 60);
+
 async fn serve((state, port): (AppState, String)) {
     Server::new()
         .debug(cfg!(debug_assertions))
-        .static_dir("/assets", "public/assets")
-        .file("/favicon.ico", "public/assets/favicon.ico")
+        .static_dir_with("/assets", "public/assets", Cache::MaxAge(ASSETS_MAX_AGE))
+        .file_with("/favicon.ico", "public/assets/favicon.ico", Cache::MaxAge(ASSETS_MAX_AGE))
         .error_page_with_state(state.clone(), handlers::error::render)
         .serve(create_router(state), &port)
         .await;
